@@ -9,12 +9,11 @@ Clone Agama Desktop App with EasyDEX-GUI submodule
 1) git clone https://github.com/miketout/agama --recursive --branch pkg_automation_electrum --single-branch
 with this command you git clone agama - but explicitly just the pkg_automation_electrum branch (therefore --single-branch) which we also use for the release packages.
 2) cd agama && cd gui/EasyDEX-GUI/
-3) git checkout electrum && git pull origin electrum
-4) npm install && npm install webpack
-5) ./binary_artifacts.sh
-6) npm start in project root folder
-7) cd gui/EasyDEX-GUI/react/src
-8) npm start
+3) npm install && npm install webpack
+4) ./binary_artifacts.sh
+5) npm start in project root folder
+6) cd gui/EasyDEX-GUI/react/src
+7) npm start
 8) toggle dev and debug options in settings
 9) restart the app
 10) sync komodod and/or asset chains
