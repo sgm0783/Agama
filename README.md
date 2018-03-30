@@ -6,7 +6,7 @@ You must have `node.js` and `npm` installed on your machine.
 
 Clone Agama Desktop App with EasyDEX-GUI submodule
 ```shell
-1) git clone https://github.com/supernetorg/agama --recursive --branch pkg_automation_electrum --single-branch
+1) git clone https://github.com/miketout/agama --recursive --branch pkg_automation_electrum --single-branch
 with this command you git clone agama - but explicitly just the pkg_automation_electrum branch (therefore --single-branch) which we also use for the release packages.
 2) cd agama && cd gui/EasyDEX-GUI/
 3) git checkout electrum && git pull origin electrum
