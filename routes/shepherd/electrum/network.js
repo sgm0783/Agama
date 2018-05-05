@@ -17,19 +17,7 @@ module.exports = (shepherd) => {
         network === 'ZCL' ||
         network === 'zcl' ||
         network === 'BTCZ' ||
-        network === 'btcz' ||
-        network === 'VOT' ||
-        network === 'vot' ||
-        network === 'BTCP' ||
-        network === 'btcp' ||
-        network === 'XZC' ||
-        network === 'xzc' ||
-        network === 'ZEN' ||
-        network === 'zen' ||
-        network === 'SYS' ||
-        network === 'sys' ||
-        network === 'SMART' ||
-        network === 'smart') {
+        network === 'btcz') {
       return true;
     }
   };
@@ -38,33 +26,24 @@ module.exports = (shepherd) => {
     if (network === 'BLK' ||
         network === 'blk' ||
         network === 'DNR' ||
-        network === 'dnr' ||
-        network === 'XWC' ||
-        network === 'xwc') {
+        network === 'dnr') {
       return true;
     }
   };
 
-  shepherd.electrumJSTxDecoder = (rawtx, networkName, network, insight) => {
+  shepherd.electrumJSTxDecoder = (rawtx, networkName, network) => {
     if (shepherd.isZcash(networkName)) {
       return txDecoder.zcash(rawtx, network);
     } else if (shepherd.isPos(networkName)) {
       return txDecoder.pos(rawtx, network);
-    } else if (insight) {
-      console.log('insight decoder');
     } else {
       return txDecoder.default(rawtx, network);
     }
   };
 
   shepherd.getNetworkData = (network) => {
-    let coin = shepherd.findNetworkObj(network) || shepherd.findNetworkObj(network.toUpperCase()) || shepherd.findNetworkObj(network.toLowerCase());
+    const coin = shepherd.findNetworkObj(network) || shepherd.findNetworkObj(network.toUpperCase()) || shepherd.findNetworkObj(network.toLowerCase());
     const coinUC = coin ? coin.toUpperCase() : null;
-
-    if (!coin &&
-        !coinUC) {
-      coin = network.toUpperCase();
-    }
 
     if (coin === 'SUPERNET' ||
         coin === 'REVS' ||
@@ -75,11 +54,8 @@ module.exports = (shepherd) => {
         coin === 'BET' ||
         coin === 'CRYPTO' ||
         coin === 'COQUI' ||
-	coin === 'CHAIN' ||
-        coin === 'GLXT' ||
         coin === 'OOT' ||
         coin === 'HODL' ||
-        coin === 'EQL' ||
         coin === 'SHARK' ||
         coin === 'MSHARK' ||
         coin === 'BOTS' ||
@@ -91,13 +67,14 @@ module.exports = (shepherd) => {
         coin === 'WLC' ||
         coin === 'MNZ' ||
         coin === 'BTCH' ||
+        coin === 'VRSC' ||
+        coin === 'VERUSTEST' ||
         coin === 'KMD' ||
         coin === 'BEER' ||
         coin === 'PIZZA' ||
         coin === 'VOTE2018' ||
         coin === 'NINJA' ||
         coin === 'KOMODO' ||
-        coin === 'BNTN' ||
         coinUC === 'SUPERNET' ||
         coinUC === 'REVS' ||
         coinUC === 'SUPERNET' ||
@@ -107,10 +84,7 @@ module.exports = (shepherd) => {
         coinUC === 'BET' ||
         coinUC === 'CRYPTO' ||
         coinUC === 'COQUI' ||
-	coinUC === 'CHAIN' ||
-        coinUC === 'GLXT' ||
         coinUC === 'OOT' ||
-        coinUC === 'EQL' ||
         coinUC === 'HODL' ||
         coinUC === 'SHARK' ||
         coinUC === 'MSHARK' ||
@@ -123,13 +97,14 @@ module.exports = (shepherd) => {
         coinUC === 'WLC' ||
         coinUC === 'MNZ' ||
         coinUC === 'BTCH' ||
+        coinUC === 'VRSC' ||
+        coinUC === 'VERUSTEST' ||
         coinUC === 'BEER' ||
         coinUC === 'PIZZA' ||
         coinUC === 'VOTE2018' ||
         coinUC === 'NINJA' ||
         coinUC === 'KMD' ||
-        coinUC === 'KOMODO' ||
-        coinUC === 'BNTN') {
+        coinUC === 'KOMODO') {
       return shepherd.electrumJSNetworks.komodo;
     } else {
       return shepherd.electrumJSNetworks[network];
@@ -189,7 +164,7 @@ module.exports = (shepherd) => {
       };
 
       for (let key in shepherd.electrumServers) {
-        if (shepherd.electrumServers[key].abbr === req.query.coin) {
+        if (shepherd.electrumServers[key].abbr === req.query.coin) { // a bit risky
           shepherd.electrumServers[key].address = req.query.address;
           shepherd.electrumServers[key].port = req.query.port;
           break;

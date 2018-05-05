@@ -1,8 +1,3 @@
-const path = require('path');
-const os = require('os');
-const fs = require('fs-extra');
-const remoteFileSize = require('remote-file-size');
-
 const remoteBinLocation = {
   win32: 'https://artifacts.supernet.org/latest/windows/',
   darwin: 'https://artifacts.supernet.org/latest/osx/',
@@ -36,8 +31,8 @@ const latestBins = {
     'libstdc++.6.dylib', // encode %2B
   ],
   linux: [
-    'komodo-cli',
-    'komodod',
+    //'komodo-cli',
+    //'komodod',
   ],
 };
 
@@ -52,7 +47,7 @@ module.exports = (shepherd) => {
    // TODO: promises
   shepherd.get('/update/bins/check', (req, res, next) => {
     if (shepherd.checkToken(req.query.token)) {
-      const rootLocation = path.join(__dirname, '../../');
+      const rootLocation = shepherd.path.join(__dirname, '../../');
       const successObj = {
         msg: 'success',
         result: 'bins',
@@ -60,7 +55,7 @@ module.exports = (shepherd) => {
 
       res.end(JSON.stringify(successObj));
 
-      const _os = os.platform();
+      const _os = shepherd.os.platform();
       shepherd.log(`checking bins: ${_os}`);
 
       shepherd.io.emit('patch', {
@@ -72,8 +67,8 @@ module.exports = (shepherd) => {
       });
       // get list of bins/dlls that can be updated to the latest
       for (let i = 0; i < latestBins[_os].length; i++) {
-        remoteFileSize(remoteBinLocation[_os] + latestBins[_os][i], (err, remoteBinSize) => {
-          const localBinSize = fs.statSync(rootLocation + localBinLocation[_os] + latestBins[_os][i]).size;
+        shepherd.remoteFileSize(remoteBinLocation[_os] + latestBins[_os][i], (err, remoteBinSize) => {
+          const localBinSize = shepherd.fs.statSync(rootLocation + localBinLocation[_os] + latestBins[_os][i]).size;
 
           shepherd.log('remote url: ' + (remoteBinLocation[_os] + latestBins[_os][i]) + ' (' + remoteBinSize + ')');
           shepherd.log('local file: ' + (rootLocation + localBinLocation[_os] + latestBins[_os][i]) + ' (' + localBinSize + ')');
@@ -115,8 +110,8 @@ module.exports = (shepherd) => {
    */
   shepherd.get('/update/bins', (req, res, next) => {
     if (shepherd.checkToken(req.query.token)) {
-      const rootLocation = path.join(__dirname, '../../');
-      const _os = os.platform();
+      const rootLocation = shepherd.path.join(__dirname, '../../');
+      const _os = shepherd.os.platform();
       const successObj = {
         msg: 'success',
         result: {
@@ -150,7 +145,7 @@ module.exports = (shepherd) => {
         })
         .then(() => {
           // verify that remote file is matching to DL'ed file
-          const localBinSize = fs.statSync(`${rootLocation}${localBinLocation[_os]}patch/${binsToUpdate[i].name}`).size;
+          const localBinSize = shepherd.fs.statSync(`${rootLocation}${localBinLocation[_os]}patch/${binsToUpdate[i].name}`).size;
           shepherd.log('compare dl file size');
 
           if (localBinSize === binsToUpdate[i].rSize) {
