@@ -238,7 +238,7 @@ module.exports = (shepherd) => {
                 '-ac_halving=2,5,1440', 
                 '-ac_decay=100000000,0,0',
                 '-ac_end=14,44,0',
-                '-addnode=192.168.0.185',
+                '-addnode=185.25.48.236',
                 '-ac_timelockgte=19200000000',
                 '-ac_timeunlockfrom=720', 
                 '-ac_timeunlockto=1440',
