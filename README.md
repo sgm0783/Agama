@@ -53,7 +53,7 @@ npm run build
 cd ../../..
 sudo npm install electron -g --unsafe-perm=true --allow-root
 sudo apt-get install libgconf-2-4
-sudo apt install webpack
+npm install webpack
 npm install
 ```
 7) At this point you can test things by running the wallet directly from electron:
