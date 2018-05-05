@@ -3,46 +3,38 @@ Desktop App for SuperNET DAPPs
 
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
-node 9.x:
-curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
-sudo apt-get install -y nodejs
 
 Check versions:
 nodejs --version
 v8.9.4
 
-Note that Easy-DEX-GUI is quite sensitive to the node version. 9.x fails for me, and older versions do as well. Make sure you're on 8.9.x. Installing nvm is probably a good idea, especially if you already have ndoe installed but it is not a compatible version.
+Note that Easy-DEX-GUI is quite sensitive to the node version. 9.x fails for me, and older versions do as well. Make sure you're on 8.9.x. Installing nvm is probably a good idea, especially if you already have node installed but it is not a compatible version.
 
 Other essential dependencies:
 sudo apt-get install -y build-essential
 
 1) Clone Agama Desktop App with EasyDEX-GUI submodule
 ```shell
-git clone https://github.com/miketout/agama --recursive --branch pkg_automation_electrum --single-branch
+git clone https://github.com/veruscoin/agama --recursive --branch dev --single-branch
 ```
-with this command you git clone agama - but explicitly just the pkg_automation_electrum branch (therefore --single-branch) which we also use for the release packages.
+with this command you git clone agama - but explicitly just the dev branch (therefore --single-branch) which we also use for the release packages.
 2) Get the binary artfacts into place (linux version)
 ```shell 
 cd agama
 ./binary_artifacts.sh
 ```
+For Mac use ./binary_artifacts_mac.sh.
+Note that we do not use the standard downloadable komodo executables, the version in veruscoin has to be used and the src/komodod and src/komodo-cli build outpyuts have to be manually patched into assets/bin/osx.
 3) install the electron packager and prebuilt - note the ugly unsafe-perm and allow-root stuff for the prebuilt electron.
 ```shell
 sudo npm install electron-packager -g
 sudo npm install electron-prebuilt -g --unsafe-perm=true --allow-root
 ```
-4) Get Dave's fork for the new coin support
-```shell
-cd gui/EasyDEX-GUI/
-git remote add dave git@github.com:DavidLDawes/EasyDEX-GUI.git
-git checkout -b prep
-git pull dave prep
-```
-5) get webpack dependencies into place for the react stuff
+4) get webpack dependencies into place for the react stuff
 ```shell
 npm install && npm install webpack webpack-dashboard
 ```
-6) Now get the react stuff installed and running
+5) Now get the react stuff installed and running
 ```shell
 cd react
 npm install
@@ -51,7 +43,7 @@ npm start
 ```
 Brings up the dashboard and loads the react app using localhost:3000
 
-7) start a new shell and go back to the react dir and build things (the EasyDEX-GUI)
+6) start a new shell and go back to the react dir and build things (the EasyDEX-GUI)
 ```shell
 cd agama/gui/EasyDEX-GUI/react
 npm run build
@@ -64,19 +56,19 @@ sudo apt-get install libgconf-2-4
 sudo apt install webpack
 npm install
 ```
-9) At this point you can test things by running the wallet directly from electron:
+7) At this point you can test things by running the wallet directly from electron:
 ```shell
 npm start
 ```
 This is a pretty wrapper around electron. I set the environment to production too.
 
-10) Check that things work. Choose the native Komodo, or once it works better still our Verus coin. Loading will take 10+ hours the first time to get the chain.
+8) Check that things work. Choose the native Komodo, or once it works better still our Verus coin. Loading will take 10+ hours the first time to get the chain.
 
-11) toggle dev and debug options in settings, note the view menu that mentions denugging, that brings up the browser console which is quite useful, allowing variable examination and break points. Code has been squashed so more work is needed to get breakpoints completely useful.
+9) toggle dev and debug options in settings, note the view menu that mentions denugging, that brings up the browser console which is quite useful, allowing variable examination and break points. Code has been squashed so more work is needed to get breakpoints completely useful.
 
-12) sync komodod and/or asset chains - now that the wallet is running if you choose Komodo native (or eventually Verus) it will load the assect chain. It's taking me 16 hours on a local VM to get it loaded the first time. It only takes 10 or 30 minutes to catch up on startup after that if things are going well.
-13) If you modify code under gui/EasyDEX-GUI then you'll need to go to gui/EasyDEX-GUI/react/src and run npm run build again, then relaunch npm start from the agama dir. Changes to agama/routes just require relaunching npm start from the agama dir. If any dependencies change then you'll need to rerunnpm install in the appropriate directory.
-14) Once you have your changes ready and working you can produce the Linux executable image
+10) sync komodod and/or asset chains - now that the wallet is running if you choose Komodo native (or eventually Verus) it will load the assect chain. It's taking me 16 hours on a local VM to get it loaded the first time. It only takes 10 or 30 minutes to catch up on startup after that if things are going well.
+11) If you modify code under gui/EasyDEX-GUI then you'll need to go to gui/EasyDEX-GUI/react/src and run npm run build again, then relaunch npm start from the agama dir. Changes to agama/routes just require relaunching npm start from the agama dir. If any dependencies change then you'll need to rerunnpm install in the appropriate directory.
+12) Once you have your changes ready and working you can produce the Linux executable image
 ### Important dev notes
 
 #### Sockets.io
