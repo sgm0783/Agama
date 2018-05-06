@@ -1,6 +1,9 @@
 # Agama Desktop App
 Desktop App for SuperNET DAPPs
 
+## Alpha 1
+Fixed receive panel, still depends on external service at port 3000.
+
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
 
@@ -68,7 +71,9 @@ This is a pretty wrapper around electron. I set the environment to production to
 11) If you modify code under gui/EasyDEX-GUI then you'll need to go to gui/EasyDEX-GUI/react/src and run npm run build again, then relaunch npm start from the agama dir. Changes to agama/routes just require relaunching npm start from the agama dir. If any dependencies change then you'll need to rerunnpm install in the appropriate directory.
 12) Once you have your changes ready and working you can produce the Linux executable image
 ### Important dev notes
-
+Coin info for Verus is stored in ~/.komodo/VERUS under Ubuntu
+Coin info for Verus is stored under \Users\<username>\AppData\Roaming\Komodo\VERUS for Windows
+Coin info is for Verus is stored under ~/Library/Application\ Support/Komodo/VERUS for Mac
 #### Sockets.io
 In dev mode backend is configured to send/receive messages from/to http://127.0.0.1:3000 address. If you open it as http://localhost:3000 sockets server will reject any messages.
 
