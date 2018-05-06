@@ -28,7 +28,7 @@ Note that we do not use the standard downloadable komodo executables, the versio
 3) install the electron packager and prebuilt - note the ugly unsafe-perm and allow-root stuff for the prebuilt electron.
 ```shell
 sudo npm install electron-packager -g
-sudo npm install electron-prebuilt -g --unsafe-perm=true --allow-root
+npm install electron-prebuilt -g --unsafe-perm=true
 ```
 4) get webpack dependencies into place for the react stuff
 ```shell
