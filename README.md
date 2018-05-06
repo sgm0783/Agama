@@ -51,9 +51,7 @@ npm run build
 8) Get the top level stuff set, after the cd you should be in the root agama dir. We also need electron, again with the nasty souding unsafe-perm and allow-root options, otherwise electron post install steps fail. Similarly, we need to get libgconf and webpack too.
 ```shell
 cd ../../..
-sudo npm install electron -g --unsafe-perm=true --allow-root
-sudo apt-get install libgconf-2-4
-sudo apt install webpack
+npm install webpack
 npm install
 ```
 7) At this point you can test things by running the wallet directly from electron:
