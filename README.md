@@ -44,7 +44,7 @@ npm install
 cd src
 npm start
 ```
-Brings up the dashboard and loads the react app using localhost:3000
+Brings up the dashboard and loads the react service using localhost:3000
 
 6) start a new shell and go back to the react dir and build things (the EasyDEX-GUI)
 ```shell
@@ -63,9 +63,10 @@ npm start
 ```
 This is a pretty wrapper around electron. I set the environment to production too.
 
-8) Check that things work. Choose the native Komodo, or once it works better still our Verus coin. Loading will take 10+ hours the first time to get the chain.
+8) Check that things work. Choose the Verus coin for a fast check. Check Komodo and BTCH at the same time as well. Note that loading Komodo the first time can take 10+ hours the first time to get the chain.
 
-9) toggle dev and debug options in settings, note the view menu that mentions denugging, that brings up the browser console which is quite useful, allowing variable examination and break points. Code has been squashed so more work is needed to get breakpoints completely useful.
+9) toggle dev and debug options in settings, this will switch thr Agama wallet to using the dev version of the React service that we just launched at port 3000. Once you set this the Agama wallet will not run without the service manaully started at port 3000 via npm start in the agama/gui/EasyDEX-GUI/react/src directory. To test a production version, turn dev back off, then exit theAgama wallet, then bring the react service down ("q" causes it to quit). Finally restart the Agama app without the dev service and it works normally.
+Note the View menu Toggle Developers Tools option. Enabling that brings up the browser console which is useful. Variable examination and break points, console for the error log, and the ability to track network interactions are all useful. Code has been squashed so more work is needed to get breakpoints completely useful.
 
 10) sync komodod and/or asset chains - now that the wallet is running if you choose Komodo native (or eventually Verus) it will load the assect chain. It's taking me 16 hours on a local VM to get it loaded the first time. It only takes 10 or 30 minutes to catch up on startup after that if things are going well.
 11) If you modify code under gui/EasyDEX-GUI then you'll need to go to gui/EasyDEX-GUI/react/src and run npm run build again, then relaunch npm start from the agama dir. Changes to agama/routes just require relaunching npm start from the agama dir. If any dependencies change then you'll need to rerunnpm install in the appropriate directory.
@@ -75,7 +76,7 @@ Coin info for Verus is stored in ~/.komodo/VERUS under Ubuntu
 Coin info for Verus is stored under \Users\<username>\AppData\Roaming\Komodo\VERUS for Windows
 Coin info is for Verus is stored under ~/Library/Application\ Support/Komodo/VERUS for Mac
 #### Sockets.io
-In dev mode backend is configured to send/receive messages from/to http://127.0.0.1:3000 address. If you open it as http://localhost:3000 sockets server will reject any messages.
+In dev mode backend is configured to send/receive messages from/to http://127.0.0.1:3000 address. If you open it as http://localhost:3000 sockets server will reject any messages. In non dev mode the service is launched internally and everything operates normally.
 
 #### **Build the Wallet-App**
 Refer to the original [electron-packager](https://github.com/electron-userland/electron-packager) repository for more detailed information.
