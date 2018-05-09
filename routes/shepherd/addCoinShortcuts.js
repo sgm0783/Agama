@@ -229,6 +229,7 @@ module.exports = (shepherd) => {
             'ac_name': 'VERUSTEST',
             'ac_options': [
                 '-ac_algo=verushash',
+                '-ac_cc=1',
                 '-ac_supply=0',
                 '-ac_eras=3',
                 '-ac_reward=0,38400000000,2400000000',
