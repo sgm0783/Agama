@@ -47,7 +47,6 @@ module.exports = (shepherd) => {
 
     if (coin === 'SUPERNET' ||
         coin === 'REVS' ||
-        coin === 'SUPERNET' ||
         coin === 'PANGEA' ||
         coin === 'DEX' ||
         coin === 'JUMBLR' ||
@@ -67,8 +66,6 @@ module.exports = (shepherd) => {
         coin === 'WLC' ||
         coin === 'MNZ' ||
         coin === 'BTCH' ||
-        coin === 'VRSC' ||
-        coin === 'VERUSTEST' ||
         coin === 'KMD' ||
         coin === 'BEER' ||
         coin === 'PIZZA' ||
@@ -77,7 +74,6 @@ module.exports = (shepherd) => {
         coin === 'KOMODO' ||
         coinUC === 'SUPERNET' ||
         coinUC === 'REVS' ||
-        coinUC === 'SUPERNET' ||
         coinUC === 'PANGEA' ||
         coinUC === 'DEX' ||
         coinUC === 'JUMBLR' ||
@@ -97,8 +93,6 @@ module.exports = (shepherd) => {
         coinUC === 'WLC' ||
         coinUC === 'MNZ' ||
         coinUC === 'BTCH' ||
-        coinUC === 'VRSC' ||
-        coinUC === 'VERUSTEST' ||
         coinUC === 'BEER' ||
         coinUC === 'PIZZA' ||
         coinUC === 'VOTE2018' ||
