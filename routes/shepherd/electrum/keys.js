@@ -129,19 +129,23 @@ module.exports = (shepherd) => {
 
   shepherd.addressVersionCheck = (network, address) => {
     const _network = shepherd.getNetworkData(network.toLowerCase());
-
-    try {
-      const _b58check = shepherd.isZcash(network.toLowerCase()) ? bitcoinZcash.address.fromBase58Check(address) : bitcoin.address.fromBase58Check(address);
-
-      if (_b58check.version === _network.pubKeyHash ||
-          _b58check.version === _network.scriptHash) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      return 'Invalid pub address';
+    if (network === 'VERUSTEST' || network === 'VRSC'){
+      return true;
     }
+    else {
+      try {
+        const _b58check = shepherd.isZcash(network.toLowerCase()) ? bitcoinZcash.address.fromBase58Check(address) : bitcoin.address.fromBase58Check(address);
+
+        if (_b58check.version === _network.pubKeyHash ||
+            _b58check.version === _network.scriptHash) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return 'Invalid pub address';
+      }
+  }
   };
 
   shepherd.get('/electrum/keys/validateaddress', (req, res, next) => {
