@@ -231,15 +231,16 @@ module.exports = (shepherd) => {
                 '-ac_algo=verushash',
                 '-ac_cc=1',
                 '-ac_supply=0',
+                '-ac_veruspos=50',
                 '-ac_eras=3',
                 '-ac_reward=0,38400000000,2400000000',
-                '-ac_halving=1,60,1440',
+                '-ac_halving=1,60,2880',
                 '-ac_decay=100000000,0,0',
                 '-ac_end=56,356,0',
                 '-addnode=185.25.48.236',
                 '-ac_timelockgte=19200000000',
                 '-ac_timeunlockfrom=200',
-                '-ac_timeunlockto=1600',
+                '-ac_timeunlockto=1000',
                 '-gen',
                 '-genproclimit=4'
             ]
