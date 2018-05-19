@@ -21,6 +21,13 @@ sudo apt-get install -y build-essential
 git clone https://github.com/veruscoin/agama --recursive --branch dev --single-branch
 ```
 with this command you git clone agama - but explicitly just the dev branch (therefore --single-branch) which we also use for the release packages.
+It also gets the wrong sub-project stuff, so fix that next:
+```shell
+cd gui\EasyDEX-GUI
+git remote add org https://github.com/VerusCoin/EasyDEX-GUI.git
+git checkout dev
+git pull org dev
+```
 2) Get the binary artfacts into place (linux version)
 ```shell 
 cd agama
@@ -35,7 +42,7 @@ npm install electron-prebuilt -g --unsafe-perm=true
 ```
 4) get webpack dependencies into place for the react stuff
 ```shell
-npm install && npm install webpack webpack-dashboard
+npm install
 ```
 5) Now get the react stuff installed and running
 ```shell

@@ -189,7 +189,7 @@ module.exports = (shepherd) => {
           //resolve(body);
         }
       });
-    } else if (selection === 'VERS') {
+    } else if (selection === 'VRSC') {
         const herdData = {
             'ac_name': 'VRSC',
             'ac_options': [

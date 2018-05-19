@@ -58,7 +58,8 @@
     "sha256": "^0.2.0",
     "socket.io": "^1.7.3",
     "tx-decoder": "^0.2.1",
-    "webpack": "^4.7.0",
+    "webpack": "^4.8.3",
+    "webpack-dashboard": "^1.1.1",
     "wif": "^2.0.6"
   }
 }
