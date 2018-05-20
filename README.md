@@ -1,8 +1,5 @@
 # Agama Desktop App
-Desktop App for SuperNET DAPPs
-
-## Alpha 1
-Fixed receive panel, still depends on external service at port 3000.
+Desktop Wallet App
 
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
@@ -11,7 +8,7 @@ Check versions:
 nodejs --version
 v8.9.4
 
-Note that Easy-DEX-GUI is quite sensitive to the node version. 9.x fails for me, and older versions do as well. Make sure you're on 8.9.x. Installing nvm is probably a good idea, especially if you already have node installed but it is not a compatible version.
+Easy-DEX-GUI is quite sensitive to the node version. 9.x fails for me, and older versions do as well. Make sure you're on 8.9.x. Installing nvm is probably a good idea, especially if you already have node installed but it is not a compatible version.
 
 Other essential dependencies:
 sudo apt-get install -y build-essential
@@ -125,4 +122,3 @@ electron-installer-debian
 electron-installer-redhat
 
 refer to ./make-deb.js and ./make-rpm.js
-
