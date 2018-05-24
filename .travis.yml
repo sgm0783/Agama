@@ -4,7 +4,17 @@ dist: xenial
 language: node_js
 node_js:
 - lts/*
-
+env:
+  global:
+  - BUILD_VERSION=0.04
+  - CCACHE_SIZE=100M
+  - CCACHE_TEMPDIR=/tmp/.ccache-temp
+  - CCACHE_COMPRESS=1
+cache:
+  apt: true
+  directories:
+  - "$HOME/google-cloud-sdk/"
+  - "$HOME/.ccache"
 matrix:
   fast_finish: true
   include:
@@ -19,11 +29,6 @@ before_install:
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
 
 install:
-- gcloud version || true
-- if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export
-  CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
-- gcloud version
-- source /home/travis/google-cloud-sdk/path.bash.inc
 - echo $GCLOUD_KEY > ./GC-Auth.json
 - gcloud auth activate-service-account --key-file GC-Auth.json
 - if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
