@@ -4,17 +4,7 @@ dist: xenial
 language: node_js
 node_js:
 - lts/*
-env:
-  global:
-  - BUILD_VERSION=0.04
-  - CCACHE_SIZE=100M
-  - CCACHE_TEMPDIR=/tmp/.ccache-temp
-  - CCACHE_COMPRESS=1
-cache:
-  apt: true
-  directories:
-  - "$HOME/google-cloud-sdk/"
-  - "$HOME/.ccache"
+
 matrix:
   fast_finish: true
   include:
