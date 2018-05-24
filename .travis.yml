@@ -29,7 +29,7 @@ before_install:
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
 
 install:
-- echo $GCLOUD_KEY > ./GC-Auth.json
+- echo $AUTH_KEY > ./GC-Auth.json
 - gcloud auth activate-service-account --key-file GC-Auth.json
 - if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
