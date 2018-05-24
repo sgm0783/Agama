@@ -29,8 +29,7 @@ before_install:
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
 
 install:
-- echo $AUTH_KEY > ./GC-Auth.json
-- gcloud auth activate-service-account --key-file GC-Auth.json
+- gcloud auth activate-service-account --key-file AUTH_KEY.json
 - if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
 - if [ -n "$PACKAGES" ]; then sudo dpkg --add-architecture i386 && wget -nc https://dl.winehq.org/wine-builds/Release.key;
