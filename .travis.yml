@@ -46,7 +46,7 @@ install:
 - cd ../../.. && yarn add webpack
 - gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$KOMODO_VARIANT/Komodo-build.tar.gz .
 - tar -xzvf Komodo-build.tar.gz
-- cp -rvf komodo-build/* assets/bin/$ASSETS_DIR
+- cp -rvf Komodo-build/* assets/bin/$ASSETS_DIR
 - yarn install
 script:
 - electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
