@@ -54,7 +54,7 @@ script:
   --buildVersion=$BUILD_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
   --overwrite
 after_script:
-- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gsutil -m -o cp $BUILD_DIR gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/$TARGET_PLATFORM/; fi
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gsutil cp -m -o $BUILD_DIR gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/$TARGET_PLATFORM/; fi
 notifications:
   slack:
     secure: Fk0YtlRYTZVYOri1yR1F2WwPmqDMIgLm7VhlI6+3X0eNzj4fEzcAgE0hBulsep5S4wAMpk4Cdk3ryVhMkeXuUq2fVtERZGlyDSp3m5HQjOcg51GtiJrZ0Udh1yebj13T8Kpg9ro2cXh+dPKy9Nyqjqk+faZnP8JyapD/R1NYUA1zhQw+uC0rbLEr43GQi3wkVYmVZqbmIR2MfZGTqAJK+6lUraFJfSJXOqPGhEyM+L4W1uBMkd7+IeV4gquqcd00V8Vj20y98M27H7DM87sdYkg5Nunr6V2MpT4IVVd8bFIVdQf8jWtCK2n0B3w8U7Z+Elwx4aUQFFystxdfXF7Kr4m+yyXI0UqO4N2+OsKSfQfOptw5JGKtpYmrUz/Psuu6i6RSWpp+YSXbhAGfLuy8m8HKyurSgDxr/gGZ+A2hQLQ8g7hsiHtNayS6iae383Ao9HqAMKeGgpn5VDqBAqSpuhnOW7mQfa6SmbpcPrL9jBXk6NF6fWL9Wi5S/w9cqMzLO/7rA7V0HtdSMVFFNr0Q94e3/G3yE34/25oQC7FRmrXr/su3vddwnVEDhhnohUK8nxK0iKie0nEDgMHEORvA0i3nk0PSb1t3VK7SRFgbL0H6qziyu/A5JOtqRmKjHOhGiHOjwHkXYdPTEF8WUnk630rMPSITxRbHOv7NYXz/4gM=
