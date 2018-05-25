@@ -41,9 +41,9 @@ install:
 - if [ -n "$PACKAGES" ]; then travis_retry sudo apt-get update && sudo apt-get -y
   install --install-recommends -qq $PACKAGES; fi
 - "./binary_artifacts.sh"
-- yarn add electron-packager -g && yarn add electron -g --unsafe-perm=true
-- cd gui/EasyDEX-GUI && yarn install && yarn add webpack webpack-dashboard
-- cd react && yarn install && yarn run build
+- sudo npm install electron-packager -g &&  npm install electron -g --unsafe-perm=true
+- cd gui/EasyDEX-GUI && npm install &&  npm install webpack webpack-dashboard
+- cd react &&  npm install && npm run build
 - cd ../../.. && yarn add webpack
 - gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$KOMODO_VARIANT/Komodo-build.tar.gz .
 - tar -xzvf Komodo-build.tar.gz
