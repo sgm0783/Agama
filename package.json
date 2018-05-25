@@ -24,7 +24,7 @@
   "author": "SuperNET Team",
   "license": "MIT",
   "devDependencies": {
-    "electron": "1.8.3"
+    "electron": "2.0.2"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -60,6 +60,7 @@
     "socket.io": "^1.7.3",
     "tx-decoder": "^0.2.1",
     "webpack": "^4.8.3",
+    "ck-dashboard": "^1.1.1",
     "webpack-dashboard": "^2.0.0",
     "wif": "^2.0.6"
   }
