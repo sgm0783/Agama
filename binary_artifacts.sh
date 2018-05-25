@@ -39,12 +39,17 @@ echo =========================================
 echo Step: Moving Windows binaries from artifacts to assets/bin/win64/
 #echo
 rm assets/artifacts.supernet.org/latest/windows/iguana
+rm assets/artifacts.supernet.org/latest/windows/komodod.exe
+rm assets/artifacts.supernet.org/latest/windows/komodo-cli.exe
+rm assets/artifacts.supernet.org/latest/windows/komodo-tx.exe
 mv assets/artifacts.supernet.org/latest/windows assets/bin/win64
 echo
 echo =========================================
 echo Step: Permissions +x for linux64 binaries from artifacts to assets/bin/linux64
 echo
 rm assets/artifacts.supernet.org/latest/linux/iguana
+rm assets/artifacts.supernet.org/latest/linux/komodod
+rm assets/artifacts.supernet.org/latest/linux/komodo-cli
 chmod +x assets/artifacts.supernet.org/latest/linux/komodo*
 echo Moving Linux bins to assets/bin
 mv assets/artifacts.supernet.org/latest/linux assets/bin/linux64/
