@@ -24,7 +24,7 @@
   "author": "SuperNET Team",
   "license": "MIT",
   "devDependencies": {
-    "electron": "1.8.3"
+    "electron": "2.0.2"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
