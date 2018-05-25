@@ -18,6 +18,13 @@ sudo apt-get install -y build-essential
 git clone https://github.com/veruscoin/agama --recursive --branch dev --single-branch
 ```
 with this command you git clone agama - but explicitly just the dev branch (therefore --single-branch) which we also use for the release packages.
+It also gets the wrong sub-project stuff, so fix that next:
+```shell
+cd gui\EasyDEX-GUI
+git remote add org https://github.com/VerusCoin/EasyDEX-GUI.git
+git checkout dev
+git pull org dev
+```
 2) Get the binary artfacts into place (linux version)
 ```shell 
 cd agama
@@ -32,7 +39,7 @@ npm install electron-prebuilt -g --unsafe-perm=true
 ```
 4) get webpack dependencies into place for the react stuff
 ```shell
-npm install && npm install webpack webpack-dashboard
+npm install
 ```
 5) Now get the react stuff installed and running
 ```shell
@@ -69,9 +76,9 @@ Note the View menu Toggle Developers Tools option. Enabling that brings up the b
 11) If you modify code under gui/EasyDEX-GUI then you'll need to go to gui/EasyDEX-GUI/react/src and run npm run build again, then relaunch npm start from the agama dir. Changes to agama/routes just require relaunching npm start from the agama dir. If any dependencies change then you'll need to rerunnpm install in the appropriate directory.
 12) Once you have your changes ready and working you can produce the Linux executable image
 ### Important dev notes
-Coin info for Verus is stored in ~/.komodo/VERUS under Ubuntu
-Coin info for Verus is stored under \Users\<username>\AppData\Roaming\Komodo\VERUS for Windows
-Coin info is for Verus is stored under ~/Library/Application\ Support/Komodo/VERUS for Mac
+Coin info for Verus is stored in ~/.komodo/VRSC under Ubuntu
+Coin info for Verus is stored under \Users\<username>\AppData\Roaming\Komodo\VRSC for Windows
+Coin info is for Verus is stored under ~/Library/Application\ Support/Komodo/VRSC for Mac
 #### Sockets.io
 In dev mode backend is configured to send/receive messages from/to http://127.0.0.1:3000 address. If you open it as http://localhost:3000 sockets server will reject any messages. In non dev mode the service is launched internally and everything operates normally.
 
