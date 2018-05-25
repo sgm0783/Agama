@@ -48,7 +48,7 @@ install:
 - gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$KOMODO_VARIANT/Komodo-build.tar.gz .
 - tar -xzvf Komodo-build.tar.gz
 - cp -rvf Komodo-build/* assets/bin/$ASSETS_DIR
-- yarn install
+- npm install
 script:
 - electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
   --buildVersion=$BUILD_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
