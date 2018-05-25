@@ -190,7 +190,88 @@ module.exports = (shepherd) => {
           //resolve(body);
         }
       });
-    } else {
+    } else if (selection === 'VERS') {
+      // TODO: The usual fixing of IP etc. for Verus
+        const herdData = {
+            'ac_name': 'VRSC',
+            'ac_options': [
+                '-daemon=0',
+                '-server',
+                '-ac_name=VRSC',
+                '-addnode=78.47.196.146',
+                '-ac_supply=100000000'
+            ]
+        };
+
+        const options = {
+            url: `http://127.0.0.1:${shepherd.appConfig.agamaPort}/shepherd/herd`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                herd: 'komodod',
+                options: herdData,
+                token: shepherd.appSessionHash,
+            }),
+        };
+
+        shepherd.request(options, (error, response, body) => {
+            if (response &&
+                response.statusCode &&
+                response.statusCode === 200) {
+                //resolve(body);
+            } else {
+                //resolve(body);
+            }
+        });
+    }  else if (selection === 'VERUSTEST') {
+        const herdData = {
+            'ac_name': 'VERUSTEST',
+            'ac_options': [
+                '-ac_algo=verushash',
+                '-ac_cc=1',
+                '-ac_supply=0',
+                '-ac_veruspos=50',
+                '-ac_eras=3',
+                '-ac_reward=0,38400000000,2400000000',
+                '-ac_halving=1,60,2880',
+                '-ac_decay=100000000,0,0',
+                '-ac_end=56,356,0',
+                '-addnode=185.25.48.236',
+                '-addnode=185.64.105.111',
+                '-ac_timelockgte=19200000000',
+                '-ac_timeunlockfrom=200',
+                '-ac_timeunlockto=1000',
+                '-gen',
+                '-genproclimit=4'
+            ]
+        };
+
+        const options = {
+            url: `http://127.0.0.1:${shepherd.appConfig.agamaPort}/shepherd/herd`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                herd: 'komodod',
+                options: herdData,
+                token: shepherd.appSessionHash,
+            }),
+        };
+
+        shepherd.request(options, (error, response, body) => {
+            if (response &&
+                response.statusCode &&
+                response.statusCode === 200) {
+                //resolve(body);
+            } else {
+                //resolve(body);
+            }
+        });
+}
+    else {
       const herdData = [{
         'ac_name': 'komodod',
         'ac_options': [

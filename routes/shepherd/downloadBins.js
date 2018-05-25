@@ -31,8 +31,8 @@ const latestBins = {
     'libstdc++.6.dylib', // encode %2B
   ],
   linux: [
-    'komodo-cli',
-    'komodod',
+    //'komodo-cli',
+    //'komodod',
   ],
 };
 

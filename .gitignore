@@ -52,3 +52,6 @@ coins
 
 # Electron-builder related folders
 build
+
+# Idea (IntelliJ) stuff
+.idea

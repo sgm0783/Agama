@@ -21,6 +21,7 @@ module.exports = (shepherd) => {
   shepherd.seedToWif = (seed, network, iguana) => {
     let bytes;
 
+    // legacy seed edge case
     if (process.argv.indexOf('spvold=true') > -1) {
       bytes = buggySha256(seed, { asBytes: true });
     } else {
@@ -39,6 +40,7 @@ module.exports = (shepherd) => {
     const keys = {
       pub: keyPair.getAddress(),
       priv: keyPair.toWIF(),
+      pubHex: keyPair.getPublicKeyBuffer().toString('hex'),
     };
 
     /*shepherd.log(`seed: ${seed}`, true);
@@ -56,28 +58,6 @@ module.exports = (shepherd) => {
         priv: key.toWIF(),
         pub: key.getAddress(),
       };
-
-      const successObj = {
-        msg: 'success',
-        result: {
-          keys,
-        },
-      };
-
-      res.end(JSON.stringify(successObj));
-    } else {
-      const errorObj = {
-        msg: 'error',
-        result: 'unauthorized access',
-      };
-
-      res.end(JSON.stringify(errorObj));
-    }
-  });
-
-  shepherd.post('/electrum/seedtowif', (req, res, next) => {
-    if (shepherd.checkToken(req.body.token)) {
-      let keys = shepherd.seedToWif(req.body.seed, req.body.network.toLowerCase(), req.body.iguana);
 
       const successObj = {
         msg: 'success',
@@ -142,26 +122,40 @@ module.exports = (shepherd) => {
       } else {
         return 'Unable to find matching coin version';
       }
-    } catch(e) {
+    } catch (e) {
       return 'Invalid pub address';
     }
   };
 
   shepherd.addressVersionCheck = (network, address) => {
     const _network = shepherd.getNetworkData(network.toLowerCase());
-
-    try {
-      const _b58check = shepherd.isZcash(network.toLowerCase()) ? bitcoinZcash.address.fromBase58Check(address) : bitcoin.address.fromBase58Check(address);
-
-      if (_b58check.version === _network.pubKeyHash) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch(e) {
-      return 'Invalid pub address';
+    if (network === 'VERUSTEST' || network === 'VRSC'){
+      return true;
     }
+    else {
+      try {
+        const _b58check = shepherd.isZcash(network.toLowerCase()) ? bitcoinZcash.address.fromBase58Check(address) : bitcoin.address.fromBase58Check(address);
+
+        if (_b58check.version === _network.pubKeyHash ||
+            _b58check.version === _network.scriptHash) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return 'Invalid pub address';
+      }
+  }
   };
+
+  shepherd.get('/electrum/keys/validateaddress', (req, res, next) => {
+    const successObj = {
+      msg: 'success',
+      result: shepherd.addressVersionCheck(req.query.network, req.query.address),
+    };
+
+    res.end(JSON.stringify(successObj));
+  });
 
   shepherd.post('/electrum/keys', (req, res, next) => {
     if (shepherd.checkToken(req.body.token)) {

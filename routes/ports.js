@@ -2,6 +2,7 @@
 
 const assetChainPorts = {
   'komodod': '7771',
+  'VERUSTEST': '40742',
   'markermaker': '7783',
   'OOT': '12467',
   'PIZZA': '11608',
@@ -21,6 +22,8 @@ const assetChainPorts = {
   'BOTS': '11964',
   'MGW': '12386',
   'COQUI': '14276',
+  'CHAIN': '15587',
+  'GLXT': '15723',
   'MVP': '11676',
   'KV': '8299',
   'CEAL': '11116',
@@ -30,6 +33,8 @@ const assetChainPorts = {
   'VOTE2018': '15488',
   'NINJA': '8427',
   'BTCH': '8800',
+  'BNTN': '14358',
+  'EQL': '10306',
 };
 
 module.exports = assetChainPorts;

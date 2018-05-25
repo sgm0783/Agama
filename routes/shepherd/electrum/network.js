@@ -10,6 +10,8 @@ module.exports = (shepherd) => {
         network === 'zec' ||
         network === 'zcash' ||
         network === 'ZCASH' ||
+        network === 'sng' ||
+        network === 'SNG' ||
         network === 'HUSH' ||
         network === 'hush' ||
         network === 'ZCL' ||
@@ -45,7 +47,6 @@ module.exports = (shepherd) => {
 
     if (coin === 'SUPERNET' ||
         coin === 'REVS' ||
-        coin === 'SUPERNET' ||
         coin === 'PANGEA' ||
         coin === 'DEX' ||
         coin === 'JUMBLR' ||
@@ -73,7 +74,6 @@ module.exports = (shepherd) => {
         coin === 'KOMODO' ||
         coinUC === 'SUPERNET' ||
         coinUC === 'REVS' ||
-        coinUC === 'SUPERNET' ||
         coinUC === 'PANGEA' ||
         coinUC === 'DEX' ||
         coinUC === 'JUMBLR' ||

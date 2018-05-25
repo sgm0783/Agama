@@ -53,8 +53,8 @@ echo =========================================
 echo Step: Moving linux64 binaries from artifacts to assets/bin/linux64
 echo 
 mv -fv build/artifacts.supernet.org/latest/linux/iguana assets/bin/linux64/
-mv -fv build/artifacts.supernet.org/latest/linux/komodo-cli assets/bin/linux64/
-mv -fv build/artifacts.supernet.org/latest/linux/komodod assets/bin/linux64/
+#mv -fv build/artifacts.supernet.org/latest/linux/komodo-cli assets/bin/linux64/
+#mv -fv build/artifacts.supernet.org/latest/linux/komodod assets/bin/linux64/
 echo 
 echo =========================================
 echo Step: Cleaning artifacts data
