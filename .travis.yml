@@ -28,6 +28,13 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_a41fbd06a4b9_key -iv $encrypted_a41fbd06a4b9_iv
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
 - git submodule update --init --recursive
+- npm install
+- gcloud auth activate-service-account --key-file AUTH_KEY.json
+- rm AUTH_KEY.json && rm AUTH_KEY.json.enc
+- mkdir -p assets/bin/$ASSETS_DIR
+- gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz .
+- tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
+- cp -rvf $BUILD_VARIANT/* assets/bin/$ASSETS_DIR
 install:
 - if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
@@ -38,17 +45,10 @@ install:
   fi
 - if [ -n "$PACKAGES" ]; then travis_retry sudo apt-get update && sudo apt-get -y
   install --install-recommends -qq $PACKAGES; fi
-- gcloud auth activate-service-account --key-file AUTH_KEY.json
-- rm AUTH_KEY.json && rm AUTH_KEY.json.enc
-- mkdir -p assets/bin/$ASSETS_DIR
-- gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz .
-- tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
-- cp -rvf $BUILD_VARIANT/* assets/bin/$ASSETS_DIR
-- npm install
 - cd gui/EasyDEX-GUI && npm install && npm install webpack webpack-dashboard
-- cd react && npm install && npm run build
+- cd react && npm install && npm run build && cd ../../.. && npm install
 script:
-- cd ../../.. && npm install && electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
+- electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
   --buildVersion=$BUILD_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
   --overwrite
 after_script:
