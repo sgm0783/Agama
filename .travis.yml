@@ -34,7 +34,7 @@ before_install:
 - gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz .
 - tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
 - cp -rvf $BUILD_VARIANT/* assets/bin/$ASSETS_DIR
-- cd gui/EasyDEX-GUI/react && gsutil cp gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/build.tar.gz .
+- cd gui/EasyDEX-GUI/react && gsutil cp gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz .
 - tar -xzvf build.tar.gz && rm build.tar.gz
 - cd ../../..
 install:
