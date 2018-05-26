@@ -27,6 +27,7 @@ matrix:
 before_install:
 - openssl aes-256-cbc -K $encrypted_a41fbd06a4b9_key -iv $encrypted_a41fbd06a4b9_iv
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
+- git submodule update --init --recursive
 install:
 - if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
@@ -43,17 +44,16 @@ install:
 - gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz .
 - tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
 - cp -rvf $BUILD_VARIANT/* assets/bin/$ASSETS_DIR
-- cd gui/EasyDEX-GUI
-- npm install && npm install webpack webpack-dashboard
+- npm install
+- cd gui/EasyDEX-GUI && npm install && npm install webpack webpack-dashboard
 - cd react && npm install && npm run build
-- cd ../../.. && npm install electron-packager -g && npm install electron -g --unsafe-perm=true
-- npm install webpack && npm install
+- npm install electron-packager -g && npm install electron -g --unsafe-perm=true && npm install webpack && npm install
 script:
-- electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
+- cd ../../.. && electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
   --buildVersion=$BUILD_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
   --overwrite
 after_script:
-- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czvf $BUILD_DIR.tar.gz $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czf $BUILD_DIR.tar.gz $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
   fi
 notifications:
   slack:
