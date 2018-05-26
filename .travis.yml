@@ -46,7 +46,7 @@ install:
 - cd gui/EasyDEX-GUI
 - npm install && npm install webpack webpack-dashboard
 - cd react && npm install && npm run build
-- npm install electron-packager -g && npm install electron -g --unsafe-perm=true
+- cd ../../.. && npm install electron-packager -g && npm install electron -g --unsafe-perm=true
 - npm install webpack && npm install
 script:
 - electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
