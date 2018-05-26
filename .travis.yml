@@ -43,6 +43,7 @@ install:
 - gsutil cp gs://$BUCKET/$ARTIFACTS/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz .
 - tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
 - cp -rvf $BUILD_VARIANT/* assets/bin/$ASSETS_DIR
+- cd gui/EasyDEX-GUI
 - npm install && npm install webpack webpack-dashboard
 - cd react && npm install && npm run build
 - npm install electron-packager -g && npm install electron -g --unsafe-perm=true
