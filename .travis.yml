@@ -27,7 +27,6 @@ matrix:
 before_install:
 - openssl aes-256-cbc -K $encrypted_a41fbd06a4b9_key -iv $encrypted_a41fbd06a4b9_iv
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
-
 install:
 - if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
@@ -44,16 +43,17 @@ install:
 - tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
 - cp -rvf $BUILD_VARIANT/* assets/bin/$ASSETS_DIR
 - npm install electron-packager -g &&  npm install electron -g --unsafe-perm=true
-- cd gui/EasyDEX-GUI/react && gsutil cp gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz . || gsutil cp gs://$BUCKET/EasyDEX-GUI/master/build.tar.gz .
-- tar -xzvf build.tar.gz && rm build.tar.gz
-- cd ../../.. && npm install webpack
-- npm install
+- cd gui/EasyDEX-GUI/react && gsutil cp gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz
+  . || gsutil cp gs://$BUCKET/EasyDEX-GUI/master/build.tar.gz .
+- tar -xzvf build.tar.gz && rm build.tar.gz && cd ../../.. && npm install webpack
+  && npm install
 script:
 - electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
   --buildVersion=$BUILD_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
   --overwrite
 after_script:
-if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
+  fi
 notifications:
   slack:
-    secure: Fk0YtlRYTZVYOri1yR1F2WwPmqDMIgLm7VhlI6+3X0eNzj4fEzcAgE0hBulsep5S4wAMpk4Cdk3ryVhMkeXuUq2fVtERZGlyDSp3m5HQjOcg51GtiJrZ0Udh1yebj13T8Kpg9ro2cXh+dPKy9Nyqjqk+faZnP8JyapD/R1NYUA1zhQw+uC0rbLEr43GQi3wkVYmVZqbmIR2MfZGTqAJK+6lUraFJfSJXOqPGhEyM+L4W1uBMkd7+IeV4gquqcd00V8Vj20y98M27H7DM87sdYkg5Nunr6V2MpT4IVVd8bFIVdQf8jWtCK2n0B3w8U7Z+Elwx4aUQFFystxdfXF7Kr4m+yyXI0UqO4N2+OsKSfQfOptw5JGKtpYmrUz/Psuu6i6RSWpp+YSXbhAGfLuy8m8HKyurSgDxr/gGZ+A2hQLQ8g7hsiHtNayS6iae383Ao9HqAMKeGgpn5VDqBAqSpuhnOW7mQfa6SmbpcPrL9jBXk6NF6fWL9Wi5S/w9cqMzLO/7rA7V0HtdSMVFFNr0Q94e3/G3yE34/25oQC7FRmrXr/su3vddwnVEDhhnohUK8nxK0iKie0nEDgMHEORvA0i3nk0PSb1t3VK7SRFgbL0H6qziyu/A5JOtqRmKjHOhGiHOjwHkXYdPTEF8WUnk630rMPSITxRbHOv7NYXz/4gM=
+    secure: EtJmqOQWaSaZaKL8JthAD9xD2ztooM9l5bbtFFYo4DaDI17LcNrsAi6DHJP9qo3VcbKYUgTpQ1X8bIOmV8V3JXPXvKZB8PVRcziDdCYVTlXdaILleQMfLeOEujI5MzwqmOt9RgRLLn436w4UgeXoSdox4lszceCXbZHLNPxspFYpW8BPi/ZQIppyQ3Nk/2B8KXqjzeSzrKs3Ydj24uwoPRlOcdCv77dXAzFU00tX2/vy/23qV0+Ak9b3d7+UbOq8Y7rsrYkQDeyYthV1Kka+IsKW+ed9+bZW/grgvKGf3+eHK5dmIgI3SCVioVcC1EMVLi/84x/my7lTSzcqQOotPNeMLVcuRO0pR6cQq6wQpnHtuoAZ//zG/tQSvdz1XU4HYxU5ahHyK0idHbN23MZaQsT/6TzQ+4oVaoWwDgU52b2KHCJkxMl/6yNU+YUuMf9ypKZTy5YiQfhtYK5Lus0pLyXAVrwkmP/9itgv6ubeM8XwVJ/RvsZt/zxCyQ7J0yO8E3lV/KCbAGdNipek3m+0HRQOFk7Gl3V1DNDUqfVXz151O1Suf4m6aqBX6hFTJ80SRgc7Cc3+JdfueDuhxLBu6c2GBipYWqlaxPml/pvhMMbH0TxtfBY6CtGk+61GfInFAPz2TyCBkgos2uAnUKo5tB2kqgwf2WWC546q3BkqZ5Q=
