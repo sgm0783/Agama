@@ -53,7 +53,7 @@ script:
   --buildVersion=$BUILD_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
   --overwrite
 after_script:
-- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then tar -czv $BUILD_DIR.tar.gz $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
   fi
 notifications:
   slack:
