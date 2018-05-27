@@ -35,7 +35,7 @@ before_install:
 - gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz . || gsutil
   cp gs://$BUCKET/$EXECUTABLES/master/$BUILD_VARIANT.tar.gz .
 - tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
-- if [ "$BUILD_VARIANT" != "linux64" ]; then gsutil cp gs://$BUCKET/$ARTIFACTS/$ARTIFACT_SET.tar.gz
+- if [ "$BUILD_VARIANT" != "linux64" ]; then gsutil cp gs://$BUCKET/$ARTIFACTS/$ARTIFACT_SET.tar.gz .
   && tar -xzvf $ARTIFACT_SET.tar.gz && rm $ARTIFACT_SET.tar.gz && cp -r $ARTIFACT_SET
   $BUILD_VARIANT && rm -rf $ARTIFACT_SET; fi
 - cp -rvf $BUILD_VARIANT/* assets/bin/$BUILD_VARIANT && rm -rf $BUILD_VARIANT
