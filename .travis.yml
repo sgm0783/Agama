@@ -20,7 +20,7 @@ matrix:
   include:
   - env: BUILD_ICONS=assets/icons/agama_icons/128x128.png IGNORE_OS_ASSETS_1=assets/bin/osx
       IGNORE_OS_ASSETS_2=assets/bin/win64 TARGET_PLATFORM=linux BUILD_DIR=Agama-linux-x64
-      ARTIFACT_SET=Linux64 BUILD_VARIANT=Linux64
+      ARTIFACT_SET=Linux64 BUILD_VARIANT=linux64
   - env: BUILD_ICONS=assets/icons/agama_icons/agama_app_icon.ico IGNORE_OS_ASSETS_1=assets/bin/osx
       IGNORE_OS_ASSETS_2=assets/bin/linux64 TARGET_PLATFORM=win32 BUILD_DIR=Agama-win32-x64
       PACKAGES=winehq-devel ARTIFACT_SET=Win64 BUILD_VARIANT=win64
