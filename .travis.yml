@@ -31,7 +31,7 @@ before_install:
   npm install
 - gcloud auth activate-service-account --key-file AUTH_KEY.json
 - rm AUTH_KEY.json && rm AUTH_KEY.json.enc
-- mkdir -p assets/bin/$ASSETS_DIR
+- mkdir -p assets/bin/$BUILD_VARIANT
 - gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$BUILD_VARIANT.tar.gz . || gsutil
   cp gs://$BUCKET/$EXECUTABLES/master/$BUILD_VARIANT.tar.gz .
 - tar -xzvf $BUILD_VARIANT.tar.gz && rm $BUILD_VARIANT.tar.gz
