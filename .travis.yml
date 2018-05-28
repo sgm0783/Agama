@@ -56,9 +56,7 @@ install:
   install --install-recommends -qq $PACKAGES; fi
 - npm install
 script:
-- electron-packager . --platform=$TARGET_PLATFORM --arch=x64 --icon=$BUILD_ICONS --out=build/
-  --buildVersion=$AGAMA_VERSION --ignore=$IGNORE_OS_ASSETS_1 --ignore=$IGNORE_OS_ASSETS_2
-  --overwrite
+ - ./buildscripts/$BUILD_SCRIPT
 after_script:
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
   $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;

@@ -10,7 +10,7 @@ echo "Build script for Agama application for Windows x64 platform."
 echo "Preparing electron package $AGAMA_VERSION"
 
 electron-packager . --platform=win32 \
-  --arch=ia32 \
+  --arch=x64 \
   --icon=assets/icons/agama_app_icon.ico \
   --out=build/ \
   --buildVersion=$AGAMA_VERSION \
