@@ -40,7 +40,7 @@ before_install:
 - if [ "$BUILD_VARIANT" != "linux64" ]; then gsutil cp gs://$BUCKET/$ARTIFACTS/$ARTIFACT_SET.tar.gz .
   && tar -xzvf $ARTIFACT_SET.tar.gz && rm $ARTIFACT_SET.tar.gz && cp -r $ARTIFACT_SET
   $BUILD_VARIANT && rm -rf $ARTIFACT_SET; fi
-- if [ "$BUILD_VARIANT" = "osx"]; then chmod -R +x $BUILD_VARIANT
+- if [ "$BUILD_VARIANT" = "osx"]; then chmod -R +x $BUILD_VARIANT; fi
 - cp -rvf $BUILD_VARIANT/* assets/bin/$BUILD_VARIANT && rm -rf $BUILD_VARIANT
 - cd gui/EasyDEX-GUI/react && gsutil cp gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz
   .
