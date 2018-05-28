@@ -56,7 +56,7 @@ install:
   install --install-recommends -qq $PACKAGES; fi
 - npm install
 script:
-- ./BUILD_SCRIPT
+- ./buildscripts/BUILD_SCRIPT
 after_script:
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
   $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
