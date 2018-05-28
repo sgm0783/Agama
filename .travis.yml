@@ -11,6 +11,7 @@ env:
   - CCACHE_TEMPDIR=/tmp/.ccache-temp
   - CCACHE_COMPRESS=1
   - AGAMA_VERSION=0.3.1
+  - PKG_VERSION=0.3.1
 cache:
   apt: true
   directories:
