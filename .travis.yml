@@ -6,12 +6,11 @@ node_js:
 - lts/*
 env:
   global:
-  - BUILD_VERSION=0.04
   - CCACHE_SIZE=100M
   - CCACHE_TEMPDIR=/tmp/.ccache-temp
   - CCACHE_COMPRESS=1
-  - AGAMA_VERSION=0.3.1
-  - PKG_VERSION=0.3.1
+  - AGAMA_VERSION=0.3.2
+  - PKG_VERSION=0.3.2
 cache:
   apt: true
   directories:
@@ -59,6 +58,7 @@ install:
 - npm install
 script:
  - ./buildscripts/$BUILD_SCRIPT
+ - if [ "$TARGET_PLATFORM" = linux ]; then chmod 775 build/$BUILD_DIR/Agama; fi
 after_script:
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
   $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
