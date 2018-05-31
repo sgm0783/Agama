@@ -9,8 +9,8 @@ env:
   - CCACHE_SIZE=100M
   - CCACHE_TEMPDIR=/tmp/.ccache-temp
   - CCACHE_COMPRESS=1
-  - AGAMA_VERSION=0.3.2
-  - PKG_VERSION=0.3.2
+  - AGAMA_VERSION=0.3.3
+  - PKG_VERSION=0.3.3
 cache:
   apt: true
   directories:
