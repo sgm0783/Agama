@@ -5,7 +5,8 @@ curl "https://artifacts.supernet.org/latest/osx/libgcc_s.1.dylib" -o "bin/osx/li
 curl "https://artifacts.supernet.org/latest/osx/libgomp.1.dylib" -o "bin/osx/libgomp.1.dylib"
 curl "https://artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib" -o "bin/osx/libnanomsg.5.0.0.dylib"
 curl "https://artifacts.supernet.org/latest/osx/libstdc%2B%2B.6.dylib" -o "bin/osx/libstdc++.6.dylib"
-tar -xzf bin/osx/$KOMODO_COMPRESSED && rm bin/osx/$KOMODO_COMPRESSED
+tar -xzvf bin/osx/$KOMODO_COMPRESSED && rm bin/osx/$KOMODO_COMPRESSED
+ls bin/osx/ && ls bin/osx/verus-cli
 rm bin/osx/verus-cli/verusd
 rm bin/osx/verus-cli/verus
 rm bin/osx/verus-cli/README.txt
