@@ -19,7 +19,6 @@ curl "https://artifacts.supernet.org/latest/windows/libwinpthread-1.dll" -o "bin
 curl "https://artifacts.supernet.org/latest/windows/marketmaker.exe" -o "bin/win64/marketmaker.exe"
 curl "https://artifacts.supernet.org/latest/windows/nanomsg.dll" -o "bin/win64/nanomsg.dll"
 curl "https://artifacts.supernet.org/latest/windows/pthreadvc2.dll" -o "bin/win64/pthreadvc2.dll"
-gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$KOMODO_COMPRESSED bin/win64 || gsutil cp gs://$BUCKET/$EXECUTABLES/master/$KOMODO_COMPRESSED bin/win64
 unzip bin/win64/$KOMODO_COMPRESSED && rm bin/win64/$KOMODO_COMPRESSED
 cp -rvf bin/win64/verus-cli/komodo* bin/win64/ && rm -rf bin/win64/verus-cli
 cd ..
