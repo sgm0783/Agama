@@ -1,6 +1,8 @@
 # Agama Desktop App
 Desktop Wallet App
 
+## wiki
+Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful iformation about operating the wallet.
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
 
