@@ -14,7 +14,7 @@ curl "https://artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib" -o "bin/
 curl "https://artifacts.supernet.org/latest/osx/libstdc%2B%2B.6.dylib" -o "bin/osx/libstdc++.6.dylib"
 gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$KOMODO_COMPRESSED bin/osx || gsutil cp gs://$BUCKET/$EXECUTABLES/master/$KOMODO_COMPRESSED bin/osx
 tar -xzf bin/osx/$KOMODO_COMPRESSED && rm bin/osx/$KOMODO_COMPRESSED
-cp -rvf bin/osx/kmd-cli/komodo* bin/osx/ && rm -rf bin/osx/kmd-cli
+cp -rvf bin/osx/verus-cli/komodo* bin/osx/ && rm -rf bin/osx/verus-cli
 chmod -R +x bin/osx
 cd ..
 echo Moving legacy libs to assets/bin

@@ -21,12 +21,12 @@ cache:
 matrix:
   fast_finish: true
   include:
-  - env: SETUP_BUILD_SCRIPT=binary_artifacts_linux.sh BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=kmd-cli-linux.tar.gz
-      ARTIFACT_SET=Linux64 BUILD_VARIANT=linux64 BUILD_SCRIPT=electron-build-linux.sh
-  - env: SETUP_BUILD_SCRIPT=binary_artifacts_win.sh BUILD_DIR=Agama-win32-x64 KOMODO_COMPRESSED=kmd-cli-windows.zip
+  - env: SETUP_BUILD_SCRIPT=binary_artifacts_linux.sh BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=verus-cli-linux.tar.gz
+      ARTIFACT_SET=Linux64 BUILD_SCRIPT=electron-build-linux.sh MOD_PERMISSIONS=true
+  - env: SETUP_BUILD_SCRIPT=binary_artifacts_win.sh BUILD_DIR=Agama-win32-x64 KOMODO_COMPRESSED=verus-cli-windows.zip
       PACKAGES=winehq-devel ARTIFACT_SET=Win64 BUILD_VARIANT=win64 BUILD_SCRIPT=electron-build-windows.sh
-  - env: SETUP_BUILD_SCRIPT=binary_artifacts_mac.sh BUILD_DIR=Agama-darwin-x64 KOMODO_COMPRESSED=kmd-cli-mac.tar.gz
-      ARTIFACT_SET=Mac64 BUILD_VARIANT=osx BUILD_SCRIPT=electron-build-osx.sh
+  - env: SETUP_BUILD_SCRIPT=binary_artifacts_mac.sh BUILD_DIR=Agama-darwin-x64 KOMODO_COMPRESSED=verus-cli-mac.tar.gz
+      ARTIFACT_SET=Mac64 BUILD_SCRIPT=electron-build-osx.sh MOD_PERMISSIONS=true
 before_install:
 - openssl aes-256-cbc -K $encrypted_a41fbd06a4b9_key -iv $encrypted_a41fbd06a4b9_iv
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
@@ -51,7 +51,7 @@ install:
   npm install
 script:
 - ./buildscripts/$BUILD_SCRIPT
-- if [ "$TARGET_PLATFORM" = linux ]; then chmod 775 build/$BUILD_DIR/Agama; fi
+- if [ "$MOD_PERMISSIONS" = "true" ]; then chmod +x build/$BUILD_DIR/Agama; fi
 after_script:
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
   $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
