@@ -1,66 +1,30 @@
+#!/bin/bash
 echo Refreshing binaries from artifacts.supernet.org
 echo =========================================
 echo Step: Removing old binaries
-mkdir -p build
-cd build
-rm -rvf artifacts.supernet.org
-echo
+rm -rf assets/bin/osx || echo no clean up needed
+pwd
+[ ! -d assets/bin/osx ] && \
+  mkdir -p assets/bin/osx
+cd assets
 echo Step: Cloning latest binaries for build
-mkdir -p artifacts.supernet.org/latest/osx
-curl "https://artifacts.supernet.org/latest/osx/iguana" -o "artifacts.supernet.org/latest/osx/iguana"
-curl "https://artifacts.supernet.org/latest/osx/komodo-cli" -o "artifacts.supernet.org/latest/osx/komodo-cli"
-curl "https://artifacts.supernet.org/latest/osx/komodod" -o "artifacts.supernet.org/latest/osx/komodod"
-curl "https://artifacts.supernet.org/latest/osx/libgcc_s.1.dylib" -o "artifacts.supernet.org/latest/osx/libgcc_s.1.dylib"
-curl "https://artifacts.supernet.org/latest/osx/libgomp.1.dylib" -o "artifacts.supernet.org/latest/osx/libgomp.1.dylib"
-curl "https://artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib" -o "artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib"
-curl "https://artifacts.supernet.org/latest/osx/libstdc%2B%2B.6.dylib" -o "artifacts.supernet.org/latest/osx/libstdc++.6.dylib"
-
-chmod -R +x artifacts.supernet.org/latest/
+curl "https://artifacts.supernet.org/latest/osx/libgcc_s.1.dylib" -o "bin/osx/libgcc_s.1.dylib"
+curl "https://artifacts.supernet.org/latest/osx/libgomp.1.dylib" -o "bin/osx/libgomp.1.dylib"
+curl "https://artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib" -o "bin/osx/libnanomsg.5.0.0.dylib"
+curl "https://artifacts.supernet.org/latest/osx/libstdc%2B%2B.6.dylib" -o "bin/osx/libstdc++.6.dylib"
+gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$KOMODO_COMPRESSED bin/osx || gsutil cp gs://$BUCKET/$EXECUTABLES/master/$KOMODO_COMPRESSED bin/osx
+tar -xzf bin/osx/$KOMODO_COMPRESSED && rm bin/osx/$KOMODO_COMPRESSED
+cp -rvf bin/osx/kmd-cli/komodo* bin/osx/ && rm -rf bin/osx/kmd-cli
+chmod -R +x bin/osx
 cd ..
-echo =========================================
-echo 
-echo =========================================
-echo Step: Moving osx binaries from artifacts to assets/bin/osx/
-echo 
-mv -fv build/artifacts.supernet.org/latest/osx/iguana assets/bin/osx/
-mv -fv build/artifacts.supernet.org/latest/osx/komodo-cli assets/bin/osx/
-mv -fv build/artifacts.supernet.org/latest/osx/komodod assets/bin/osx/
-mv -fv build/artifacts.supernet.org/latest/osx/libgcc_s.1.dylib assets/bin/osx/
-mv -fv build/artifacts.supernet.org/latest/osx/libgomp.1.dylib assets/bin/osx/
-mv -fv build/artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib assets/bin/osx/
-mv -fv build/artifacts.supernet.org/latest/osx/libstdc++.6.dylib assets/bin/osx/
-echo 
-echo =========================================
-echo Step: Moving Win64 binaries from artifacts to assets/bin/win64/
-echo 
-mv -fv build/artifacts.supernet.org/latest/windows/genkmdconf.bat assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/iguana.exe assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/index.html assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/komodo-cli.exe assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/komodo-tx.exe assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/komodod.exe assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libcrypto-1_1.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libcurl-4.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libcurl.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libgcc_s_sjlj-1.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libnanomsg.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libssl-1_1.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/libwinpthread-1.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/nanomsg.dll assets/bin/win64/
-mv -fv build/artifacts.supernet.org/latest/windows/pthreadvc2.dll assets/bin/win64/
-echo 
-echo =========================================
-echo Step: Moving linux64 binaries from artifacts to assets/bin/linux64
-echo 
-mv -fv build/artifacts.supernet.org/latest/linux/iguana assets/bin/linux64/
-#mv -fv build/artifacts.supernet.org/latest/linux/komodo-cli assets/bin/linux64/
-#mv -fv build/artifacts.supernet.org/latest/linux/komodod assets/bin/linux64/
-echo 
-echo =========================================
-echo Step: Cleaning artifacts data
-echo
-rm -rf build/
-echo 
-echo =========================================
-echo Step: Finished Updating binaries from artifacts
-echo 
+echo Moving legacy libs to assets/bin
+wget https://supernetorg.bintray.com/misc/libs_legacy_osx.zip
+checksum=`shasum -a 256 libs_legacy_osx.zip | awk '{ print $1 }'`
+if [ "$checksum" = "e9474aa243694a2d4c87fccc443e4b16a9a5172a24da76af9e5ecddd006649bb" ]; then
+    echo "Checksum is correct."
+    unzip libs_legacy_osx.zip
+    cp -rvf libs_legacy_osx/* assets/bin/osx/.
+  else
+    echo "Checksum is incorrect!"
+    exit 0
+fi
