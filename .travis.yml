@@ -42,7 +42,7 @@ before_install:
 - gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$KOMODO_COMPRESSED . ||
   gsutil cp gs://$BUCKET/$EXECUTABLES/master/$KOMODO_COMPRESSED .
 - eval "${UNPACK_MATRIX}" && cd ../../..
-- if [ -n "$SETUP_BUILD_SCRIPT" ]; then./$SETUP_BUILD_SCRIPT; fi
+- if [ -n "$SETUP_BUILD_SCRIPT" ]; then ./$SETUP_BUILD_SCRIPT; fi
 - cd gui/EasyDEX-GUI/react
 - gsutil cp $EASYDEX_BUILD . || gsutil cp $EASYDEX_MASTER_BUILD .
 - tar -xzvf build.tar.gz && rm build.tar.gz
