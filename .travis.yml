@@ -21,7 +21,7 @@ cache:
 matrix:
   fast_finish: true
   include:
-  - env: SETUP_BUILD_SCRIPT=binary_artifacts_linux.sh BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=verus-cli-linux.tar.gz
+  - env: BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=verus-cli-linux.tar.gz
       ARTIFACT_SET=Linux64 BUILD_VARIANT=linux64 BUILD_SCRIPT=electron-build-linux.sh
       UNPACK_MATRIX="tar -xzvf $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd verus-cli/verus verus-cli/README.txt"
 
@@ -42,7 +42,7 @@ before_install:
 - gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$KOMODO_COMPRESSED . ||
   gsutil cp gs://$BUCKET/$EXECUTABLES/master/$KOMODO_COMPRESSED .
 - eval "${UNPACK_MATRIX}" && cd ../../..
-- ./$SETUP_BUILD_SCRIPT
+- if [ -n "$SETUP_BUILD_SCRIPT" ]; then./$SETUP_BUILD_SCRIPT; fi
 - cd gui/EasyDEX-GUI/react
 - gsutil cp $EASYDEX_BUILD . || gsutil cp $EASYDEX_MASTER_BUILD .
 - tar -xzvf build.tar.gz && rm build.tar.gz
