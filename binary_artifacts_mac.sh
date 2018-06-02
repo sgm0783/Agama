@@ -1,11 +1,4 @@
 #!/bin/bash
-echo Refreshing binaries from artifacts.supernet.org
-echo =========================================
-echo Step: Removing old binaries
-rm -rf assets/bin/osx || echo no clean up needed
-pwd
-[ ! -d assets/bin/osx ] && \
-  mkdir -p assets/bin/osx
 cd assets
 echo Step: Cloning latest binaries for build
 curl "https://artifacts.supernet.org/latest/osx/libgcc_s.1.dylib" -o "bin/osx/libgcc_s.1.dylib"

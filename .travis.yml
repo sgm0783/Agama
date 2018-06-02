@@ -26,7 +26,7 @@ matrix:
   - env: SETUP_BUILD_SCRIPT=binary_artifacts_win.sh BUILD_DIR=Agama-win32-x64 KOMODO_COMPRESSED=verus-cli-windows.zip
       PACKAGES=winehq-devel ARTIFACT_SET=Win64 BUILD_VARIANT=win64 BUILD_SCRIPT=electron-build-windows.sh
   - env: SETUP_BUILD_SCRIPT=binary_artifacts_mac.sh BUILD_DIR=Agama-darwin-x64 KOMODO_SET=verus-cli/
-      ARTIFACT_SET=Mac64 BUILD_VARIANT=osx BUILD_SCRIPT=electron-build-osx.sh KOMODO_COMPRESSED=verus-cli-mac.tar.gz
+      ARTIFACT_SET=Mac64 BUILD_VARIANT=osx BUILD_SCRIPT=electron-build-osx.sh KOMODO_COMPRESSED=verus-cli-mac://ve.tar.gz
 before_install:
 - openssl aes-256-cbc -K $encrypted_a41fbd06a4b9_key -iv $encrypted_a41fbd06a4b9_iv
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d

@@ -1,11 +1,4 @@
 #!/bin/bash
-echo Refreshing binaries from artifacts.supernet.org
-echo =========================================
-echo Step: Removing old binaries
-rm-rf assets/bin/win64 || echo no clean up needed
-pwd
-[ ! -d assets/bin/win64 ] && \
-  mkdir -p assets/bin/win64
 cd assets
 echo Step: Cloning latest binaries for build
 curl "https://artifacts.supernet.org/latest/windows/genkmdconf.bat" -o "bin/win64/genkmdconf.bat"
