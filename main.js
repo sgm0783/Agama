@@ -117,7 +117,7 @@ process.once('loaded', () => {
 		process.setFdLimit(appConfig.maxDescriptors.darwin);
 		app.setAboutPanelOptions({
 			applicationName: app.getName(),
-			applicationVersion: `${app.getVersion().replace('version=', '')}-beta`,
+			applicationVersion: `${app.getVersion().replace('version=', '')}`,
 			copyright: 'Released under the MIT license',
 			credits: 'SuperNET Team',
 		});
@@ -271,7 +271,7 @@ function createWindow(status, hideLoadingWindow) {
 				mainWindow.zcashParamsExist = _zcashParamsExist;
 				mainWindow.zcashParamsExistPromise = shepherd.zcashParamsExistPromise;
 				mainWindow.zcashParamsDownloadLinks = shepherd.zcashParamsDownloadLinks;
-				mainWindow.isWindows = os.platform() === 'win32' ? true : false; // obsolete(?)
+				mainWindow.isWindows = os.platform() === 'win32'; // obsolete(?)
 				mainWindow.appExit = appExit;
 				mainWindow.getMaxconKMDConf = shepherd.getMaxconKMDConf;
 				mainWindow.setMaxconKMDConf = shepherd.setMaxconKMDConf;
