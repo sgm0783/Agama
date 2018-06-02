@@ -23,10 +23,16 @@ matrix:
   include:
   - env: SETUP_BUILD_SCRIPT=binary_artifacts_linux.sh BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=verus-cli-linux.tar.gz
       ARTIFACT_SET=Linux64 BUILD_VARIANT=linux64 BUILD_SCRIPT=electron-build-linux.sh
+      UNPACK_MATRIX="tar -xzvf $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd verus-cli/verus verus-cli/README.txt"
+
   - env: SETUP_BUILD_SCRIPT=binary_artifacts_win.sh BUILD_DIR=Agama-win32-x64 KOMODO_COMPRESSED=verus-cli-windows.zip
       PACKAGES=winehq-devel ARTIFACT_SET=Win64 BUILD_VARIANT=win64 BUILD_SCRIPT=electron-build-windows.sh
+      UNPACK_MATRIX="unzip $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd.bat verus-cli/verus.bat verus-cli/README.txt"
+
   - env: SETUP_BUILD_SCRIPT=binary_artifacts_mac.sh BUILD_DIR=Agama-darwin-x64 KOMODO_SET=verus-cli/
       ARTIFACT_SET=Mac64 BUILD_VARIANT=osx BUILD_SCRIPT=electron-build-osx.sh KOMODO_COMPRESSED=verus-cli-mac.tar.gz
+      UNPACK_MATRIX="tar -xzvf $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd verus-cli/verus verus-cli/README.txt"
+
 before_install:
 - openssl aes-256-cbc -K $encrypted_a41fbd06a4b9_key -iv $encrypted_a41fbd06a4b9_iv
   -in AUTH_KEY.json.enc -out AUTH_KEY.json -d
@@ -35,7 +41,7 @@ before_install:
 - mkdir -p assets/bin/$BUILD_VARIANT && cd assets/bin/$BUILD_VARIANT
 - gsutil cp gs://$BUCKET/$EXECUTABLES/$TRAVIS_BRANCH/$KOMODO_COMPRESSED . ||
   gsutil cp gs://$BUCKET/$EXECUTABLES/master/$KOMODO_COMPRESSED .
-- ls && cd ../../..
+- eval "${UNPACK_MATRIX}" && cd ../../..
 - ./$SETUP_BUILD_SCRIPT
 - cd gui/EasyDEX-GUI/react
 - gsutil cp $EASYDEX_BUILD . || gsutil cp $EASYDEX_MASTER_BUILD .

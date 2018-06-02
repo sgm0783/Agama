@@ -1,16 +1,11 @@
 #!/bin/bash
 cd assets
+tar -xzvf bin/osx/$KOMODO_COMPRESSED && rm bin/osx/$KOMODO_COMPRESSED
 echo Step: Cloning latest binaries for build
 curl "https://artifacts.supernet.org/latest/osx/libgcc_s.1.dylib" -o "bin/osx/libgcc_s.1.dylib"
 curl "https://artifacts.supernet.org/latest/osx/libgomp.1.dylib" -o "bin/osx/libgomp.1.dylib"
 curl "https://artifacts.supernet.org/latest/osx/libnanomsg.5.0.0.dylib" -o "bin/osx/libnanomsg.5.0.0.dylib"
 curl "https://artifacts.supernet.org/latest/osx/libstdc%2B%2B.6.dylib" -o "bin/osx/libstdc++.6.dylib"
-tar -xzvf bin/osx/$KOMODO_COMPRESSED && rm bin/osx/$KOMODO_COMPRESSED
-ls bin/osx/ && ls bin/osx/verus-cli
-rm bin/osx/verus-cli/verusd
-rm bin/osx/verus-cli/verus
-rm bin/osx/verus-cli/README.txt
-cp -rvf bin/osx/verus-cli/ bin/osx/ && rm -rf bin/osx/verus-cli
 chmod -R +x bin/osx
 cd ..
 echo Moving legacy libs to assets/bin
