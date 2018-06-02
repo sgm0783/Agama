@@ -13,5 +13,8 @@ curl "https://artifacts.supernet.org/latest/windows/marketmaker.exe" -o "bin/win
 curl "https://artifacts.supernet.org/latest/windows/nanomsg.dll" -o "bin/win64/nanomsg.dll"
 curl "https://artifacts.supernet.org/latest/windows/pthreadvc2.dll" -o "bin/win64/pthreadvc2.dll"
 unzip bin/win64/$KOMODO_COMPRESSED && rm bin/win64/$KOMODO_COMPRESSED
-cp -rvf bin/win64/verus-cli/komodo* bin/win64/ && rm -rf bin/win64/verus-cli
+rm bin/linux/verus-cli/verusd.bat
+rm bin/linux/verus-cli/verus.bat
+rm bin/linux/verus-cli/README.txt
+cp -rvf bin/win64/verus-cli bin/win64/ && rm -rf bin/win64/verus-cli
 cd ..
