@@ -15,7 +15,7 @@ module.exports = (shepherd) => {
         shepherd.addElectrumCoin(coin);
       }
     }
-  }
+  };
 
   shepherd.startKMDNative = (selection, isManual) => {
     if (isManual) {

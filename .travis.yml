@@ -63,7 +63,11 @@ script:
 - ./buildscripts/$BUILD_SCRIPT
 - if [ "$MOD_PERMISSIONS" = "true" ]; then chmod +x build/$BUILD_DIR/Agama; fi
 after_script:
-- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    if [ "$BUILD_VARIANT" = "osx" ]; then git clone https://github.com/andreyvit/yoursway-create-dmg.git &&
+    cd yoursway-create-dmg
+
+  if [ "$BUILD_VARIANT" = "linux64" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
   $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
   fi
 notifications:

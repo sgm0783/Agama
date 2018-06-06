@@ -241,7 +241,7 @@ module.exports = (shepherd) => {
             res.end(JSON.stringify(returnObj));
           }
         })
-      }
+      };
 
       const _bitcoinRPC = (coin, cmd, params) => {
         return new Promise((resolve, reject) => {
@@ -280,7 +280,7 @@ module.exports = (shepherd) => {
             resolve(body);            
           });
         });
-      }
+      };
 
       Promise.all(_promiseStack.map((_call, index) => {
         let _params;

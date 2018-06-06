@@ -9,7 +9,7 @@ module.exports = (shepherd) => {
     const localVersionFile = fs.readFileSync(`${rootLocation}version`, 'utf8');
 
     return localVersionFile;
-  }
+  };
 
   shepherd.createAgamaDirs = () => {
     if (!_foldersInitRan) {
@@ -65,7 +65,7 @@ module.exports = (shepherd) => {
 
       _foldersInitRan = true;
     }
-  }
+  };
 
   return shepherd;
 };

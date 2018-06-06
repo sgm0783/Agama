@@ -972,11 +972,11 @@ module.exports = (shepherd) => {
         }
       }
     });
-  }
+  };
 
   shepherd.getAssetChainPorts = () => {
     return shepherd.assetChainPorts;
-  }
+  };
 
   return shepherd;
 };
