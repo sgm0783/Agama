@@ -3,7 +3,7 @@ os: linux
 dist: xenial
 language: node_js
 node_js:
-- lts/*
+  - lts/*
 env:
   global:
   - CCACHE_SIZE=100M
@@ -17,7 +17,7 @@ cache:
   apt: true
   directories:
   - "$HOME/google-cloud-sdk/"
-  - "$HOME/.ccache"
+  - "node_modules"
 matrix:
   fast_finish: true
   include:
@@ -63,9 +63,8 @@ script:
 - ./buildscripts/$BUILD_SCRIPT
 - if [ "$MOD_PERMISSIONS" = "true" ]; then chmod +x build/$BUILD_DIR/Agama; fi
 after_script:
-if [ "$BUILD_VARIANT" = "linux64" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
-$BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
-fi
+- if [ "$BUILD_VARIANT" = "linux64" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
+    $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
 notifications:
   slack:
     secure: tHddHa3l8QixuywIMOrSmsFfk3vGTcLXu/49IpDgYoO8IhZ91Ux6jBX1y9bK8mFwmjNzMUZBB4bH23JzQyv1JekQaihzCL4m5Ut8gcDRStUplO4Aye16DPTWzhy+UQYzkYwP/lEeTU/lNE/QEq7tC7nMbHn2kY9sC9dr5wHmBsGCeIB49ikaL2MdJThP0/9NFaBK/Z7eOmnd/l/76x2Vji2OvBYjjkCPPRE5bZ8Vvw6S/fA2abNirD3ymB9w7ooL4HzbZZw6gxKDSU0RcK8YCvYuDoEMDgcq//VEpZE852hmo9Pxs/LArcunztFmaoXxngwMejDM2VuDSELq/ytP/XpyTWC/bmOz+07BbPpUjZiu8psnxVerBt8l6oO34xU6R4U9JaqNdALJyMTO7gs9j53hZfi2Onr+/nxyJ9ec1gkJBzdIOnOxlZYXJOmuAtWBnoa5DvJvED9DBICIpkeTPzSJXMggAGDNHWmm4CoB1oHUbKUg3C5G7AGB63oHX9tDZ0A21ZOhMGx4DItQ6C7bH9FSp1FfA5CsnCO56JRaon+QF/vIO4y0OV+3QAL59kBDmy6P7VSzsGB07JApYJ/e9iLS2vXisSr6hM03rynSvVcfJHcDfP/b/fzLcleIWwnel0F1Dz0A5VF39g9S/NYo1Ttt+MphnWfKl+Za6Rp8z/M=
