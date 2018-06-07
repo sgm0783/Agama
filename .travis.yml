@@ -63,7 +63,7 @@ script:
 - ./buildscripts/$BUILD_SCRIPT
 - if [ "$MOD_PERMISSIONS" = "true" ]; then chmod +x build/$BUILD_DIR/Agama; fi
 after_script:
-- if [ "$BUILD_VARIANT" = "linux64" ]; then cd build && tar -czf $BUILD_DIR.tar.gz
+- cd build && tar -czf $BUILD_DIR.tar.gz
     $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
 notifications:
   slack:
