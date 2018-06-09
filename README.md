@@ -4,6 +4,10 @@ Desktop Wallet App
 ## Resources
 Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful information about operating the wallet.
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
+
+Version 0.3.4 is the first regular full release of the Verus enhanced Agama wallet. Release target date is June 10, 2018.
+The prior release version 0.3.3-beta was the final beta release.
+
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
 
@@ -41,7 +45,7 @@ npm install electron-prebuilt -g --unsafe-perm=true
 ```shell
 npm install
 ```
-5) If yoi are running in dev mode, get the react back end stuff installed and running
+5) If you are running in dev mode, get the react back end stuff installed and running
 ```shell
 cd react
 npm install
