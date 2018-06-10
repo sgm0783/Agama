@@ -1,4 +1,4 @@
-# Agama Desktop App
+# Verus Enhance Agama Desktop App
 Desktop Wallet App
 
 ## Resources
