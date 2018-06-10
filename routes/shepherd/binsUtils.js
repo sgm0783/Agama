@@ -26,7 +26,7 @@ module.exports = (shepherd) => {
         });
       }
     }
-  }
+  };
 
   shepherd.killRogueProcess = (processName) => {
     // kill rogue process copies on start
@@ -59,16 +59,16 @@ module.exports = (shepherd) => {
           if (error !== null) {
             shepherd.log(`${pkillCmd} exec error: ${error}`);
             shepherd.writeLog(`${pkillCmd} exec error: ${error}`);
-          };
+          }
         });
       }
 
       if (error !== null) {
         shepherd.log(`${processGrep} exec error: ${error}`);
         shepherd.writeLog(`${processGrep} exec error: ${error}`);
-      };
+      }
     });
-  }
+  };
 
   return shepherd;
 };

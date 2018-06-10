@@ -56,7 +56,7 @@ module.exports = (shepherd) => {
     }
 
     return _checkList;
-  }
+  };
 
   shepherd.zcashParamsExistPromise = () => {
     return new Promise((resolve, reject) => {

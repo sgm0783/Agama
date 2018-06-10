@@ -53,7 +53,7 @@ var decodeFormat = function(tx) {
   };
 
   return result;
-}
+};
 
 var decodeInput = function(tx) {
   var result = [];
@@ -70,7 +70,7 @@ var decodeInput = function(tx) {
   });
 
   return result;
-}
+};
 
 var decodeOutput = function(tx, network) {
   var format = function(out, n, network) {
@@ -100,7 +100,7 @@ var decodeOutput = function(tx, network) {
     }
 
     return vout;
-  }
+  };
 
   var result = [];
 
@@ -109,7 +109,7 @@ var decodeOutput = function(tx, network) {
   });
 
   return result;
-}
+};
 
 var TxDecoder = module.exports = function(rawtx, network) {
   try {
@@ -159,7 +159,7 @@ var TxDecoder = module.exports = function(rawtx, network) {
       return false;
     }
   }
-}
+};
 
 TxDecoder.prototype.decode = function() {
   var result = {};
@@ -172,4 +172,4 @@ TxDecoder.prototype.decode = function() {
   result.outputs = self.outputs;
 
   return result;
-}
+};
