@@ -1,6 +1,6 @@
-sudo: required
+sudo: false
 os: linux
-dist: xenial
+dist: trusty
 language: node_js
 node_js:
   - lts/*
@@ -48,14 +48,14 @@ before_install:
 - tar -xzvf build.tar.gz && rm build.tar.gz
 - cd ../../..
 install:
-- if [ -n "$PACKAGES" ]; then sudo rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
+- if [ -n "$PACKAGES" ]; then rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
-- if [ -n "$PACKAGES" ]; then sudo dpkg --add-architecture i386 && wget -nc https://dl.winehq.org/wine-builds/Release.key;
+- if [ -n "$PACKAGES" ]; then dpkg --add-architecture i386 && wget -nc https://dl.winehq.org/wine-builds/Release.key;
   fi
-- if [ -n "$PACKAGES" ]; then sudo apt-key add Release.key; fi
-- if [ -n "$PACKAGES" ]; then sudo apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/;
+- if [ -n "$PACKAGES" ]; then apt-key add Release.key; fi
+- if [ -n "$PACKAGES" ]; then apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/;
   fi
-- if [ -n "$PACKAGES" ]; then travis_retry sudo apt-get update && sudo apt-get -y
+- if [ -n "$PACKAGES" ]; then travis_retry apt update && apt -y
   install --install-recommends -qq $PACKAGES; fi
 - npm install electron-packager -g && npm install electron -g --unsafe-perm=true &&
   npm install
