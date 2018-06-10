@@ -59,7 +59,7 @@ before_install:
 install:
 - if [ -n "$PACKAGES" ]; then rm -f /etc/apt/sources.list.d/travis_ci_zeromq3-source.list;
   fi
-- if [ -n "$PACKAGES" ]; then dpkg --add-architecture i386 && wget -nc https://dl.winehq.org/wine-builds/Release.key;
+- if [ -n "$PACKAGES" ]; then sudo -E dpkg --add-architecture i386 && wget -nc https://dl.winehq.org/wine-builds/Release.key;
   fi
 - if [ -n "$PACKAGES" ]; then apt-key add Release.key; fi
 - if [ -n "$PACKAGES" ]; then apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/;
