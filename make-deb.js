@@ -12,7 +12,7 @@ var options = {
   categories: ['Office', 'Internet'],
   homepage: 'http://supernet.org',
   maintainer: 'SuperNET <dev@supernet.org>',
-}
+};
 
 console.log('Creating package (this may take a while)');
 

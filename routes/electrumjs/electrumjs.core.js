@@ -34,7 +34,7 @@ const makeRequest = function(method, params, id) {
     params : params,
     id : id,
   });
-}
+};
 
 const createRecursiveParser = function(maxDepth, delimiter) {
   const MAX_DEPTH = maxDepth;
@@ -66,10 +66,10 @@ const createRecursiveParser = function(maxDepth, delimiter) {
     callback(xs.shift(), n);
 
     return recursiveParser(n + 1, xs.join(DELIMITER), callback);
-  }
+  };
 
   return recursiveParser;
-}
+};
 
 const createPromiseResult = function(resolve, reject) {
   return (err, result) => {
@@ -82,7 +82,7 @@ const createPromiseResult = function(resolve, reject) {
       resolve(result);
     }
   }
-}
+};
 
 class MessageParser {
   constructor(callback) {
@@ -124,7 +124,7 @@ const getSocket = function(protocol, options) {
   }
 
   throw new Error('unknown protocol');
-}
+};
 
 const initSocket = function(self, protocol, options) {
   const conn = getSocket(protocol, options);
@@ -155,7 +155,7 @@ const initSocket = function(self, protocol, options) {
   });
 
   return conn;
-}
+};
 
 class Client {
   constructor(port, host, protocol = 'tcp', options = void 0) {
@@ -179,7 +179,7 @@ class Client {
     this.status = 1;
 
     return new Promise((resolve, reject) => {
-      const errorHandler = (e) => reject(e)
+      const errorHandler = (e) => reject(e);
 
       this.conn.connect(this.port, this.host, () => {
         this.conn.removeListener('error', errorHandler);

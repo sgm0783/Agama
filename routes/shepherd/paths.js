@@ -19,7 +19,7 @@ module.exports = (shepherd) => {
         shepherd.agamaDir = path.normalize(shepherd.agamaDir);
         break;
     }
-  }
+  };
 
   shepherd.pathsDaemons = () => {
     switch (os.platform()) {
@@ -76,7 +76,7 @@ module.exports = (shepherd) => {
         shepherd.mmBin = path.normalize(shepherd.mmBin);
         break;
     }
-  }
+  };
 
   return shepherd;
 };
