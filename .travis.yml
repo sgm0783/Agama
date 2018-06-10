@@ -30,16 +30,16 @@ addons:
 matrix:
   fast_finish: true
   include:
-  - env: BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=verus-cli-linux.tar.gz
+  - env: BUILD_DIR=Agama-linux-x64 KOMODO_COMPRESSED=verus-cli-linux*
       ARTIFACT_SET=Linux64 BUILD_VARIANT=linux64 BUILD_SCRIPT=electron-build-linux.sh
       UNPACK_MATRIX="tar -xzvf $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd verus-cli/verus verus-cli/README.txt && mv verus-cli/* . && rm -rf verus-cli"
 
-  - env: SETUP_BUILD_SCRIPT=binary_artifacts_win.sh BUILD_DIR=Agama-win32-x64 KOMODO_COMPRESSED=verus-cli-windows.zip
+  - env: SETUP_BUILD_SCRIPT=binary_artifacts_win.sh BUILD_DIR=Agama-win32-x64 KOMODO_COMPRESSED=verus-cli-windows*
       PACKAGES=winehq-devel ARTIFACT_SET=Win64 BUILD_VARIANT=win64 BUILD_SCRIPT=electron-build-windows.sh
       UNPACK_MATRIX="unzip $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd.bat verus-cli/verus.bat verus-cli/README.txt && mv verus-cli/* . && rm -rf verus-cli"
 
   - env: SETUP_BUILD_SCRIPT=binary_artifacts_mac.sh BUILD_DIR=Agama-darwin-x64 KOMODO_SET=verus-cli/
-      ARTIFACT_SET=Mac64 BUILD_VARIANT=osx BUILD_SCRIPT=electron-build-osx.sh KOMODO_COMPRESSED=verus-cli-mac.tar.gz
+      ARTIFACT_SET=Mac64 BUILD_VARIANT=osx BUILD_SCRIPT=electron-build-osx.sh KOMODO_COMPRESSED=verus-cli-mac*
       UNPACK_MATRIX="tar -xzvf $KOMODO_COMPRESSED && rm $KOMODO_COMPRESSED verus-cli/verusd verus-cli/verus verus-cli/README.txt && mv verus-cli/* . && rm -rf verus-cli"
 
 before_install:
