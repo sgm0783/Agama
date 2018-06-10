@@ -5,8 +5,9 @@ Desktop Wallet App
 Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful information about operating the wallet.
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
 
-Version 0.3.4 is the first regular full release of the Verus enhanced Agama wallet. Release target date is June 10, 2018.
-The prior release version 0.3.3-beta was the final beta release.
+Version 0.3.4-beta release of the Verus enhanced Agama wallet.
+
+The prior release was version 0.3.3-beta.
 
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
@@ -36,7 +37,7 @@ cd agama
 ```
 For Mac use ./binary_artifacts_mac.sh.
 Note that we do not use the standard downloadable komodo executables, the version in VerusCoin/VerusCoin has to be used and the src/komodod and src/komodo-cli build outputs have to be manually patched into assets/bin/osx.
-3) install the electron packager and prebuilt - note the ugly unsafe-perm and allow-root stuff for the prebuilt electron.
+3) install the electron packager and prebuilt - note the ugly unsafe-perm for the electron-prebuilt.
 ```shell
 sudo npm install electron-packager -g
 npm install electron-prebuilt -g --unsafe-perm=true
