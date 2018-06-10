@@ -64,7 +64,7 @@ install:
 - if [ -n "$PACKAGES" ]; then sudo -E apt-key add Release.key; fi
 - if [ -n "$PACKAGES" ]; then sudo -E apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/;
   fi
-- if [ -n "$PACKAGES" ]; then travis_retry apt update && sudo -E apt -y
+- if [ -n "$PACKAGES" ]; then travis_retry sudo -E apt update && sudo -E apt -y
   install --install-recommends -qq $PACKAGES; fi
 - npm install electron-packager -g && npm install electron -g --unsafe-perm=true &&
   npm install
