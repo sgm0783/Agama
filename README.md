@@ -5,9 +5,9 @@ Desktop Wallet App
 Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful information about operating the wallet.
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
 
-Version 0.3.4-beta release of the Verus enhanced Agama wallet.
+Version 0.3.5-beta release of the Verus enhanced Agama wallet.
 
-The prior release was version 0.3.3-beta.
+The prior release was version 0.3.4-beta.
 
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
