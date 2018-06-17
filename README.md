@@ -1,7 +1,9 @@
-# Verus Enhance Agama Desktop App
+# Verus Enhanced Agama Desktop App
 Desktop Wallet App
 
 ## Resources
+This project uses [EasyDEX-GUI](https://github.com/VerusCoin/EasyDEX-GUI), a React based Javascript GUI multicoin wallet, and [VerusCoin](https://github.com/VerusCoin/VerusCoin) the Komodo based ZCash wallet and miner.
+
 Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful information about operating the wallet.
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
 
