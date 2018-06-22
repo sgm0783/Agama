@@ -9,7 +9,7 @@ env:
   - CCACHE_SIZE=100M
   - CCACHE_TEMPDIR=/tmp/.ccache-temp
   - CCACHE_COMPRESS=1
-  - AGAMA_VERSION=0.3.7
+  - AGAMA_VERSION=0.3.7-beta
   - PKG_VERSION=0.3.7
   - EASYDEX_BUILD=gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz
   - EASYDEX_MASTER_BUILD=gs://$BUCKET/EasyDEX-GUI/master/build.tar.gz
@@ -73,8 +73,8 @@ script:
 - if [ "$MOD_PERMISSIONS" = "true" ]; then chmod +x build/$BUILD_DIR/Agama; fi
 after_script:
 - cd build 
-- if [ "$BUILD_VARIANT" = "win64" ]; then zip  $BUILD_DIR-v$AGAMA_VERSION-beta $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/ tar -czf $BUILD_DIR-v$AGAMA_VERSION.tar.gz $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; 
-  else tar -czf $BUILD_DIR-v$AGAMA_VERSION-beta.tar.gz $BUILD_DIR && gsutil cp $BUILD_DIR.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
+- if [ "$BUILD_VARIANT" = "win64" ]; then zip  $BUILD_DIR-v$AGAMA_VERSION $BUILD_DIR && gsutil cp $BUILD_DIR$AGAMA_VERSION.zip gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; 
+  else tar -czf $BUILD_DIR-v$AGAMA_VERSION.tar.gz $BUILD_DIR && gsutil cp $BUILD_DIR$AGAMA_VERSION.tar.gz gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/;
   fi
 notifications:
   slack:
