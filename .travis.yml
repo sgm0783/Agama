@@ -63,6 +63,7 @@ install:
   sudo -E apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/;
   fi
 - travis_retry sudo -E apt update && sudo -E apt -y install --install-recommends -qq $PACKAGES
+- npm install
 
 script:
 - ./buildscripts/$BUILD_SCRIPT
