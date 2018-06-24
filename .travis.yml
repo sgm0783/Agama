@@ -9,7 +9,7 @@ env:
   - CCACHE_SIZE=100M
   - CCACHE_TEMPDIR=/tmp/.ccache-temp
   - CCACHE_COMPRESS=1
-  - AGAMA_VERSION="v0.3.8-beta"
+  - AGAMA_VERSION="v0.3.7-beta"
   - PKG_VERSION=0.3.8
   - EASYDEX_BUILD=gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz
   - EASYDEX_MASTER_BUILD=gs://$BUCKET/EasyDEX-GUI/master/build.tar.gz
@@ -72,7 +72,7 @@ after_script:
 - cd build 
 - if [ "$BUILD_VARIANT" = "win64" ]; then zip $BUILD_DIR-$AGAMA_VERSION $BUILD_DIR &&
   gsutil cp $BUILD_DIR-${AGAMA_VERSION}.zip gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
-- if [ "$BUILD_VARIANT" = "linux64" ]; then cd .. && node make-deb && cd build &&
+- if [ "$BUILD_VARIANT" = "linux64" ]; then cd .. && node make-deb && cd build && ls &&
   gsutil cp agama-app_${AGAMA_VERSION}_amd64.deb gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
 notifications:
   slack:
