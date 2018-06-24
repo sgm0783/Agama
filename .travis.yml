@@ -75,7 +75,7 @@ after_script:
 - cd build 
 - if [ "$BUILD_VARIANT" = "win64" ]; then zip $BUILD_DIR-v$AGAMA_VERSION $BUILD_DIR &&
   gsutil cp $BUILD_DIR-v$AGAMA_VERSION.zip gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
-- if [ "$BUILD_VARIANT" = "linux64" ]; then node make-deb &&
+- if [ "$BUILD_VARIANT" = "linux64" ]; then cd .. && node make-deb &&
   gsutil cp agama-app_$AGAMA_VERSION_amd64.deb gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
 notifications:
   slack:
