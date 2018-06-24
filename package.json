@@ -43,6 +43,7 @@
     "buffer-reverse": "^1.0.1",
     "coinselect": "github:bitcoinjs/coinselect",
     "electron": "^2.0.2",
+    "electron-installer-debian": "^0.8.1",
     "electron-packager": "^12.1.0",
     "express": "^4.14.0",
     "fix-path": "^2.1.0",
