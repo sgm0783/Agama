@@ -9,7 +9,7 @@ env:
   - CCACHE_SIZE=100M
   - CCACHE_TEMPDIR=/tmp/.ccache-temp
   - CCACHE_COMPRESS=1
-  - AGAMA_VERSION="0.3.8-beta"
+  - AGAMA_VERSION="0.3.8~beta"
   - PKG_VERSION=0.3.8
   - EASYDEX_BUILD=gs://$BUCKET/EasyDEX-GUI/$TRAVIS_BRANCH/build.tar.gz
   - EASYDEX_MASTER_BUILD=gs://$BUCKET/EasyDEX-GUI/master/build.tar.gz
