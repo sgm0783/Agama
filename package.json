@@ -1,7 +1,7 @@
 {
   "name": "agama-app",
   "productName": "Agama",
-  "version": "0.3.8-beta",
+  "version": "0.3.10",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -20,7 +20,8 @@
     "wallet",
     "spv",
     "jumblr",
-    "VRSC"
+    "VRSC",
+    "veruscoin"
   ],
   "author": "VerusCoin",
   "license": "MIT",
