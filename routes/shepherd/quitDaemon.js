@@ -5,10 +5,14 @@ module.exports = (shepherd) => {
   shepherd.quitKomodod = (timeout = 100) => {
     // if komodod is under heavy load it may not respond to cli stop the first time
     // exit komodod gracefully
-    let coindExitInterval = {};
+    let didDaemonQuitInterval = {};
     shepherd.lockDownAddCoin = true;
 
     for (let key in shepherd.coindInstanceRegistry) {
+      let daemonQuit = false;
+      let cliStdout;
+      let cliStderr;
+      let cliError;
       if (shepherd.appConfig.stopNativeDaemonsOnQuit) {
         const chain = key !== 'komodod' ? key : null;
         let _coindQuitCmd = shepherd.komodocliBin;
@@ -21,7 +25,7 @@ module.exports = (shepherd) => {
           _coindQuitCmd = shepherd.chipscliBin;
         }
 
-        const execCliStop = () => {
+        const execCliStopSafe = () => {
           let _arg = [];
 
           if (chain &&
@@ -43,45 +47,49 @@ module.exports = (shepherd) => {
 
           _arg.push('stop');
           execFile(`${_coindQuitCmd}`, _arg, (error, stdout, stderr) => {
+            shepherd.log(`send stop sig to ${key}`);
             shepherd.log(`stdout: ${stdout}`);
             shepherd.log(`stderr: ${stderr}`);
-            shepherd.log(`send stop sig to ${key}`);
-
-            if (stdout.indexOf('EOF reached') > -1 ||
-                stderr.indexOf('EOF reached') > -1 ||
-                (error && error.toString().indexOf('Command failed') > -1 && !stderr) || // windows
-                stdout.indexOf('connect to server: unknown (code -1)') > -1 ||
-                stderr.indexOf('connect to server: unknown (code -1)') > -1) {
-              delete shepherd.coindInstanceRegistry[key];
-              clearInterval(coindExitInterval[key]);
-            }
-
-            // workaround for AGT-65
-            const _port = shepherd.assetChainPorts[key];
-            setTimeout(() => {
-              portscanner.checkPortStatus(_port, '127.0.0.1', (error, status) => {
-                // Status is 'open' if currently in use or 'closed' if available
-                if (status === 'closed') {
-                  delete shepherd.coindInstanceRegistry[key];
-                  clearInterval(coindExitInterval[key]);
-                }
-              });
-            }, 100);
+            cliStderr = stderr;
+            cliStdout = stdout;
+            cliError = error;
 
             if (error !== null) {
               shepherd.log(`exec error: ${error}`);
             }
-
-            setTimeout(() => {
-              shepherd.killRogueProcess(key === 'CHIPS' ? 'chips-cli' : 'komodo-cli');
-            }, 100);
           });
         }
 
-        execCliStop();
-        coindExitInterval[key] = setInterval(() => {
-          execCliStop();
-        }, timeout);
+        const execCliStopForce = () => {
+          shepherd.killRogueProcess(key === 'CHIPS' ? 'chips-cli' : 'komodod');
+        }
+
+        const didDaemonQuit = () => {
+            // workaround for AGT-65
+            const _port = shepherd.assetChainPorts[key];
+              portscanner.checkPortStatus(_port, '127.0.0.1', (error, status) => {
+                // Status is 'open' if currently in use or 'closed' if available
+                if (status === 'closed') {
+                  delete shepherd.coindInstanceRegistry[key];
+                  daemonQuit = true;
+                }
+              });
+          if(daemonQuit) {
+            clearInterval(didDaemonQuitInterval[key]);
+          }
+        }
+
+        shepherd.log(`trying to safely quit ${key}`);
+        execCliStopSafe();
+        didDaemonQuitInterval[key] = setInterval(() => {
+          didDaemonQuit();
+        }, 100);
+        setTimeout(() => {
+          if(!daemonQuit){
+            shepherd.log(`timeout while trying to safely quit ${key}, force quitting`);
+            execCliStopForce();
+          }
+        }, 5000)
       } else {
         delete shepherd.coindInstanceRegistry[key];
       }
