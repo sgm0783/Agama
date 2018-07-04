@@ -1,6 +1,6 @@
 #!/bin/bash
 ### Build script for Agama application for Windows x64 platform.
-### Created by mmaxian, 3/2017; updated by David Dawes 5/2018
+### Created by mmaxian, 3/2017; updated by David Dawes 5/2018; updated by Asher Dawes 7/2018
 
 [ -z $AGAMA_VERSION ] && echo "AGAMA_VERSION variable is not set." && exit 0
 [ ! -d build ] && mkdir build
@@ -13,12 +13,25 @@ electron-packager . --platform=win32 \
   --arch=x64 \
   --icon=assets/icons/agama_app_icon.ico \
   --out=build/ \
-  --buildVersion=$AGAMA_VERSION \
   --ignore=assets/bin/osx \
   --ignore=assets/bin/linux64 \
   --ignore=react/node_modules \
   --ignore=react/src \
   --ignore=react/www \
+  --ignore=buildscripts\
+  --ignore=windeps \
+  --ignore=.travis.yml \
+  --ignore=.gitlab-ci.yml \
+  --ignore=.gitignore \
+  --ignore=.gitmodules \
+  --ignore=binary_artifacts_win.sh \
+  --ignore=Brewfile \
+  --ignore=make-deb.js \
+  --ignore=make-patch.sh \
+  --ignore=make-rpm.js \
+  --ignore=README.md  \
+  --ignore=version_build \
+  --prune=true \
   --overwrite \
   --version-string.CompanyName="VerusCoin" \
   --version-string.FileDescription="Agama" \
