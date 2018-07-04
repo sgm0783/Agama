@@ -2,9 +2,6 @@
 ### Build script for Agama application for Windows x64 platform.
 ### Created by mmaxian, 3/2017; updated by David Dawes 5/2018; updated by Asher Dawes 7/2018
 
-[ -z $AGAMA_VERSION ] && echo "AGAMA_VERSION variable is not set." && exit 0
-[ ! -d build ] && mkdir build
-
 echo
 echo "Build script for Agama application for Windows x64 platform."
 echo "Preparing electron package $AGAMA_VERSION"
