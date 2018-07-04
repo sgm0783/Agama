@@ -109,6 +109,12 @@ deploy:
   - build:windows
   - build:mac
   script:
-  - 'echo "$AUTH_KEY" > AUTH_KEY.json'
-  - "gcloud auth activate-service-account --key-file AUTH_KEY.json"
-  - "gsutil cp $AGAMA_LINUX_PORTABLE $AGAMA_OSX_PORTABLE $AGAMA_WINDOWS_PORTABLE gs://$BUCKET/GitLab/Agama/$CI_COMMIT_REF_NAME/"
+  - mkdir -p $CI_COMMIT_REF_NAME/Windows
+  - mkdir -p $CI_COMMIT_REF_NAME/Linux
+  - mkdir -p $CI_COMMIT_REF_NAME/MacOS
+  - mv $VERUS_CLI_LINUX_PORTABLE $CI_COMMIT_REF_NAME/Linux
+  - mv $VERUS_CLI_WINDOWS_PORTABLE $CI_COMMIT_REF_NAME/Windows
+  - mv $VERUS_CLI_OSX_PORTABLE $CI_COMMIT_REF_NAME/MacOS
+  - echo $AUTH_KEY > AUTH_KEY.json
+  - gcloud auth activate-service-account --key-file AUTH_KEY.json
+  - gsutil cp rsync -r $CI_COMMIT_REF_NAME $STAGING/Agama/$CI_COMMIT_REF_NAME/
