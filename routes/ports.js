@@ -35,6 +35,7 @@ const assetChainPorts = {
   'BTCH': '8800',
   'BNTN': '14358',
   'EQL': '10306',
+  'VRSC': '27486',
 };
 
 module.exports = assetChainPorts;
