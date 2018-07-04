@@ -2,10 +2,6 @@
 ### Build script for Agama application for Windows x64 platform.
 ### Created by mmaxian, 3/2017; updated by David Dawes 5/2018; updated by Asher Dawes 7/2018
 
-echo
-echo "Build script for Agama application for Windows x64 platform."
-echo "Preparing electron package $AGAMA_VERSION"
-
 electron-packager . --platform=win32 \
   --arch=x64 \
   --icon=assets/icons/agama_app_icon.ico \
