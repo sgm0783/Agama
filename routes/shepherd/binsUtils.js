@@ -49,8 +49,8 @@ module.exports = (shepherd) => {
       if (stdout.indexOf(processName) > -1) {
         const pkillCmd = osPlatform === 'win32' ? `taskkill /f /im ${processName}.exe` : `pkill -15 ${processName}`;
 
-        shepherd.log(`found another ${processName} process(es)`);
-        shepherd.writeLog(`found another ${processName} process(es)`);
+        shepherd.log(`found ${processName} process(es)`);
+        shepherd.writeLog(`found ${processName} process(es)`);
 
         shepherd.exec(pkillCmd, (error, stdout, stderr) => {
           shepherd.log(`${pkillCmd} is issued`);
