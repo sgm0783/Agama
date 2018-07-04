@@ -3,8 +3,6 @@ stages:
   - deploy
 variables:
   DOCKER_DRIVER: overlay2
-  AGAMA_VERSION: $(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
-  PKG_VERSION: $AGAMA_VERSION-beta
   EASYDEX_GUI_ARTIFACT: build.tar.gz
   AGAMA_ARTIFACTS_LINUX: linux64.tar.gz
   AGAMA_ARTIFACTS_MACOS: osx.tar.gz
