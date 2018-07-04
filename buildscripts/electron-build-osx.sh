@@ -14,6 +14,7 @@ electron-packager . --platform=darwin \
   --ignore=buildscripts\
   --ignore=windeps \
   --ignore=.travis.yml \
+  --ignore=check_submodule.sh \
   --ignore=.gitlab-ci.yml \
   --ignore=.gitignore \
   --ignore=.gitmodules \

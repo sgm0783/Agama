@@ -13,6 +13,7 @@ electron-packager . --platform=linux --arch=x64 \
   --ignore=buildscripts\
   --ignore=windeps \
   --ignore=.travis.yml \
+  --ignore=check_submodule.sh \
   --ignore=.gitlab-ci.yml \
   --ignore=.gitignore \
   --ignore=.gitmodules \
