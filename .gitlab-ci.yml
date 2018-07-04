@@ -16,7 +16,7 @@ variables:
   AGAMA_WINDOWS_PORTABLE: ${ELECTRON_BUILD_WINDOWS}-v${AGAMA_VERSION}-beta.zip
   AGAMA_OSX_PORTABLE: ${ELECTRON_BUILD_OSX}-v${AGAMA_VERSION}-beta.tar.gz
   GIT_SUBMODULE_STRATEGY: recursive
-  
+
 build:linux:
   image: asherd/agama-builder
   stage: build
@@ -30,13 +30,13 @@ build:linux:
     - "mkdir -p assets/bin/"
     - "tar -xzf $AGAMA_ARTIFACTS_LINUX --directory  assets/bin/ && ls assets/bin"
     - "rm $AGAMA_ARTIFACTS_LINUX"
-    
-    
-  script: 
+
+
+  script:
     - "npm install electron-packager -g"
     - "npm install electron -g --unsafe-perm=true"
     - "npm install"
-    - "./buildscripts/electron-build-linux.sh"
+    - "nmp run package-linux"
     - "cd build"
     - "tar -czf $AGAMA_LINUX_PORTABLE $ELECTRON_BUILD_LINUX"
     - "mv $AGAMA_LINUX_PORTABLE .."
@@ -64,7 +64,7 @@ build:windows:
     - "npm install electron-packager -g"
     - "npm install electron -g --unsafe-perm=true"
     - "npm install"
-    - "./buildscripts/electron-build-windows.sh"
+    - "npm run package-windows"
     - "cd build"
     - "zip -r $AGAMA_WINDOWS_PORTABLE $ELECTRON_BUILD_WINDOWS"
     - "mv $AGAMA_WINDOWS_PORTABLE .."
@@ -91,8 +91,7 @@ build:mac:
     - "npm install electron-packager -g"
     - "npm install electron -g --unsafe-perm=true"
     - "npm install"
-    - "./buildscripts/electron-build-osx.sh"
-    - "builder build buildscripts/AgamaApp-osx.xml echo"
+    - "npm run package-macos"
     - "cd build"
     - "tar -czf $AGAMA_OSX_PORTABLE $ELECTRON_BUILD_OSX"
     - "mv $AGAMA_OSX_PORTABLE .."
