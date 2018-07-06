@@ -9,7 +9,7 @@ module.exports = (shepherd) => {
     } else {
       if (process.argv.indexOf('spvcoins=all/add-all') > -1) {
         for (let key in electrumServers) {
-          shepherd.addElectrumCoin(key.toUpperCase());
+          shepherd.addElectrumCoin(electrumServers[key].abbr);
         }
       } else {
         shepherd.addElectrumCoin(coin);

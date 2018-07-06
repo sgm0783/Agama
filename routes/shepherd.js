@@ -36,7 +36,7 @@ shepherd.rpcConf = {};
 shepherd.appRuntimeLog = [];
 shepherd.appRuntimeSPVLog = [];
 shepherd.lockDownAddCoin = false;
-shepherd._isWatchOnly = false;
+shepherd.isWatchOnly = false;
 
 shepherd.staking = {};
 
@@ -97,8 +97,6 @@ shepherd = require('./shepherd/electrum/auth.js')(shepherd);
 shepherd = require('./shepherd/electrum/merkle.js')(shepherd);
 shepherd = require('./shepherd/electrum/balance.js')(shepherd);
 shepherd = require('./shepherd/electrum/transactions.js')(shepherd);
-shepherd = require('./shepherd/electrum/parseTxAddresses.js')(shepherd);
-shepherd = require('./shepherd/electrum/decodeRawtx.js')(shepherd);
 shepherd = require('./shepherd/electrum/block.js')(shepherd);
 shepherd = require('./shepherd/electrum/createtx.js')(shepherd);
 shepherd = require('./shepherd/electrum/createtx-split.js')(shepherd);
@@ -108,10 +106,6 @@ shepherd = require('./shepherd/electrum/listunspent.js')(shepherd);
 shepherd = require('./shepherd/electrum/estimate.js')(shepherd);
 shepherd = require('./shepherd/electrum/btcFees.js')(shepherd);
 shepherd = require('./shepherd/electrum/insight.js')(shepherd);
-shepherd = require('./shepherd/electrum/cache.js')(shepherd);
-shepherd = require('./shepherd/electrum/proxy.js')(shepherd);
-shepherd = require('./shepherd/electrum/servers.js')(shepherd);
-shepherd = require('./shepherd/electrum/csv.js')(shepherd);
 
 // dex
 shepherd = require('./shepherd/dex/coind.js')(shepherd);
@@ -147,9 +141,6 @@ shepherd = require('./shepherd/elections.js')(shepherd);
 // explorer
 // shepherd = require('./shepherd/explorer/overview.js')(shepherd);
 
-// kv
-shepherd = require('./shepherd/kv.js')(shepherd);
-
 shepherd.printDirs();
 
 // default route
@@ -165,24 +156,5 @@ shepherd.setIO = (io) => {
 shepherd.setVar = (_name, _body) => {
   shepherd[_name] = _body;
 };
-
-// spv
-if (shepherd.appConfig.spv &&
-    shepherd.appConfig.spv.cache) {
-  shepherd.loadLocalSPVCache();
-}
-
-if (shepherd.appConfig.spv &&
-    shepherd.appConfig.spv.customServers) {
-  shepherd.loadElectrumServersList();
-} else {
-  shepherd.mergeLocalKvElectrumServers();
-}
-
-shepherd.checkCoinConfigIntegrity();
-
-if (shepherd.appConfig.loadCoinsFromStorage) {
-  shepherd.loadCoinsListFromFile();
-}
 
 module.exports = shepherd;

@@ -36,8 +36,6 @@ const assetChainPorts = {
   'BNTN': '14358',
   'EQL': '10306',
   'VRSC': '27486',
-  'PRLPAY': '9679',
-  'ZILLA': '10041',
 };
 
 module.exports = assetChainPorts;

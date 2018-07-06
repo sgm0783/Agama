@@ -11,7 +11,7 @@ module.exports = (shepherd) => {
 
       for (let key in shepherd.electrumCoins) {
         if (key !== 'auth') {
-          electrumCoinsList.push(key.toUpperCase());
+          electrumCoinsList.push(shepherd.electrumCoins[key].abbr);
         }
       }
 

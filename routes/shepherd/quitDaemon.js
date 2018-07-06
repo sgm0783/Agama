@@ -182,7 +182,7 @@ module.exports = (shepherd) => {
 
         res.end(JSON.stringify(obj));
       } else {
-        delete shepherd.electrumCoins[_chain.toLowerCase()];
+        delete shepherd.electrumCoins[_chain === 'komodo' ? 'KMD' : _chain];
 
         if (Object.keys(shepherd.electrumCoins).length - 1 === 0) {
           shepherd.electrumCoins.auth = false;

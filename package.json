@@ -33,7 +33,6 @@
     "spectron": "^3.8.0"
   },
   "dependencies": {
-    "agama-wallet-lib": "git://github.com/pbca26/agama-wallet-lib#dev",
     "adm-zip": "^0.4.7",
     "ajv": "^6.4.0",
     "arch": "^2.1.0",

@@ -28,7 +28,7 @@ module.exports = (shepherd) => {
       let fee = shepherd.electrumServers[network].txfee;
       let wif = req.body.wif;
       let targets = req.body.targets;
-
+      
       if (req.body.gui) {
         wif = shepherd.electrumKeys[req.body.coin].priv;
       }
@@ -65,8 +65,7 @@ module.exports = (shepherd) => {
           let utxoVerified = true;
 
           for (let i = 0; i < utxoList.length; i++) {
-            if (network === 'komodo' ||
-                network.toLowerCase() === 'kmd') {
+            if (network === 'komodo') {
               utxoListFormatted.push({
                 txid: utxoList[i].txid,
                 vout: utxoList[i].vout,
@@ -233,7 +232,7 @@ module.exports = (shepherd) => {
             shepherd.log(`changeto ${changeAddress} amount ${_change} (${_change * 0.00000001})`, true);
 
             // account for KMD interest
-            if ((network === 'komodo' || network.toLowerCase() === 'kmd') &&
+            if (network === 'komodo' &&
                 totalInterest > 0) {
               // account for extra vout
               // const _feeOverhead = outputs.length === 1 ? shepherd.estimateTxSize(0, 1) * feeRate : 0;
@@ -508,7 +507,7 @@ module.exports = (shepherd) => {
     }
 
     if (network === 'komodo' ||
-        network.toUpperCase() === 'KMD') {
+        network === 'KMD') {
       const _locktime = Math.floor(Date.now() / 1000) - 777;
       tx.setLockTime(_locktime);
       shepherd.log(`kmd tx locktime set to ${_locktime}`, true);
