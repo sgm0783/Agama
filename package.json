@@ -1,7 +1,7 @@
 {
   "name": "agama-app",
   "productName": "Agama",
-  "version": "0.3.8-beta",
+  "version": "0.3.10",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "make-rpm": "node make-rpm.js",
     "make-deb": "node make-deb.js",
     "test": "mocha",
-    "package-mac": "electron-packager . agama --platform=darwin --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.icns --prune=true ---buildVersion=0.3.8-beta --out=build/ --ignore=assets/bin/win64 --ignore=assets/bin/linux64 --overwrite",
-    "package-win": "electron-packager . agama --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.ico --out=build/ --buildVersion=0.3.8-beta --ignore=assets/bin/osx --ignore=assets/bin/linux64 --overwrite"
+    "package-mac": "electron-packager . agama --platform=darwin --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.icns --prune=true ---buildVersion=0.3.10-beta --out=build/ --ignore=assets/bin/win64 --ignore=assets/bin/linux64 --overwrite",
+    "package-win": "electron-packager . agama --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.ico --out=build/ --buildVersion=0.3.10-beta --ignore=assets/bin/osx --ignore=assets/bin/linux64 --overwrite"
   },
   "repository": "https://github.com/VerusCoin/Agama/",
   "homepage": "https://veruscoin.io/",
@@ -23,14 +23,18 @@
     "wallet",
     "spv",
     "jumblr",
-    "VRSC"
+    "VRSC",
+    "veruscoin"
   ],
   "author": "VerusCoin",
   "license": "MIT",
   "devDependencies": {
     "electron": "2.0.2",
     "mocha": "^5.2.0",
-    "spectron": "^3.8.0"
+    "spectron": "^3.8.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "jquery": "^3.3.1"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -47,7 +51,6 @@
     "body-parser": "^1.15.2",
     "buffer-reverse": "^1.0.1",
     "coinselect": "github:bitcoinjs/coinselect",
-    "electron": "^2.0.2",
     "electron-installer-debian": "^0.8.1",
     "electron-packager": "^12.1.0",
     "express": "^4.14.0",

@@ -70,7 +70,9 @@ script:
 - if [ "$MOD_PERMISSIONS" = "true" ]; then chmod +x build/$BUILD_DIR/Agama; fi
 after_script:
 - cd build 
+
 - if [ "$BUILD_VARIANT" = "win64" ]; then zip -r $BUILD_DIR-v${AGAMA_VERSION} $BUILD_DIR &&
+
   gsutil cp $BUILD_DIR-v${AGAMA_VERSION}.zip gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
 - if [ "$BUILD_VARIANT" = "linux64" ]; then cd .. && node make-deb && cd build && ls &&
   gsutil cp agama-app_${PKG_VERSION}_amd64.deb gs://$BUCKET/$PROJECT/$TRAVIS_BRANCH/; fi
