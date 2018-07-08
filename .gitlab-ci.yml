@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - deploy
 variables:
   DOCKER_DRIVER: overlay2
@@ -102,6 +103,16 @@ build:mac:
     - $AGAMA_OSX_PORTABLE
     expire_in: 1 week
     
+
+
+test:
+  stage: test
+  image: node:8.11.3
+  script:
+    - npm install
+    - npm test
+
+
 deploy:
   stage: deploy
   image: google/cloud-sdk:alpine
