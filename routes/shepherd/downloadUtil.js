@@ -46,7 +46,7 @@ module.exports = (shepherd) => {
         resolve();
       });
     });
-  };
+  }
 
   return shepherd;
 };

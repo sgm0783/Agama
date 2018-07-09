@@ -56,7 +56,7 @@ module.exports = (shepherd) => {
         shepherd.log(`${_confLocation} doesnt exist`);
       }
     }
-  };
+  }
 
   /*
    *  type: POST
