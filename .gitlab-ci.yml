@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - deploy
 variables:
   DOCKER_DRIVER: overlay2
@@ -23,10 +24,10 @@ build:linux:
     - echo "$AUTH_KEY" > AUTH_KEY.json
     - gcloud auth activate-service-account --key-file AUTH_KEY.json
     - rm AUTH_KEY.json
-    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_ARTIFACT .
+    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_ARTIFACT . || gsutil cp $STAGING/EasyDEX-GUI/master/$EASYDEX_GUI_ARTIFACT .
     - tar -xzf $EASYDEX_GUI_ARTIFACT --directory gui/EasyDEX-GUI/react
     - rm $EASYDEX_GUI_ARTIFACT
-    - gsutil cp $STAGING/VerusCoin/$CI_COMMIT_REF_NAME/Linux/$AGAMA_ARTIFACTS_LINUX .
+    - gsutil cp $STAGING/VerusCoin/$CI_COMMIT_REF_NAME/Linux/$AGAMA_ARTIFACTS_LINUX . || gsutil cp $STAGING/VerusCoin/master/Linux/$AGAMA_ARTIFACTS_LINUX .
     - mkdir -p assets/bin/
     - tar -xzf $AGAMA_ARTIFACTS_LINUX --directory  assets/bin/ && ls assets/bin
     - rm $AGAMA_ARTIFACTS_LINUX
@@ -52,10 +53,10 @@ build:windows:
     - echo $AUTH_KEY > AUTH_KEY.json
     - gcloud auth activate-service-account --key-file AUTH_KEY.json
     - rm AUTH_KEY.json
-    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_ARTIFACT .
+    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_ARTIFACT . || gsutil cp $STAGING/EasyDEX-GUI/master/$EASYDEX_GUI_ARTIFACT .
     - tar -xzf $EASYDEX_GUI_ARTIFACT --directory gui/EasyDEX-GUI/react
     - rm $EASYDEX_GUI_ARTIFACT
-    - gsutil cp $STAGING/VerusCoin/$CI_COMMIT_REF_NAME/Windows/$AGAMA_ARTIFACTS_WINDOWS .
+    - gsutil cp $STAGING/VerusCoin/$CI_COMMIT_REF_NAME/Windows/$AGAMA_ARTIFACTS_WINDOWS . || gsutil cp $STAGING/VerusCoin/master/Windows/$AGAMA_ARTIFACTS_WINDOWS .
     - mkdir -p assets/bin/
     - unzip $AGAMA_ARTIFACTS_WINDOWS -d assets/bin/ && ls assets/bin
     - rm $AGAMA_ARTIFACTS_WINDOWS
@@ -81,10 +82,10 @@ build:mac:
     - echo "$AUTH_KEY" > AUTH_KEY.json
     - gcloud auth activate-service-account --key-file AUTH_KEY.json
     - rm AUTH_KEY.json
-    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_ARTIFACT .
+    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_ARTIFACT . || gsutil cp $STAGING/EasyDEX-GUI/master/$EASYDEX_GUI_ARTIFACT .
     - tar -xzf $EASYDEX_GUI_ARTIFACT --directory gui/EasyDEX-GUI/react
     - rm $EASYDEX_GUI_ARTIFACT
-    - gsutil cp $STAGING/VerusCoin/$CI_COMMIT_REF_NAME/MacOS/$AGAMA_ARTIFACTS_MACOS .
+    - gsutil cp $STAGING/VerusCoin/$CI_COMMIT_REF_NAME/MacOS/$AGAMA_ARTIFACTS_MACOS . || gsutil cp $STAGING/VerusCoin/master/MacOS/$AGAMA_ARTIFACTS_MACOS .
     - mkdir -p assets/bin/
     - tar -xzf $AGAMA_ARTIFACTS_MACOS --directory  assets/bin/
     - rm $AGAMA_ARTIFACTS_MACOS
@@ -102,6 +103,16 @@ build:mac:
     - $AGAMA_OSX_PORTABLE
     expire_in: 1 week
     
+
+
+.test:
+  stage: test
+  image: node:8.11.3
+  script:
+    - npm install
+    - npm test
+
+
 deploy:
   stage: deploy
   image: google/cloud-sdk:alpine
