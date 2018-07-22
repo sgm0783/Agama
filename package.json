@@ -1,7 +1,7 @@
 {
   "name": "agama-app",
   "productName": "Agama",
-  "version": "0.3.10",
+  "version": "0.4.0",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "make-rpm": "node make-rpm.js",
     "make-deb": "node make-deb.js",
     "test": "mocha",
-    "package-mac": "electron-packager . agama --platform=darwin --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.icns --prune=true ---buildVersion=0.3.10-beta --out=build/ --ignore=assets/bin/win64 --ignore=assets/bin/linux64 --overwrite",
-    "package-win": "electron-packager . agama --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.ico --out=build/ --buildVersion=0.3.10-beta --ignore=assets/bin/osx --ignore=assets/bin/linux64 --overwrite"
+    "package-mac": "electron-packager . agama --platform=darwin --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.icns --prune=true ---buildVersion=0.4.0-beta --out=build/ --ignore=assets/bin/win64 --ignore=assets/bin/linux64 --overwrite",
+    "package-win": "electron-packager . agama --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.ico --out=build/ --buildVersion=0.4.0-beta --ignore=assets/bin/osx --ignore=assets/bin/linux64 --overwrite"
   },
   "repository": "https://github.com/KomodoPlatform/Agama/",
   "homepage": "http://komodoplatform.com",
@@ -29,24 +29,24 @@
   "author": "SuperNET Team",
   "license": "MIT",
   "devDependencies": {
-    "electron": "2.0.2",
-    "mocha": "^5.2.0",
-    "spectron": "^3.8.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "jquery": "^3.3.1"
+    "electron": "^2.0.2",
+    "jquery": "^3.3.1",
+    "mocha": "^5.2.0",
+    "spectron": "^3.8.0"
   },
   "dependencies": {
-    "agama-wallet-lib": "https://github.com/VerusCoin/agama-wallet-lib.git",
     "adm-zip": "^0.4.7",
+    "agama-wallet-lib": "git+https://github.com/VerusCoin/agama-wallet-lib.git",
     "arch": "^2.1.0",
     "async": "^2.6.0",
     "bigi": "^1.4.2",
     "bip39": "^2.5.0",
-    "bitcoinforksjs-lib": "git://github.com/SuperNETorg/bitcoinjs-lib#opt-in-bitcoincash-sighash",
+    "bitcoinforksjs-lib": "git://github.com/SuperNETorg/bitcoinjs-lib.git#opt-in-bitcoincash-sighash",
     "bitcoinjs-lib": "git://github.com/SuperNETorg/bitcoinjs-lib.git",
-    "bitcoinjs-lib-pos": "git://github.com/KomodoPlatform/bitcoinjs-lib-pos",
-    "bitcoinjs-lib-zcash": "git://github.com/pbca26/bitcoinjs-lib#zcash",
+    "bitcoinjs-lib-pos": "git://github.com/KomodoPlatform/bitcoinjs-lib-pos.git",
+    "bitcoinjs-lib-zcash": "git://github.com/pbca26/bitcoinjs-lib.git#zcash",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "buffer-reverse": "^1.0.1",
@@ -59,7 +59,7 @@
     "graceful-fs": "^4.1.11",
     "iocane": "^1.0.0",
     "js-sha256": "^0.7.1",
-    "marketmaker": "git://github.com/pbca26/marketmaker",
+    "marketmaker": "git://github.com/pbca26/marketmaker.git",
     "nodejs-aes256": "^1.0.1",
     "passwd-strength": "git+https://github.com/pbca26/passwd-strength.git",
     "portscanner": "^2.1.1",
@@ -69,6 +69,7 @@
     "sha256": "^0.2.0",
     "socket.io": "^1.7.3",
     "tx-decoder": "git://github.com/pbca26/tx-decoder.git",
+    "webpack": "^4.16.0",
     "wif": "^2.0.6"
   }
 }
