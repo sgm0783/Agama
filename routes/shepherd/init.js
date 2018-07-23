@@ -9,7 +9,7 @@ module.exports = (shepherd) => {
     const localVersionFile = fs.readFileSync(`${rootLocation}version`, 'utf8');
 
     return localVersionFile;
-  };
+  }
 
   shepherd.createAgamaDirs = () => {
     if (!_foldersInitRan) {
@@ -57,6 +57,17 @@ module.exports = (shepherd) => {
         shepherd.log('shepherd/pin folder already exists');
       }
 
+      if (!fs.existsSync(`${shepherd.agamaDir}/shepherd/csv`)) {
+        fs.mkdirSync(`${shepherd.agamaDir}/shepherd/csv`);
+
+        if (fs.existsSync(`${shepherd.agamaDir}/shepherd/csv`)) {
+          shepherd.log(`created csv folder at ${shepherd.agamaDir}/shepherd/csv`);
+          shepherd.writeLog(`create csv folder at ${shepherd.agamaDir}/shepherd/csv`);
+        }
+      } else {
+        shepherd.log('shepherd/csv folder already exists');
+      }
+
       if (!fs.existsSync(shepherd.zcashParamsDir)) {
         fs.mkdirSync(shepherd.zcashParamsDir);
       } else {
@@ -65,7 +76,7 @@ module.exports = (shepherd) => {
 
       _foldersInitRan = true;
     }
-  };
+  }
 
   return shepherd;
 };

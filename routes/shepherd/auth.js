@@ -56,11 +56,11 @@ module.exports = (shepherd) => {
 
   shepherd.checkStringEntropy = (str) => {
     // https://tools.ietf.org/html/rfc4086#page-35
-    return passwdStrength(str) >= 29;
+    return passwdStrength(str) < 29 ? false : true;
   };
 
   shepherd.isWatchOnly = () => {
-    return shepherd.isWatchOnly;
+    return shepherd._isWatchOnly;
   };
 
   shepherd.setPubkey = (seed, coin) => {
