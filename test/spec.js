@@ -3,15 +3,18 @@ const assert = require('assert')
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const path = require('path')
 const chai = require('chai')
+const timeout = 7500;
 describe('Application launch', function () {
-  this.timeout(30000)
-
+  this.timeout(timeout)
   before(function () {
+    this.gotDomReadyCount = 0
     this.app = new Application({
       path: electronPath,
       // The following line tells spectron to look and use the main.js file
       // and the package.json located 1 level above.
-      args: [path.join(__dirname, '..')]
+      args: [path.join(__dirname, '..')],
+      startTimeout: timeout,
+      waitTimeout: timeout
     })
     return this.app.start()
   })
@@ -22,23 +25,37 @@ describe('Application launch', function () {
     }
   })
 
-  it('shows an initial window', function () {
-    return this.app.client.getWindowCount().then(function (count) {
-      assert.equal(count, 1)
-      // Please note that getWindowCount() will return 2 if `dev tools` are opened.
-      // assert.equal(count, 2)
-    })
+  it('opens a window', function (done) {
+    this.app.client.waitUntilWindowLoaded()
+      .getWindowCount().then(function (count) {
+        assert.equal(count, 1)
+        done()
+        return true
+      })
   })
 
-  it('has a native coin list that takes <Tab>', function () {
+  it('has a native coin list that takes <Tab>', function (done) {
     // Wait for the left button for native mode coins is visible
     this.app.client.element('#react-select-3--value').waitForVisible(3000)
     // Click on it and hit <Tab> to select the 1st - VerusCoin
-    return this.app.client.element('#react-select-3--value').click().keys("Tab")
+    this.app.client.element('#react-select-3--value').click().keys('Tab').then(function () {
+      done()
+      return true
+    })
   })
 
-  it('removes the coin selector', function() {
-    return this.app.client.element('#react-select-3--value').waitForVisible(4000, true)
+  it('delays for a bit', function() {
+    return new Promise(function(resolve) {
+      setTimeout(resolve, 500, true);
+    });
+  })
+
+  it('has VRSC in the HTML body', function(done) {
+    this.app.client.getHTML('body').then(function (html) {
+      assert(html.includes('VRSC'), 'Did not find VRSC coin')
+      done()
+      return true
+    })
   })
 })
 

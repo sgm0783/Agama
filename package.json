@@ -1,7 +1,7 @@
 {
   "name": "agama-app",
   "productName": "Agama",
-  "version": "0.4.0",
+  "version": "0.3.12",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -68,6 +68,7 @@
     "request": "^2.80.0",
     "sha256": "^0.2.0",
     "socket.io": "^1.7.3",
+    "test": "^0.6.0",
     "tx-decoder": "git://github.com/pbca26/tx-decoder.git",
     "webpack": "^4.16.0",
     "wif": "^2.0.6"

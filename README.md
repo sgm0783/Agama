@@ -7,10 +7,9 @@ This project uses [EasyDEX-GUI](https://github.com/VerusCoin/EasyDEX-GUI), a Rea
 Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful information about operating the wallet.
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
 
-Version 0.4.0-beta Linux-only release of the Verus enhanced Agama wallet.
-
 This version adds portable VerusHash support for Linux. It was tested against Ubuntu LTS 16 & 18.
-
+Version 0.3.12 fixes some portable miner issues
+Version 0.3.11 introduced updates for unlocked era
 Version 0.3.9 added better Mac integration & was tested against Mac OSX Sierra 10.12.6 and Mac OSX 10.13.5 High Sierra. There are no prerequisites for the Mac now, download the .dmg from the VerusCoin web site, click to mount it, and launch the Agama icon from the mounted drive on your desktop.
 
 #### For Developers
