@@ -277,7 +277,7 @@ module.exports = (shepherd) => {
           };
 
           request(options, (error, response, body) => {
-            resolve(body);            
+            resolve(body);
           });
         });
       }
@@ -288,7 +288,7 @@ module.exports = (shepherd) => {
         if (_call === 'listtransactions') {
           _params = [
             '*',
-            300,
+            5000,
             0
           ];
         }

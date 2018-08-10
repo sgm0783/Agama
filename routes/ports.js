@@ -2,7 +2,6 @@
 
 const assetChainPorts = {
   'komodod': '7771',
-  'VERUSTEST': '27486',
   'markermaker': '7783',
   'OOT': '12467',
   'PIZZA': '11608',
@@ -23,7 +22,7 @@ const assetChainPorts = {
   'MGW': '12386',
   'COQUI': '14276',
   'CHAIN': '15587',
-  'GLXT': '15723',
+  'GLXT': '13109',
   'MVP': '11676',
   'KV': '8299',
   'CEAL': '11116',
@@ -35,6 +34,10 @@ const assetChainPorts = {
   'BTCH': '8800',
   'BNTN': '14358',
   'EQL': '10306',
+  'PRLPAY': '9679',
+  'ZILLA': '10041',
+  'VRSC': '27486',
+  'VERUSTEST': '27486',
 };
 
 module.exports = assetChainPorts;

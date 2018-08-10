@@ -1,9 +1,17 @@
-# Agama Desktop App
+# Verus Enhanced Agama Desktop App
 Desktop Wallet App
 
 ## Resources
+This project uses [EasyDEX-GUI](https://github.com/VerusCoin/EasyDEX-GUI), a React based Javascript GUI multicoin wallet, and [VerusCoin](https://github.com/VerusCoin/VerusCoin) the Komodo based ZCash wallet and miner.
+
 Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) for useful information about operating the wallet.
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
+
+This version adds portable VerusHash support for Linux. It was tested against Ubuntu LTS 16 & 18.
+Version 0.3.12 fixes some portable miner issues
+Version 0.3.11 introduced updates for unlocked era
+Version 0.3.9 added better Mac integration & was tested against Mac OSX Sierra 10.12.6 and Mac OSX 10.13.5 High Sierra. There are no prerequisites for the Mac now, download the .dmg from the VerusCoin web site, click to mount it, and launch the Agama icon from the mounted drive on your desktop.
+
 #### For Developers
 You must have `node.js` and `npm` installed on your machine.
 
@@ -32,7 +40,7 @@ cd agama
 ```
 For Mac use ./binary_artifacts_mac.sh.
 Note that we do not use the standard downloadable komodo executables, the version in VerusCoin/VerusCoin has to be used and the src/komodod and src/komodo-cli build outputs have to be manually patched into assets/bin/osx.
-3) install the electron packager and prebuilt - note the ugly unsafe-perm and allow-root stuff for the prebuilt electron.
+3) install the electron packager and prebuilt - note the ugly unsafe-perm for the electron-prebuilt.
 ```shell
 sudo npm install electron-packager -g
 npm install electron-prebuilt -g --unsafe-perm=true
@@ -41,7 +49,7 @@ npm install electron-prebuilt -g --unsafe-perm=true
 ```shell
 npm install
 ```
-5) If yoi are running in dev mode, get the react back end stuff installed and running
+5) If you are running in dev mode, get the react back end stuff installed and running
 ```shell
 cd react
 npm install
