@@ -18,7 +18,7 @@ module.exports = (shepherd) => {
         shepherd.addElectrumCoin(coin);
       }
     }
-  }
+  };
 
   shepherd.startKMDNative = (selection, isManual) => {
     let herdData;
@@ -113,8 +113,6 @@ module.exports = (shepherd) => {
               '-ac_halving=1,43200,1051920',
               '-ac_decay=100000000,0,0',
               '-ac_end=10080,226080,0',
-              '-addnode=185.25.48.236',
-              '-addnode=185.64.105.111',
               '-ac_timelockgte=19200000000',
               '-ac_timeunlockfrom=129600',
               '-ac_timeunlockto=1180800',
