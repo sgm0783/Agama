@@ -8,6 +8,11 @@ Check [the VerusCoin github Wiki](https://github.com/VerusCoin/VerusCoin/wiki) f
 Also [check the Discord commnity](https://discordapp.com/channels/444621794964537354/449633547343495172)
 
 This version adds portable VerusHash support for Linux. It was tested against Ubuntu LTS 16 & 18.
+Version 0.3.13 Introduced the ability to filter through transactions, added the option
+to automatically load VRSC on startup, added a blocktype display in transaction info, 
+fixed a bug where not all private transactions are shown, optimized the mining button, 
+fixed a bug where the send all button would cause failed transactions, and fixed the 
+search box
 Version 0.3.12 fixes some portable miner issues
 Version 0.3.11 introduced updates for unlocked era
 Version 0.3.9 added better Mac integration & was tested against Mac OSX Sierra 10.12.6 and Mac OSX 10.13.5 High Sierra. There are no prerequisites for the Mac now, download the .dmg from the VerusCoin web site, click to mount it, and launch the Agama icon from the mounted drive on your desktop.
