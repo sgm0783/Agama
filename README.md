@@ -13,6 +13,7 @@ to automatically load VRSC on startup, added a blocktype display in transaction 
 fixed a bug where not all private transactions are shown, optimized the mining button, 
 fixed a bug where the send all button would cause failed transactions, and fixed the 
 search box
+Version 0.3.12a fixes bugs in search function and mining button under Verus 
 Version 0.3.12 fixes some portable miner issues
 Version 0.3.11 introduced updates for unlocked era
 Version 0.3.9 added better Mac integration & was tested against Mac OSX Sierra 10.12.6 and Mac OSX 10.13.5 High Sierra. There are no prerequisites for the Mac now, download the .dmg from the VerusCoin web site, click to mount it, and launch the Agama icon from the mounted drive on your desktop.
