@@ -1,7 +1,7 @@
 {
   "name": "agama-app",
   "productName": "Agama",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -10,8 +10,10 @@
     "make-rpm": "node make-rpm.js",
     "make-deb": "node make-deb.js",
     "test": "mocha",
-    "package-mac": "electron-packager . agama --platform=darwin --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.icns --prune=true ---buildVersion=0.4.0-beta --out=build/ --ignore=assets/bin/win64 --ignore=assets/bin/linux64 --overwrite",
-    "package-win": "electron-packager . agama --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/agama_icons/agama_app_icon.ico --out=build/ --buildVersion=0.4.0-beta --ignore=assets/bin/osx --ignore=assets/bin/linux64 --overwrite"
+    "package-linux": "./buildscripts/electron-build-linux.sh",
+    "package-mac": "./buildscripts/electron-build-osx.sh",
+    "package-win": "./buildscripts/electron-build-windows.sh",
+    "create-installer-mac": "electron-installer-dmg build/$ELECTRON_BUILD_MACOS/Agama.app $AGAMA_MACOS --icon=assets/icons/agama_icons/agama_app_icon.icns"
   },
   "repository": "https://github.com/KomodoPlatform/Agama/",
   "homepage": "http://komodoplatform.com",
@@ -31,7 +33,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "electron": "^2.0.2",
+    "electron": "^2.0.8",
     "jquery": "^3.3.1",
     "mocha": "^5.2.0",
     "spectron": "^3.8.0"
