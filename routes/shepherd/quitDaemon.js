@@ -81,6 +81,9 @@ module.exports = (shepherd) => {
 
         shepherd.log(`trying to safely quit ${key}`);
         execCliStopSafe();
+        setTimeout(() => {
+          execCliStopSafe();
+        }, 60000)
         didDaemonQuitInterval[key] = setInterval(() => {
           didDaemonQuit();
         }, 100);
@@ -89,7 +92,7 @@ module.exports = (shepherd) => {
             shepherd.log(`timeout while trying to safely quit ${key}, force quitting`);
             execCliStopForce();
           }
-        }, 60000)
+        }, 120000)
       } else {
         delete shepherd.coindInstanceRegistry[key];
       }
