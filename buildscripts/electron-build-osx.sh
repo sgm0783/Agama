@@ -6,6 +6,7 @@ electron-packager . --platform=darwin \
   --arch=x64 \
   --icon=assets/icons/agama_app_icon.icns \
   --out=build/  \
+  --ignore=Verus* \
   --ignore=assets/bin/win64 \
   --ignore=assets/bin/linux64 \
   --ignore=react/node_modules \
@@ -27,6 +28,7 @@ electron-packager . --platform=darwin \
   --ignore=version_build \
   --prune=true \
   --overwrite  \
+  --buildVersion="$AGAMA_VERSION"-beta \
   --version-string.CompanyName="VerusCoin" \
   --version-string.FileDescription="Agama" \
   --version-string.OriginalFilename="Agama" \
