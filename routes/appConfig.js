@@ -88,7 +88,7 @@ const appConfig = {
     autoStartVRSC: {
       display: true,
       initDisplay: true,
-      displayName: 'Automatically start VerusCoin on launch',
+      displayName: 'Automatically start VerusCoin on launch in native mode',
       type: 'boolean',
     },
     dataDir: {
