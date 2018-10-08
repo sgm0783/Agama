@@ -83,12 +83,6 @@ build:windows:
   - mkdir -p assets/bin/
   - unzip -qq $VERUS_CLI_WINDOWS -d assets/bin/
   - rm $VERUS_CLI_WINDOWS
-  - curl -F file=@"$AGAMA_WINDOWS"
-      -F channels="$AGAMA_POST_CHANNEL"
-      -F initial_comment="${POST_COMMENT}"
-      -H "${SLACK_BOT_AUTH}"
-      "https://slack.com/api/files.upload"
-  - mv assets/bin/verus-cli assets/bin/win64
   script:
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
@@ -96,6 +90,12 @@ build:windows:
   - npm run package-win
   - cd build
   - zip -r $AGAMA_WINDOWS $ELECTRON_BUILD_WINDOWS
+  - curl -F file=@"$AGAMA_WINDOWS"
+      -F channels="$AGAMA_POST_CHANNEL"
+      -F initial_comment="${POST_COMMENT}"
+      -H "${SLACK_BOT_AUTH}"
+      "https://slack.com/api/files.upload"
+  - mv assets/bin/verus-cli assets/bin/win64
   - mv $AGAMA_WINDOWS ..
   artifacts:
     paths: [$AGAMA_WINDOWS]
