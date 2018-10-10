@@ -102,7 +102,8 @@ module.exports = (shepherd) => {
 
       httpRequest();
     } else if (selection === 'VRSC') {
-      herdData = {
+      if (shepherd.appConfig.autoStakeVRSC) {
+        herdData = {
           'ac_name': 'VRSC',
           'ac_options': [
               '-ac_algo=verushash',
@@ -117,13 +118,33 @@ module.exports = (shepherd) => {
               '-ac_timeunlockfrom=129600',
               '-ac_timeunlockto=1180800',
               '-ac_veruspos=50',
-              '-gen',
-              '-genproclimit=0'
+              '-mint'
           ]
-      };
+        };
+      }
+      else {
+        herdData = {
+          'ac_name': 'VRSC',
+          'ac_options': [
+              '-ac_algo=verushash',
+              '-ac_cc=1',
+              '-ac_supply=0',
+              '-ac_eras=3',
+              '-ac_reward=0,38400000000,2400000000',
+              '-ac_halving=1,43200,1051920',
+              '-ac_decay=100000000,0,0',
+              '-ac_end=10080,226080,0',
+              '-ac_timelockgte=19200000000',
+              '-ac_timeunlockfrom=129600',
+              '-ac_timeunlockto=1180800',
+              '-ac_veruspos=50',
+          ]
+        };
+      }
+      
 
       httpRequest();
-  }  else {
+    }  else {
       const herdData = [{
         'ac_name': 'komodod',
         'ac_options': [

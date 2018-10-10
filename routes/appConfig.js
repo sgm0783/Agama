@@ -12,6 +12,7 @@ const appConfig = {
     experimentalFeatures: false,
     dataDir: '',
     autoStartVRSC: false,
+    autoStakeVRSC: false,
     dex: {
       walletUnlockTimeout: 3600,
     },
@@ -89,6 +90,12 @@ const appConfig = {
       display: true,
       initDisplay: true,
       displayName: 'Automatically start VerusCoin on launch in native mode',
+      type: 'boolean',
+    },
+    autoStakeVRSC: {
+      display: true,
+      initDisplay: true,
+      displayName: 'Automatically start staking VerusCoin when it is launched in native mode',
       type: 'boolean',
     },
     dataDir: {
