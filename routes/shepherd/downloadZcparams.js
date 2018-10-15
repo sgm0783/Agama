@@ -11,20 +11,6 @@ module.exports = (shepherd) => {
       output: 'https://z.cash/downloads/sapling-output.params',
       groth16: 'https://z.cash/downloads/sprout-groth16.params'
     },
-    /*
-    'agama.komodoplatform.com': {
-      proving: 'https://agama.komodoplatform.com/file/supernet/sprout-proving.key',
-      verifying: 'https://agama.komodoplatform.com/file/supernet/sprout-verifying.key',
-    },
-    'agama-yq0ysrdtr.stackpathdns.com': {
-      proving: 'http://agama-yq0ysrdtr.stackpathdns.com/file/supernet/sprout-proving.key',
-      verifying: 'http://agama-yq0ysrdtr.stackpathdns.com/file/supernet/sprout-verifying.key',
-    },
-    'zcash.dl.mercerweiss.com': {
-      proving: 'https://zcash.dl.mercerweiss.com/sprout-proving.key',
-      verifying: 'https://zcash.dl.mercerweiss.com/sprout-verifying.key',
-    },
-    */
   };
 
   shepherd.zcashParamsExist = () => {
