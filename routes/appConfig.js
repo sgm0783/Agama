@@ -101,7 +101,7 @@ const appConfig = {
     },
     cheatCatcher: {
       display: true,
-      info: 'As part of the VerusCoin Something at Stake solution, you can enter a Verus sapling address in this field, so when you catch them, you get their staking reward. Dont forget to thank them ;)',
+      info: 'As part of the VerusCoin Something at Stake solution, you can enter a Verus sapling address in this field, so when you catch them, you get their staking reward.',
       displayName: 'Your VRSC sapling address for receiving funds cheaters attempt to steal',
       type: 'string',
     },

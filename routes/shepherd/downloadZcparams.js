@@ -11,6 +11,13 @@ module.exports = (shepherd) => {
       output: 'https://z.cash/downloads/sapling-output.params',
       groth16: 'https://z.cash/downloads/sprout-groth16.params'
     },
+    'veruscoin.io': {
+      proving: 'https://veruscoin.io/zcparams/sprout-proving.key',
+      verifying: 'https://veruscoin.io/zcparams/sprout-verifying.key',
+      spend: 'https://veruscoin.io/zcparams/sapling-spend.params',
+      output: 'https://veruscoin.io/zcparams/sapling-output.params',
+      groth16: 'https://veruscoin.io/zcparams/sprout-groth16.params'
+    },
   };
 
   shepherd.zcashParamsExist = () => {
