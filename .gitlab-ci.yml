@@ -9,6 +9,7 @@ variables:
   DEFAULT_VERUSCOIN_BRANCH: dev
   DEFAULT_EASYDEXGUI_BRANCH: dev
   AGAMA_VERSION: 0.4.0d
+  VERUSCOIN_VERSION: 0.4.0c
   EASYDEX_GUI_BUILD: build.tar.gz
   ELECTRON_BUILD_LINUX: Agama-linux-x64
   ELECTRON_BUILD_WINDOWS: Agama-win32-x64
@@ -17,11 +18,10 @@ variables:
   AGAMA_WINDOWS: ${ELECTRON_BUILD_WINDOWS}-v${AGAMA_VERSION}.zip
   AGAMA_MACOS: Agama-MacOS-v${AGAMA_VERSION}
   GIT_SUBMODULE_STRATEGY: recursive
-  POST_MESSAGE: " ${UPSTREAM_TRIGGER_INFO}$\n$\n
+  POST_COMMENT: "Built from: ${POST_MESSAGE}$\n$\n
       Pipeline Trigger: ${CI_PIPELINE_SOURCE}$\n
       Branch: ${CI_COMMIT_REF_NAME}$\n
       Commit: ${CI_COMMIT_SHA}$\n
-      Author:  ${GITLAB_USER_NAME} <${GITLAB_USER_EMAIL}>$\n
       ${CI_COMMIT_MESSAGE}"
 
 
@@ -43,9 +43,9 @@ build:linux:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
       rm $EASYDEX_GUI_BUILD
   - (echo "fetching builds from VerusCoin:$CLI_BRANCH" &&
-      gsutil cp $STAGING/VerusCoin/$CLI_BRANCH/Linux/$VERUS_CLI_LINUX .) ||
+      gsutil cp $STAGING/Komodo/$CLI_BRANCH/Linux/$VERUS_CLI_LINUX .) ||
       (echo "No VerusCoin builds available from the ${CI_COMMIT_REF_NAME} branch, fetching from ${DEFAULT_VERUSCOIN_BRANCH}" &&
-      gsutil cp $STAGING/VerusCoin/$DEFAULT_VERUSCOIN_BRANCH/Linux/$VERUS_CLI_LINUX .)
+      gsutil cp $STAGING/Komodo/$DEFAULT_VERUSCOIN_BRANCH/Linux/$VERUS_CLI_LINUX .)
   - mkdir -p assets/bin/
   - tar -xzf $VERUS_CLI_LINUX --directory assets/bin/
   - rm $VERUS_CLI_LINUX
@@ -84,8 +84,8 @@ build:windows:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
       rm $EASYDEX_GUI_BUILD
   - echo "fetching builds from VerusCoin:$CLI_BRANCH" &&
-      gsutil cp $STAGING/VerusCoin/$CLI_BRANCH/Windows/$VERUS_CLI_WINDOWS . ||
-      gsutil cp $STAGING/VerusCoin/$DEFAULT_VERUSCOIN_BRANCH/Windows/$VERUS_CLI_WINDOWS .
+      gsutil cp $STAGING/Komodo/$CLI_BRANCH/Windows/$VERUS_CLI_WINDOWS . ||
+      gsutil cp $STAGING/Komodo/$DEFAULT_VERUSCOIN_BRANCH/Windows/$VERUS_CLI_WINDOWS .
   - mkdir -p assets/bin/
   - unzip -qq $VERUS_CLI_WINDOWS -d assets/bin/
   - rm $VERUS_CLI_WINDOWS
@@ -119,8 +119,8 @@ build:mac:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
       rm $EASYDEX_GUI_BUILD
   - echo "fetching builds from VerusCoin:$CLI_BRANCH" &&
-      gsutil cp $STAGING/VerusCoin/$CLI_BRANCH/MacOS/$VERUS_CLI_MACOS . ||
-      gsutil cp $STAGING/VerusCoin/$DEFAULT_VERUSCOIN_BRANCH/MacOS/$VERUS_CLI_MACOS .
+      gsutil cp $STAGING/Komodo/$CLI_BRANCH/MacOS/$VERUS_CLI_MACOS . ||
+      gsutil cp $STAGING/Komodo/$DEFAULT_VERUSCOIN_BRANCH/MacOS/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/
   - tar -xzf $VERUS_CLI_MACOS --directory assets/bin/
   - rm $VERUS_CLI_MACOS
