@@ -29,7 +29,7 @@ build:linux:
   image: asherd/agama-builder
   stage: build
   before_script:
-  - if [ -z "${VERUS_CLI_LINUX}" ]; then export VERUS_CLI_LINUX="Verus-CLI-Linux-v${VERUSCOIN_VERSION}-beta.tar.gz"; fi
+  - if [ -z "${VERUS_CLI_LINUX}" ]; then export VERUS_CLI_LINUX="Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"; fi
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export CLI_BRANCH=$CI_COMMIT_REF_NAME;
       else export CLI_BRANCH=$UPSTREAM_CLI_BRANCH; fi
   - echo "$AUTH_KEY" > AUTH_KEY.json &&
@@ -72,7 +72,7 @@ build:windows:
   stage: build
   image: asherd/agama-builder:windows
   before_script:
-  - if [ -z "${VERUS_CLI_WINDOWS}" ]; then export VERUS_CLI_WINDOWS="Verus-CLI-Windows-v${VERUSCOIN_VERSION}-beta.zip"; fi
+  - if [ -z "${VERUS_CLI_WINDOWS}" ]; then export VERUS_CLI_WINDOWS="Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip"; fi
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export CLI_BRANCH=$CI_COMMIT_REF_NAME; else export CLI_BRANCH=$UPSTREAM_CLI_BRANCH; fi
   - echo "$AUTH_KEY" > AUTH_KEY.json &&
       gcloud auth activate-service-account
@@ -112,7 +112,7 @@ build:mac:
   stage: build
   tags: ["High Sierra"]
   before_script:
-  - if [ -z  "${VERUS_CLI_MACOS}" ]; then export VERUS_CLI_MACOS="Verus-CLI-MacOS-v${VERUSCOIN_VERSION}-beta.tar.gz"; fi
+  - if [ -z  "${VERUS_CLI_MACOS}" ]; then export VERUS_CLI_MACOS="Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz"; fi
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export CLI_BRANCH=$CI_COMMIT_REF_NAME; else export CLI_BRANCH=$UPSTREAM_CLI_BRANCH; fi
   - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD . ||
       gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .
