@@ -43,7 +43,7 @@ build:linux:
       rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_LINUX .
   - mkdir -p assets/bin/
-  - tar -xzf $VERUS_CLI_LINUX --directory assets/bin/
+  - tar -xzf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
   - rm $VERUS_CLI_LINUX
   - mv assets/bin/verus-cli assets/bin/linux64
   script:
@@ -80,7 +80,7 @@ build:windows:
       gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
-  - unzip -qq $VERUS_CLI_WINDOWS -d assets/bin/
+  - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/
   - rm $VERUS_CLI_WINDOWS
   - mv assets/bin/verus-cli assets/bin/win64
   script:
@@ -113,7 +113,7 @@ build:mac:
       rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/
-  - tar -xzf $VERUS_CLI_MACOS --directory assets/bin/
+  - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
   - rm $VERUS_CLI_MACOS
   - mv assets/bin/verus-cli assets/bin/osx
   script:
@@ -142,11 +142,17 @@ deploy:
   - mkdir -p $CI_COMMIT_REF_NAME/Windows
   - mkdir -p $CI_COMMIT_REF_NAME/Linux
   - mkdir -p $CI_COMMIT_REF_NAME/MacOS
-  - mv $AGAMA_LINUX $CI_COMMIT_REF_NAME/Linux
-  - mv $AGAMA_WINDOWS $CI_COMMIT_REF_NAME/Windows
-  - mv $AGAMA_MACOS.dmg $CI_COMMIT_REF_NAME/MacOS
+  - cp $AGAMA_LINUX $CI_COMMIT_REF_NAME/Linux
+  - cp $AGAMA_WINDOWS $CI_COMMIT_REF_NAME/Windows
+  - cp $AGAMA_MACOS.dmg $CI_COMMIT_REF_NAME/MacOS
   - echo $AUTH_KEY > AUTH_KEY.json
   - gcloud auth activate-service-account --key-file AUTH_KEY.json
   - gsutil rsync -r $CI_COMMIT_REF_NAME $STAGING/Agama/$CI_COMMIT_REF_NAME/
+  artifacts:
+    paths: -
+    - $AGAMA_WINDOWS
+    - $AGAMA_WINDOWS
+    - $AGAMA_MACOS.dmg
+    expire_in: 1 week
 
 
