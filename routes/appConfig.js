@@ -18,6 +18,8 @@ const appConfig = {
     dex: {
       walletUnlockTimeout: 3600,
     },
+    transactionCountPublic: 1000,
+    transactionCountPrivate: 1000,
     cliStopTimeout: 1000,
     failedRPCAttemptsThreshold: 10,
     stopNativeDaemonsOnQuit: true,
@@ -129,6 +131,18 @@ const appConfig = {
         displayName: 'walletUnlockTimeout',
         type: 'number',
       },
+    },
+    transactionCountPublic: {
+      display: true,
+      displayName: 'Public Transaction Count',
+      info: 'Max number of public transactions to load and display in the native mode gui. Note: This number will be called on an interval, and setting a number too high can cause wallet to be unusable.',
+      type: 'number',
+    },
+    transactionCountPrivate: {
+      display: true,
+      displayName: 'Private Transaction Count',
+      info: 'Max number of private transactions to load and display in the native mode gui. Note: This number will be called on an interval, and setting a number too high can cause wallet to be unusable.',
+      type: 'number',
     },
     cliStopTimeout: {
       display: true,
