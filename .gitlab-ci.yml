@@ -149,7 +149,7 @@ deploy:
   - gcloud auth activate-service-account --key-file AUTH_KEY.json
   - gsutil rsync -r $CI_COMMIT_REF_NAME $STAGING/Agama/$CI_COMMIT_REF_NAME/
   artifacts:
-    paths: -
+    paths: 
     - $AGAMA_WINDOWS
     - $AGAMA_WINDOWS
     - $AGAMA_MACOS.dmg
