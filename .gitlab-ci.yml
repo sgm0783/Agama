@@ -44,7 +44,7 @@ build:linux:
   - gsutil cp $STAGING/$VERUS_CLI_LINUX .
   - mkdir -p assets/bin/
   - tar -xzf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
-  - rm $VERUS_CLI_LINUX
+  - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
   - mv assets/bin/verus-cli assets/bin/linux64
   script:
   - npm install electron-packager -g
@@ -81,7 +81,7 @@ build:windows:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
   - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/
-  - rm $VERUS_CLI_WINDOWS
+  - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
   - mv assets/bin/verus-cli assets/bin/win64
   script:
   - npm install electron-packager -g
@@ -114,7 +114,7 @@ build:mac:
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/
   - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
-  - rm $VERUS_CLI_MACOS
+  - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
   - mv assets/bin/verus-cli assets/bin/osx
   script:
   - npm install
@@ -149,7 +149,7 @@ deploy:
   - gcloud auth activate-service-account --key-file AUTH_KEY.json
   - gsutil rsync -r $CI_COMMIT_REF_NAME $STAGING/Agama/$CI_COMMIT_REF_NAME/
   artifacts:
-    paths: 
+    paths:
     - $AGAMA_WINDOWS
     - $AGAMA_WINDOWS
     - $AGAMA_MACOS.dmg
