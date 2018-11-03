@@ -289,7 +289,7 @@ module.exports = (shepherd) => {
         if (_call === 'listtransactions') {
           _params = [
             '*',
-            2000,
+            shepherd.appConfig.transactionCountPublic,
             0
           ];
         }
