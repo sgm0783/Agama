@@ -1,15 +1,15 @@
 stages:
-  - build
-  - test
-  - deploy
+- build
+- test
+- deploy
 
 
 variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: dev
   DEFAULT_EASYDEXGUI_BRANCH: dev
-  AGAMA_VERSION: 0.4.0e
-  VERUSCOIN_VERSION: 0.4.0e
+  AGAMA_VERSION: 0.4.0f
+  VERUSCOIN_VERSION: 0.4.0f
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
   ELECTRON_BUILD_LINUX: Agama-linux-x64
@@ -34,13 +34,16 @@ build:linux:
     --key-file AUTH_KEY.json &&
     rm AUTH_KEY.json
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-      VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"; fi
+    VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"
+    POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+    else
+    export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
   - (echo "fetching latest build from  EasyDEX-GUI:$CI_COMMIT_REF_NAME" &&
-      gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .) ||
-      (echo "No EasyDEX-GUI builds available from the ${CI_COMMIT_REF_NAME} branch, fetching from ${DEFAULT_VERUSCOIN_BRANCH}" &&
-      gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .)
+    gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .) ||
+    (echo "No EasyDEX-GUI builds available from the ${CI_COMMIT_REF_NAME} branch, fetching from ${DEFAULT_VERUSCOIN_BRANCH}" &&
+    gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .)
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
-      rm $EASYDEX_GUI_BUILD
+    rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_LINUX .
   - mkdir -p assets/bin/
   - tar -xzf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
@@ -74,10 +77,13 @@ build:windows:
     --key-file AUTH_KEY.json &&
     rm AUTH_KEY.json
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-      VERUS_CLI_WINDOWS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Windows/Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip"; fi
+    VERUS_CLI_WINDOWS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Windows/Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip"
+    POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+    else
+    export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
   - echo "fetching latest build from  EasyDEX-GUI:$CI_COMMIT_REF_NAME"
   - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD . ||
-      gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .
+    gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
   - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/
@@ -106,11 +112,14 @@ build:mac:
   tags: ["High Sierra"]
   before_script:
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-      VERUS_CLI_MACOS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/MacOS/Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz"; fi
+    VERUS_CLI_MACOS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/MacOS/Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz";
+    POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+    else
+    export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
   - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD . ||
-      gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .
+    gsutil cp $STAGING/EasyDEX-GUI/$DEFAULT_EASYDEXGUI_BRANCH/$EASYDEX_GUI_BUILD .
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
-      rm $EASYDEX_GUI_BUILD
+    rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/
   - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
@@ -129,7 +138,7 @@ build:mac:
   artifacts:
     paths: [$AGAMA_MACOS.dmg]
     expire_in: 1 week
-    
+
 
 deploy:
   stage: deploy
