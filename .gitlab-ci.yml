@@ -148,7 +148,7 @@ build:mac:
   script:
   - npm run package-mac
   - npm run create-installer-mac
-  - openssl sha -sha256 ${AGAMA_MACOS}.dmg > ${AGAMA_MACOS}.dmg.sha256
+  - shasum -a 256 ${AGAMA_MACOS}.dmg > ${AGAMA_MACOS}.dmg.sha256
   after_script:
   - curl -F file=@"${AGAMA_MACOS}.dmg"
       -F channels="${AGAMA_POST_CHANNEL}"
