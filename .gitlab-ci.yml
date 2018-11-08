@@ -63,16 +63,16 @@ build:linux:
   - cd build
   - tar -czf ${AGAMA_LINUX} $ELECTRON_BUILD_LINUX
   - sha256sum ${AGAMA_LINUX} > ${AGAMA_LINUX}.sha256
+  - mv $AGAMA_LINUX ${AGAMA_LINUX}.sha256 ..
   after_script:
   - curl -F file=@"$AGAMA_LINUX"
       -F channels="$AGAMA_POST_CHANNEL"
       -F initial_comment="${POST_COMMENT}"
       -H "${SLACK_BOT_AUTH}"
       "https://slack.com/api/files.upload"
-  - mv $AGAMA_LINUX ${AGAMA_LINUX}.sha256 ..
   artifacts:
     paths:
-    - $AGAMA_LINUX
+    - ${AGAMA_LINUX}
     - ${AGAMA_LINUX}.sha256
     expire_in: 1 week
 ########################################################################################################################
@@ -108,13 +108,13 @@ build:windows:
   - cd build
   - zip -r ${AGAMA_WINDOWS} $ELECTRON_BUILD_WINDOWS
   - sha256sum ${AGAMA_WINDOWS} > ${AGAMA_WINDOWS}.sha256
+  - mv $AGAMA_WINDOWS ${AGAMA_WINDOWS}.sha256 ..
   after_script:
   - curl -F file=@"$AGAMA_WINDOWS"
       -F channels="$AGAMA_POST_CHANNEL"
       -F initial_comment="${POST_COMMENT}"
       -H "${SLACK_BOT_AUTH}"
       "https://slack.com/api/files.upload"
-  - mv $AGAMA_WINDOWS ${AGAMA_WINDOWS}.sha256 ..
   artifacts:
     paths:
     - ${AGAMA_WINDOWS}
@@ -148,7 +148,7 @@ build:mac:
   script:
   - npm run package-mac
   - npm run create-installer-mac
-  - openssl sha -sha256 ${AGAMA_MACOS.dmg} > ${AGAMA_MACOS.dmg}.sha256
+  - openssl sha -sha256 ${AGAMA_MACOS}.dmg > ${AGAMA_MACOS}.dmg.sha256
   after_script:
   - curl -F file=@"${AGAMA_MACOS}.dmg"
       -F channels="${AGAMA_POST_CHANNEL}"
