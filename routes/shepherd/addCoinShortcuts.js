@@ -125,9 +125,9 @@ module.exports = (shepherd) => {
           herdData['ac_options'].push('-mint');
           console.log('VRSC Staking set to default');
         }
-        if(shepherd.appConfig.cheatCatcher.length === 78) {
-          herdData['ac_options'].push('-cheatcatcher=' + shepherd.appConfig.cheatCatcher);
-          console.log('Cheatcatching enabled at address ' + shepherd.appConfig.cheatCatcher);
+        if(shepherd.appConfig.stakeGuard.length === 78) {
+          herdData['ac_options'].push('-cheatcatcher=' + shepherd.appConfig.stakeGuard);
+          console.log('Cheatcatching enabled at address ' + shepherd.appConfig.stakeGuard);
         }
       
 
