@@ -9,8 +9,8 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: dev
   DEFAULT_EASYDEXGUI_BRANCH: dev
-  AGAMA_VERSION: 0.4.0g
-  VERUSCOIN_VERSION: 0.4.0g
+  AGAMA_VERSION: 0.4.0h
+  VERUSCOIN_VERSION: 0.4.0h
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
   ELECTRON_BUILD_LINUX: Agama-linux-x64
@@ -148,7 +148,7 @@ build:mac:
   script:
   - npm run package-mac
   - npm run create-installer-mac
-  - openssl sha -sha256 ${AGAMA_MACOS}.dmg > ${AGAMA_MACOS}.dmg.sha256
+  - shasum -a 256 ${AGAMA_MACOS}.dmg > ${AGAMA_MACOS}.dmg.sha256
   after_script:
   - curl -F file=@"${AGAMA_MACOS}.dmg"
       -F channels="${AGAMA_POST_CHANNEL}"
