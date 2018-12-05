@@ -1,6 +1,7 @@
 const async = require('async');
 const Promise = require('bluebird');
 const { hex2str } = require('agama-wallet-lib/src/crypto/utils');
+const { isKomodoCoin } = require('agama-wallet-lib/src/coin-helpers');
 
 // TODO: add z -> pub, pub -> z flag for zcash forks
 
@@ -133,7 +134,8 @@ module.exports = (api) => {
                             decodedTx.outputs.length) {
                           for (let i = 0; i < decodedTx.outputs.length; i++) {
                             if (decodedTx.outputs[i].scriptPubKey.type === 'nulldata') {
-                              if (isKv) {
+                              if (isKv &&
+                                  isKomodoCoin(network)) {
                                 opreturn = {
                                   kvHex: decodedTx.outputs[i].scriptPubKey.hex,
                                   kvAsm: decodedTx.outputs[i].scriptPubKey.asm,
@@ -169,7 +171,7 @@ module.exports = (api) => {
                                 const formattedTx = api.parseTransactionAddresses(
                                   _parsedTx,
                                   _address,
-                                  network
+                                  network.toLowerCase() === 'kmd'
                                 );
 
                                 if (formattedTx.type) {
@@ -242,7 +244,10 @@ module.exports = (api) => {
 
                             if (_decodedInput.txid !== '0000000000000000000000000000000000000000000000000000000000000000') {
                               api.getTransaction(
-                                _decodedInput.txid, network, ecl)
+                                _decodedInput.txid,
+                                network,
+                                ecl
+                              )
                               .then((rawInput) => {
                                 const decodedVinVout = api.electrumJSTxDecoder(
                                   rawInput,
@@ -275,7 +280,7 @@ module.exports = (api) => {
                           const formattedTx = api.parseTransactionAddresses(
                             _parsedTx,
                             _address,
-                            network
+                            network.toLowerCase() === 'kmd'
                           );
                           _rawtx.push(formattedTx);
                           index++;
@@ -319,7 +324,7 @@ module.exports = (api) => {
                       const formattedTx = api.parseTransactionAddresses(
                         _parsedTx,
                         _address,
-                        network
+                        network.toLowerCase() === 'kmd'
                       );
                       _rawtx.push(formattedTx);
                       index++;
