@@ -2,27 +2,30 @@
 Desktop App for SuperNET DAPPs
 
 #### For Developers
-You must have `node.js`, `npm` and `webpack` (npm install webpack@3.0.0) installed on your machine.
+You must have `node.js`, `npm` and `webpack` installed on your machine.
 
-Use install.sh script or
+*Download the latest/current version of the Komodo Core (komodo daemon) for the operating system/s you are planning to build Agama for. You can find them here https://github.com/KomodoPlatform/komodo/releases.
 
-Clone Agama Desktop App with EasyDEX-GUI submodule
+
+1) Build & Start EasyDEX-GUI (frontend)
 ```shell
-1) git clone https://github.com/komodoplatform/agama --recursive --branch dev --single-branch
-with this command you git clone agama - but explicitly just the dev branch (therefore --single-branch) which we also use for the release packages.
-2) cd agama && cd gui/EasyDEX-GUI/
-3) git checkout dev && git pull origin dev
-4) npm install && npm install webpack
-5) ./binary_artifacts.sh
-6) npm start in project root folder
-7) cd gui/EasyDEX-GUI/react/src
-8) npm start
-8) toggle dev and debug options in settings
-9) restart the app
-10) sync komodod and/or asset chains
-
-You are ready to dev
+1) git clone https://github.com/komodoplatform/agama --recursive --branch master --single-branch
+2) cd agama/gui/EasyDEX-GUI/react/
+3) git checkout master && git pull origin master
+4) npm update && npm install && npm install webpack
+5) npm build && npm start (keep this terminal running when proceeding with part 2 "Start Agama App")
 ```
+
+2) Start Agama App (electron)
+```shell
+1) cd agama
+2) mv komodod and komodo-cli *binaries to assets/bin/OS_dir
+3) npm update && npm install
+8) npm start
+9) toggle dev and debug options in settings
+10) restart the app
+```
+You re ready to dev!
 
 ### Important dev notes
 
