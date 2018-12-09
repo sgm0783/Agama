@@ -57,7 +57,7 @@ module.exports = (shepherd) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          herd: 'komodod',
+          herd: herdData.ac_daemon ? herdData.ac_daemon : 'komodod',
           options: herdData,
           token: shepherd.appSessionHash,
         }),
@@ -104,6 +104,7 @@ module.exports = (shepherd) => {
     } else if (selection === 'VRSC') {
         herdData = {
           'ac_name': 'VRSC',
+          'ac_daemon': 'verusd',
           'ac_options': [
               '-ac_algo=verushash',
               '-ac_cc=1',
