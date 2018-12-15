@@ -150,8 +150,8 @@ build:mac:
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/osx
   - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
-  - mv assets/bin/linux64/komodod assets/bin/linux64/verusd
-  - https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
+  - mv assets/bin/osx/komodod assets/bin/osx/verusd
+  - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
   - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
   - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
   - npm install
