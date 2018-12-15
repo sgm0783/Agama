@@ -32,6 +32,7 @@ const assetChainPorts = {
   'VOTE2018': '15488',
   'NINJA': '8427',
   'BTCH': '8800',
+  'PIRATE': '45453',
   'BNTN': '14358',
   'EQL': '10306',
   'PRLPAY': '9679',

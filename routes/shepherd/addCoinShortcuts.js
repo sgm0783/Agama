@@ -133,7 +133,19 @@ module.exports = (shepherd) => {
       
 
       httpRequest();
-    }  else {
+    }  else if (selection === 'PIRATE') {
+      herdData = {
+        'ac_name': 'PIRATE',
+        'ac_options': [
+            '-ac_supply=0',
+            '-ac_reward=25600000000',
+            '-ac_halving=77777',
+            '-ac_private=1',
+        ]
+      };
+    
+    httpRequest();
+  }  else {
       const herdData = [{
         'ac_name': 'komodod',
         'ac_options': [
