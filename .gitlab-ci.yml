@@ -53,7 +53,7 @@ build:linux:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm ${EASYDEX_GUI_BUILD}
   - gsutil cp $STAGING/$VERUS_CLI_LINUX .
   - mkdir -p assets/bin/linux64
-  - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz strip --directory assets/bin/linux64
+  - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
   - mv assets/bin/linux64/komodod assets/bin/linux64/verusd
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_linux_${KOMODO_VERSION}.tar.gz
   - tar xvfz komodo_linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
