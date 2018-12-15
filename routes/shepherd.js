@@ -85,6 +85,7 @@ shepherd = require('./shepherd/config.js')(shepherd);
 shepherd.appConfig = shepherd.loadLocalConfig();
 
 shepherd.pathsDaemons();
+//shepherd.acDaemonPath();
 
 shepherd.appConfigSchema = shepherd._appConfig.schema;
 shepherd.defaultAppConfig = Object.assign({}, shepherd.appConfig);

@@ -14,7 +14,7 @@ const appConfig = {
     autoStartVRSC: false,
     autoStakeVRSC: false,
     //darkMode: false,
-    cheatCatcher: '',
+    stakeGuard: '',
     dex: {
       walletUnlockTimeout: 3600,
     },
@@ -110,10 +110,10 @@ const appConfig = {
       type: 'boolean',
     },
     */
-    cheatCatcher: {
+    stakeGuard: {
       display: true,
-      info: 'As part of the VerusCoin Something at Stake solution, you can enter a Verus sapling address in this field, so when you catch them, you get their staking reward.',
-      displayName: 'Your VRSC sapling address for receiving funds cheaters attempt to steal',
+      info: 'As part of the VerusCoin Something at Stake solution, you can enter a Verus sapling address in this field, and receive awards for finding double-stakers',
+      displayName: 'Your VRSC sapling address for StakeGuard',
       type: 'string',
     },
     dataDir: {

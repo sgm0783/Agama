@@ -57,7 +57,7 @@ module.exports = (shepherd) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          herd: 'komodod',
+          herd: herdData.ac_daemon ? herdData.ac_daemon : 'komodod',
           options: herdData,
           token: shepherd.appSessionHash,
         }),
@@ -104,6 +104,7 @@ module.exports = (shepherd) => {
     } else if (selection === 'VRSC') {
         herdData = {
           'ac_name': 'VRSC',
+          'ac_daemon': 'verusd',
           'ac_options': [
               '-ac_algo=verushash',
               '-ac_cc=1',
@@ -125,14 +126,26 @@ module.exports = (shepherd) => {
           herdData['ac_options'].push('-mint');
           console.log('VRSC Staking set to default');
         }
-        if(shepherd.appConfig.cheatCatcher.length === 78) {
-          herdData['ac_options'].push('-cheatcatcher=' + shepherd.appConfig.cheatCatcher);
-          console.log('Cheatcatching enabled at address ' + shepherd.appConfig.cheatCatcher);
+        if(shepherd.appConfig.stakeGuard.length === 78) {
+          herdData['ac_options'].push('-cheatcatcher=' + shepherd.appConfig.stakeGuard);
+          console.log('Cheatcatching enabled at address ' + shepherd.appConfig.stakeGuard);
         }
       
 
       httpRequest();
-    }  else {
+    }  else if (selection === 'PIRATE') {
+      herdData = {
+        'ac_name': 'PIRATE',
+        'ac_options': [
+            '-ac_supply=0',
+            '-ac_reward=25600000000',
+            '-ac_halving=77777',
+            '-ac_private=1',
+        ]
+      };
+    
+    httpRequest();
+  }  else {
       const herdData = [{
         'ac_name': 'komodod',
         'ac_options': [
