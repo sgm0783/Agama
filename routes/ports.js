@@ -38,6 +38,12 @@ const assetChainPorts = {
   'PRLPAY': '9679',
   'ZILLA': '10041',
   'VRSC': '27486',
+  'DION': '23895',
+  'PTX': '61939',
+  'ZEX': '26476',
+  'CCL': '20849',
+  'MGNX': '20731',
+  'KMDICE': '30177',
 };
 
 module.exports = assetChainPorts;
