@@ -54,6 +54,7 @@ build:linux:
   - gsutil cp $STAGING/$VERUS_CLI_LINUX .
   - mkdir -p assets/bin/linux64
   - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
+  - assets/bin/linux64/verusd
   - mv assets/bin/linux64/komodod assets/bin/linux64/verusd
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_linux_${KOMODO_VERSION}.tar.gz
   - tar xvfz komodo_linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
@@ -108,7 +109,7 @@ build:windows:
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_win_${KOMODO_VERSION}.zip
   - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
   - rm komodo_win_${KOMODO_VERSION}.zip
-  - mv komodo_win_${KOMODO_VERSION}/komodo_win_${KOMODO_VERSION}/* assets/bin/win64
+  - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
   - npm install
@@ -150,6 +151,7 @@ build:mac:
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/osx
   - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
+  - rm assets/bin/osx/verusd
   - mv assets/bin/osx/komodod assets/bin/osx/verusd
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
   - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
