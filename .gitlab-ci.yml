@@ -9,8 +9,9 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: dev
   DEFAULT_EASYDEXGUI_BRANCH: dev
-  AGAMA_VERSION: 0.4.0g
-  VERUSCOIN_VERSION: 0.4.0g
+  AGAMA_VERSION: 0.4.0h
+  VERUSCOIN_VERSION: 0.4.0h
+  KOMODO_VERSION: 0.3.1
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
   ELECTRON_BUILD_LINUX: Agama-linux-x64
@@ -49,12 +50,14 @@ build:linux:
     else
     export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
   - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-  - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
+  - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm ${EASYDEX_GUI_BUILD}
   - gsutil cp $STAGING/$VERUS_CLI_LINUX .
-  - mkdir -p assets/bin/
-  - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
+  - mkdir -p assets/bin/linux64
+  - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_linux_${KOMODO_VERSION}.tar.gz
+  - tar xvfz komodo_linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
+  - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz strip --directory assets/bin/linux64
+  - if [ "${CI_COMMIT_REF_NAME}" = "master" ]; then strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli; fi
   - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
-  - mv assets/bin/verus-cli assets/bin/linux64
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
   - npm install
@@ -98,7 +101,10 @@ build:windows:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
   - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/
+  - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_win_${KOMODO_VERSION}.zip
   - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
+  - rm komodo_win_${KOMODO_VERSION}.zip
+  - mv komodo_win_${KOMODO_VERSION}/komodo_win_${KOMODO_VERSION}/* assets/bin/win64
   - mv assets/bin/verus-cli assets/bin/win64
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
@@ -139,10 +145,11 @@ build:mac:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
     rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
-  - mkdir -p assets/bin/
-  - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --directory assets/bin/
+  - mkdir -p assets/bin/osx
+  - https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
+  - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
+  - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
   - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
-  - mv assets/bin/verus-cli assets/bin/osx
   - npm install
   - npm install electron-packager -g
   script:
