@@ -161,6 +161,9 @@ api = require('./api/eth/createtx.js')(api);
 api = require('./api/eth/utils.js')(api);
 
 // exchanges
+api.exchangesCache = {
+  coinswitch: {},
+};
 api = require('./api/exchange/coinswitch/coinswitch')(api);
 
 api.printDirs();

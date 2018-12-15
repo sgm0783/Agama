@@ -1,9 +1,74 @@
 const request = require('request');
 const Promise = require('bluebird');
+const fs = require('fs-extra');
+const _fs = require('graceful-fs');
+const fsnode = require('fs');
+
 const API_KEY_PROD = '3sie59MENW47hvcAsaUXgw0R7BCQmKZ4CapfB90c';
 const API_KEY_DEV = 'cRbHFJTlL6aSfZ0K2q7nj6MgV5Ih4hbA2fUG0ueO';
+const localCacheFname = `${api.agamaDir}/exchanges-cache.json`;
 
 module.exports = (api) => {
+  api.loadLocalExchangesCache = () => {
+    if (fs.existsSync(localCacheFname)) {
+      const localCache = fs.readFileSync(localCacheFname, 'utf8');
+
+      api.log('local exchanges cache loaded from local file', 'exchanges.cache');
+
+      try {
+        api.electrumCache = JSON.parse(localCache);
+      } catch (e) {
+        api.log('local exchanges cache file is damaged, create new', 'exchanges.cache');
+        api.saveLocalExchangesCache();
+        api.exchangesCache = {};
+      }
+    } else {
+      api.log('local exchanges cache file is not found, create new', 'exchanges.cache');
+      api.saveLocalExchangesCache();
+      api.exchangesCache = {};
+    }
+  };
+
+  api.saveLocalExchangesCache = () => {
+    _fs.access(api.agamaDir, fs.constants.R_OK, (err) => {
+      if (!err) {
+        const FixFilePermissions = () => {
+          return new Promise((resolve, reject) => {
+            const result = 'exchanges-cache.json file permissions updated to Read/Write';
+
+            fsnode.chmodSync(localCache, '0666');
+
+            setTimeout(() => {
+              api.log(result, 'exchanges.cache');
+              api.writeLog(result);
+              resolve(result);
+            }, 1000);
+          });
+        }
+
+        const FsWrite = () => {
+          return new Promise((resolve, reject) => {
+            const result = 'exchanges-cache.json write file is done';
+            const err = fs.writeFileSync(localCache, JSON.stringify(api.exchangesCache), 'utf8');
+
+            if (err)
+              return api.log(err, 'exchanges.cache');
+
+            fsnode.chmodSync(localCache, '0666');
+            setTimeout(() => {
+              api.log(result, 'exchanges.cache');
+              api.log(`exchanges-cache.json file is created successfully at: ${api.agamaDir}`, 'exchanges.cache');
+              resolve(result);
+            }, 2000);
+          });
+        }
+
+        FsWrite()
+        .then(FixFilePermissions());
+      }
+    });
+  }
+
   /*
    *  type: GET
    *
@@ -29,7 +94,6 @@ module.exports = (api) => {
           
             resolve(retObj);
           } catch (e) {
-            console.log(body);
             api.log(`can\'t parse json from [${options.method}] ${options.url}`, 'exchanges.coinswitch');
             const retObj = {
               msg: 'error',
@@ -155,6 +219,11 @@ module.exports = (api) => {
           };
           res.end(JSON.stringify(retObj));
         } else {
+          if (result.result.data &&
+              result.result.data.orderId) {
+            api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
+            api.saveLocalExchangesCache();
+          }
           res.end(JSON.stringify(result));
         }
       });
@@ -196,9 +265,133 @@ module.exports = (api) => {
           };
           res.end(JSON.stringify(retObj));
         } else {
+          if (result.result.data &&
+              result.result.data.orderId) {
+            api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
+            api.saveLocalExchangesCache();
+          }
           res.end(JSON.stringify(result));
         }
       });
+    } else {
+      const retObj = {
+        msg: 'error',
+        result: 'unauthorized access',
+      };
+
+      res.end(JSON.stringify(retObj));
+    }
+  });
+
+  /*
+   *  type: POST
+   *
+   */
+  api.post('/exchanges/cache/delete', (req, res, next) => {
+    if (api.checkToken(req.body.token)) {
+      api.exchangesCache = {
+        coinswitch: {},
+      };
+      api.saveLocalExchangesCache();
+
+      const retObj = {
+        msg: 'success',
+        result: 'exchanges cache is removed',
+      };
+
+      res.end(JSON.stringify(retObj));
+    } else {
+      const retObj = {
+        msg: 'error',
+        result: 'unauthorized access',
+      };
+
+      res.end(JSON.stringify(retObj));
+    }
+  });
+
+  /*
+   *  type: POST
+   *
+   */
+  api.post('/exchanges/cache/order/delete', (req, res, next) => {
+    if (api.checkToken(req.body.token)) {
+      delete api.exchangesCache.coinswitch[req.query.orderid];
+      api.saveLocalExchangesCache();
+
+      const retObj = {
+        msg: 'success',
+        result: JSON.stringify(api.exchangesCache.coinswitch),
+      };
+
+      res.end(JSON.stringify(retObj));
+    } else {
+      const retObj = {
+        msg: 'error',
+        result: 'unauthorized access',
+      };
+
+      res.end(JSON.stringify(retObj));
+    }
+  });
+
+  /*
+   *  type: GET
+   *
+   */
+  api.get('/exchanges/cache', (req, res, next) => {
+    if (api.checkToken(req.body.token)) {
+      const provider = req.query.provider;
+      const retObj = {
+        msg: 'success',
+        result: JSON.stringify(api.exchangesCache[provider]),
+      };
+
+      res.end(JSON.stringify(retObj));
+
+      if (provider === 'coinswitch') {
+        const _statusLookup = [
+          'complete',
+          'failed',
+          'refunded',
+          'timeout',
+        ];
+
+        for (key in api.exchangesCache.coinswitch) {
+          api.log(`coinswitch order ${key} state is ${api.exchangesCache.coinswitch[key].status}`, 'exchanges.coinswitch');
+
+          if (api.exchangesCache.coinswitch[key].status &&
+              _statusLookup(api.exchangesCache.coinswitch[key].status) === -1) {
+            api.log(`coinswitch request order ${key} state update`, 'exchanges.coinswitch');
+            
+            const options = {
+              method: 'GET',
+              url: `https://api.coinswitch.co/v2/order/${key}`,
+              headers: {
+                'x-user-ip': '127.0.0.1',
+                'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
+              },
+            };
+          
+            api.exchangeHttpReq(options)
+            .then((result) => {
+              console.log(result);
+      
+              if (result.msg === 'success' &&
+                  result.result.success &&
+                  !result.result.data) {
+                api.log(`coinswitch request order ${key} state update failed`, 'exchanges.coinswitch');
+              } else {
+                if (result.result.data &&
+                    result.result.data.orderId) {
+                  api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
+                  api.saveLocalExchangesCache();
+                }
+              }
+            });
+          }
+        }
+      }
     } else {
       const retObj = {
         msg: 'error',
