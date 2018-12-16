@@ -401,5 +401,65 @@ module.exports = (api) => {
     }
   });
 
+  /*
+   *  type: GET
+   *
+   */
+  api.get('/exchanges/deposit/update', (req, res, next) => {
+    if (api.checkToken(req.body.token)) {
+      const provider = req.query.provider;
+
+      if (!api.exchangesCache[provider].deposits) {
+        api.exchangesCache[provider].deposits = {};
+      }
+
+      if (provider === 'coinswitch') {
+        api.exchangesCache[provider].deposits[`${req.query.coin.toLowerCase()}-${req.query.txid}`] = req.query.orderid;
+      }
+
+      const retObj = {
+        msg: 'success',
+        result: api.exchangesCache[provider].deposits[`${req.query.coin.toLowerCase()}-${req.query.txid}`],
+      };
+
+      res.end(JSON.stringify(retObj));
+    } else {
+      const retObj = {
+        msg: 'error',
+        result: 'unauthorized access',
+      };
+
+      res.end(JSON.stringify(retObj));
+    }
+  });
+
+  /*
+   *  type: GET
+   *
+   */
+  api.get('/exchanges/deposit', (req, res, next) => {
+    if (api.checkToken(req.body.token)) {
+      const provider = req.query.provider;
+
+      if (api.exchangesCache[provider] &&
+          api.exchangesCache[provider].deposits &&
+          api.exchangesCache[provider].deposits[`${req.query.coin.toLowerCase()}-${req.query.txid}`]) {
+        const retObj = {
+          msg: 'success',
+          result: api.exchangesCache[provider].deposits[`${req.query.coin.toLowerCase()}-${req.query.txid}`],
+        };
+
+        res.end(JSON.stringify(retObj));
+      }
+    } else {
+      const retObj = {
+        msg: 'error',
+        result: 'unauthorized access',
+      };
+
+      res.end(JSON.stringify(retObj));
+    }
+  });
+
   return api;
 };
