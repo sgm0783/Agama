@@ -111,6 +111,43 @@ module.exports = (api) => {
     });
   };
 
+  api.coinswitchGetStatus = (res, req, orderId) => {
+    const options = {
+      method: 'GET',
+      url: `https://api.coinswitch.co/v2/order/${orderId}`,
+      headers: {
+        'x-user-ip': '127.0.0.1',
+        'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
+      },
+    };
+  
+    api.exchangeHttpReq(options)
+    .then((result) => {
+      console.log(result);
+
+      if (result.msg === 'success' &&
+          result.result.success &&
+          !result.result.data) {
+        const retObj = {
+          msg: 'error',
+          result: 'no data',
+        };
+        res.end(JSON.stringify(retObj));
+        api.log(`coinswitch request order ${orderId} state update failed`, 'exchanges.coinswitch');
+      } else {
+        if (result.result.data &&
+            result.result.data.orderId) {
+          api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
+          api.saveLocalExchangesCache();
+          api.log(`coinswitch request order ${orderId} state update success, new state is ${result.result.data.status}`, 'exchanges.coinswitch');
+        } else {
+          api.log(`coinswitch request order ${orderId} state update failed`, 'exchanges.coinswitch');
+        }
+        res.end(JSON.stringify(result));
+      }
+    });
+  };
+
   api.get('/exchange/coinswitch/coins', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const options = {
@@ -225,10 +262,10 @@ module.exports = (api) => {
         } else {
           if (result.result.data &&
               result.result.data.orderId) {
-            api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
-            api.saveLocalExchangesCache();
+            api.coinswitchGetStatus(res, req, result.result.data.orderId);
+          } else {
+            res.end(JSON.stringify(result));
           }
-          res.end(JSON.stringify(result));
         }
       });
     } else {
@@ -248,38 +285,6 @@ module.exports = (api) => {
   api.get('/exchange/coinswitch/order', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const _orderId = req.query.orderid;
-      const _getStatus = () => {
-        const options = {
-          method: 'GET',
-          url: `https://api.coinswitch.co/v2/order/${_orderId}`,
-          headers: {
-            'x-user-ip': '127.0.0.1',
-            'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
-          },
-        };
-      
-        api.exchangeHttpReq(options)
-        .then((result) => {
-          console.log(result);
-
-          if (result.msg === 'success' &&
-              result.result.success &&
-              !result.result.data) {
-            const retObj = {
-              msg: 'error',
-              result: 'no data',
-            };
-            res.end(JSON.stringify(retObj));
-          } else {
-            if (result.result.data &&
-                result.result.data.orderId) {
-              api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
-              api.saveLocalExchangesCache();
-            }
-            res.end(JSON.stringify(result));
-          }
-        });
-      };
 
       console.log(api.exchangesCache.coinswitch);
 
@@ -288,7 +293,7 @@ module.exports = (api) => {
 
         if (_statusLookup.indexOf(api.exchangesCache.coinswitch[_orderId].status) === -1) {
           api.log(`coinswitch request order ${_orderId} state update`, 'exchanges.coinswitch');
-          _getStatus();
+          api.coinswitchGetStatus(res, req, _orderId);
         } else {
           const retObj = {
             msg: 'success',
@@ -297,7 +302,7 @@ module.exports = (api) => {
           res.end(JSON.stringify(retObj));
         }
       } else {
-        _getStatus();
+        api.coinswitchGetStatus(res, req, _orderId);
       }
     } else {
       const retObj = {
@@ -382,32 +387,7 @@ module.exports = (api) => {
           if (api.exchangesCache.coinswitch[key].status &&
               _statusLookup.indexOf(api.exchangesCache.coinswitch[key].status) === -1) {
             api.log(`coinswitch request order ${key} state update`, 'exchanges.coinswitch');
-            
-            const options = {
-              method: 'GET',
-              url: `https://api.coinswitch.co/v2/order/${key}`,
-              headers: {
-                'x-user-ip': '127.0.0.1',
-                'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
-              },
-            };
-          
-            api.exchangeHttpReq(options)
-            .then((result) => {
-              console.log(result);
-      
-              if (result.msg === 'success' &&
-                  result.result.success &&
-                  !result.result.data) {
-                api.log(`coinswitch request order ${key} state update failed`, 'exchanges.coinswitch');
-              } else {
-                if (result.result.data &&
-                    result.result.data.orderId) {
-                  api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
-                  api.saveLocalExchangesCache();
-                }
-              }
-            });
+            api.coinswitchGetStatus(res, req, key);
           }
         }
       }
