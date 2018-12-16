@@ -56,7 +56,7 @@ build:linux:
   - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_linux_${KOMODO_VERSION}.tar.gz
   - tar xvfz komodo_linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
-  - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli; fi
+  - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
   - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
   - rm  komodo_linux_${KOMODO_VERSION}.tar.gz
   - npm install electron-packager -g
