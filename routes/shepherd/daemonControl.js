@@ -867,8 +867,8 @@ module.exports = (shepherd) => {
               if (status === 'open' &&
                   shepherd.appConfig.stopNativeDaemonsOnQuit) {
                 if (!skipError) {
-                  shepherd.log(`komodod service start error at port ${_port}, reason: port is closed`);
-                  shepherd.writeLog(`komodod service start error at port ${_port}, reason: port is closed`);
+                  shepherd.log(`daemon service start error at port ${_port}, reason: port is closed`);
+                  shepherd.writeLog(`daemon service start error at port ${_port}, reason: port is closed`);
                   shepherd.io.emit('service', {
                     komodod: {
                       error: `error starting ${_body.herd} ${_acName} daemon. Port ${_port} is already taken!`,
@@ -883,8 +883,8 @@ module.exports = (shepherd) => {
                   res.status(500);
                   res.end(JSON.stringify(obj));
                 } else {
-                  shepherd.log(`komodod service start success at port ${_port}`);
-                  shepherd.writeLog(`komodod service start success at port ${_port}`);
+                  shepherd.log(`daemon service start success at port ${_port}`);
+                  shepherd.writeLog(`daemon service start success at port ${_port}`);
                 }
               } else {
                 if (!skipError) {
@@ -897,8 +897,8 @@ module.exports = (shepherd) => {
 
                   res.end(JSON.stringify(obj));
                 } else {
-                  shepherd.log(`komodod service start error at port ${_port}, reason: unknown`);
-                  shepherd.writeLog(`komodod service start error at port ${_port}, reason: unknown`);
+                  shepherd.log(`daemon service start error at port ${_port}, reason: unknown`);
+                  shepherd.writeLog(`daemon service start error at port ${_port}, reason: unknown`);
                 }
               }
             });
