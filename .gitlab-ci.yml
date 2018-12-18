@@ -59,6 +59,8 @@ build:linux:
   - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
   - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
   - rm  komodo_linux_${KOMODO_VERSION}.tar.gz
+  - rm -rf __MACOSX
+  - rm -rf komodo_win_0.3.1
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
   - npm install
