@@ -108,6 +108,8 @@ build:windows:
   - unzip komodo_win_${KOMODO_VERSION}.zip
   - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
   - rm komodo_win_${KOMODO_VERSION}.zip
+  - rm -rf __MACOSX
+  - rm -rf komodo_win_0.3.1
   - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
