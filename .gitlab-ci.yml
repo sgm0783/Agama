@@ -159,6 +159,8 @@ build:mac:
   - mv assets/bin/verus-cli assets/bin/osx
   - rm assets/bin/osx/verusd
   - mv assets/bin/osx/komodod assets/bin/osx/verusd
+  - libraries=("libgcc_s.1.dylib" "libgomp.1.dylib" "libidn2.0.dylib" "libstdc++.6.dylib" "libintl.8.dylib" "libunistring.2.dylib")
+  - for dylib in "${libraries[@]}"; do install_name_tool -change ${dylib} @executable_path/`basename ${dylib}` assets/bin/osx/verusd; done;
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
   - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
   - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
