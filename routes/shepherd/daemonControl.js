@@ -76,9 +76,17 @@ module.exports = (shepherd) => {
   // TODO: json.stringify wrapper
 
   const herder = (flock, data, coind) => {
+    let acDaemon = false;
+
     if (data === undefined) {
       data = 'none';
       shepherd.log('it is undefined');
+    } else {
+      if (data.ac_daemon !== undefined) {
+        flock = data.ac_daemon;
+        acDaemon = true;
+        shepherd.acDaemonPath(flock);
+      }
     }
 
     shepherd.log(`herder flock: ${flock} coind: ${coind}`);
@@ -86,7 +94,7 @@ module.exports = (shepherd) => {
 
     // TODO: notify gui that reindex/rescan param is used to reflect on the screen
     //       asset chain debug.log unlink
-    if (flock === 'komodod') {
+    if (flock === 'komodod' || acDaemon) {
       let kmdDebugLogLocation = (data.ac_name !== 'komodod' ? `${shepherd.komodoDir}/${data.ac_name}` : shepherd.komodoDir) + '/debug.log';
 
       // get custom coind port
@@ -120,9 +128,9 @@ module.exports = (shepherd) => {
         shepherd.log(`${data.ac_name} port ${shepherd.assetChainPorts[data.ac_name]}`);
       }
 
-      shepherd.log('komodod flock selected...');
+      shepherd.log(`${flock} flock selected...`);
       shepherd.log(`selected data: ${JSON.stringify(data, null, '\t')}`);
-      shepherd.writeLog('komodod flock selected...');
+      shepherd.writeLog(`${flock} flock selected...`);
       shepherd.writeLog(`selected data: ${data}`);
 
       // datadir case, check if komodo/chain folder exists
@@ -133,17 +141,17 @@ module.exports = (shepherd) => {
         try {
           _fs.accessSync(_dir, fs.R_OK | fs.W_OK);
 
-          shepherd.log(`komodod datadir ${_dir} exists`);
+          shepherd.log(`${flock} datadir ${_dir} exists`);
         } catch (e) {
-          shepherd.log(`komodod datadir ${_dir} access err: ${e}`);
-          shepherd.log(`attempting to create komodod datadir ${_dir}`);
+          shepherd.log(`${flock} datadir ${_dir} access err: ${e}`);
+          shepherd.log(`attempting to create ${flock} datadir ${_dir}`);
 
           fs.mkdirSync(_dir);
 
           if (fs.existsSync(_dir)) {
-            shepherd.log(`created komodod datadir folder at ${_dir}`);
+            shepherd.log(`created ${flock} datadir folder at ${_dir}`);
           } else {
-            shepherd.log(`unable to create komodod datadir folder at ${_dir}`);
+            shepherd.log(`unable to create ${flock} datadir folder at ${_dir}`);
           }
         }
       }
@@ -166,8 +174,8 @@ module.exports = (shepherd) => {
             }
           }
         } catch (e) {
-          shepherd.log(`komodod debug.log access err: ${e}`);
-          shepherd.writeLog(`komodod debug.log access err: ${e}`);
+          shepherd.log(`${flock} debug.log access err: ${e}`);
+          shepherd.writeLog(`${flock} debug.log access err: ${e}`);
         }
       }
 
@@ -204,8 +212,15 @@ module.exports = (shepherd) => {
               _customParam = _customParam + ' -datadir=' + shepherd.appConfig.dataDir + (data.ac_name !== 'komodod' ? '/' + data.ac_name : '');
             }
 
-            shepherd.log(`exec ${shepherd.komododBin} ${data.ac_options.join(' ')}${_customParam}`);
-            shepherd.writeLog(`exec ${shepherd.komododBin} ${data.ac_options.join(' ')}${_customParam}`);
+            if (acDaemon) {
+              shepherd.log(`exec ${shepherd[flock + 'Bin']} ${data.ac_options.join(' ')}${_customParam}`);
+              shepherd.writeLog(`exec ${shepherd[flock + 'Bin']} ${data.ac_options.join(' ')}${_customParam}`);
+            }
+            else {
+              shepherd.log(`exec ${shepherd.komododBin} ${data.ac_options.join(' ')}${_customParam}`);
+              shepherd.writeLog(`exec ${shepherd.komododBin} ${data.ac_options.join(' ')}${_customParam}`);
+            }
+            
 
             const isChain = data.ac_name.match(/^[A-Z]*$/);
             const coindACParam = isChain ? ` -ac_name=${data.ac_name} ` : '';
@@ -231,18 +246,34 @@ module.exports = (shepherd) => {
                 let spawnOut = fs.openSync(_daemonLogName, 'a');
                 let spawnErr = fs.openSync(_daemonLogName, 'a');
 
-                spawn(shepherd.komododBin, _arg, {
-                  stdio: [
-                    'ignore',
-                    spawnOut,
-                    spawnErr
-                  ],
-                  detached: true,
-                }).unref();
+                if (acDaemon) {
+                  spawn(shepherd[flock + 'Bin'], _arg, {
+                    stdio: [
+                      'ignore',
+                      spawnOut,
+                      spawnErr
+                    ],
+                    detached: true,
+                  }).unref();
+                } 
+                else {
+                  spawn(shepherd.komododBin, _arg, {
+                    stdio: [
+                      'ignore',
+                      spawnOut,
+                      spawnErr
+                    ],
+                    detached: true,
+                  }).unref();
+                }
+                
               } else {
                 let logStream = fs.createWriteStream(_daemonLogName, { flags: 'a' });
 
-                let _daemonChildProc = execFile(`${shepherd.komododBin}`, _arg, {
+                let _daemonChildProc;
+
+                _daemonChildProc = acDaemon ? 
+                execFile(`${shepherd[flock + 'Bin']}`, _arg, {
                   maxBuffer: 1024 * 1000000, // 1000 mb
                 }, (error, stdout, stderr) => {
                   shepherd.writeLog(`stdout: ${stdout}`);
@@ -260,7 +291,29 @@ module.exports = (shepherd) => {
                       });
                     }
                   }
-                });
+                })
+                :
+                execFile(`${shepherd.komododBin}`, _arg, {
+                  maxBuffer: 1024 * 1000000, // 1000 mb
+                }, (error, stdout, stderr) => {
+                  shepherd.writeLog(`stdout: ${stdout}`);
+                  shepherd.writeLog(`stderr: ${stderr}`);
+
+                  if (error !== null) {
+                    shepherd.log(`exec error: ${error}`);
+                    shepherd.writeLog(`exec error: ${error}`);
+
+                    if (error.toString().indexOf('using -reindex') > -1) {
+                      shepherd.io.emit('service', {
+                        komodod: {
+                          error: 'run -reindex',
+                        },
+                      });
+                    }
+                  }
+                })
+                ;
+                
 
                 _daemonChildProc.stdout.on('data', (data) => {
                   // shepherd.log(`${_daemonName} stdout: \n${data}`);
@@ -509,6 +562,7 @@ module.exports = (shepherd) => {
     }
 
     switch (flock) {
+      case 'verusd':
       case 'komodod':
         DaemonConfPath = `${shepherd.komodoDir}/komodo.conf`;
 
@@ -813,8 +867,8 @@ module.exports = (shepherd) => {
               if (status === 'open' &&
                   shepherd.appConfig.stopNativeDaemonsOnQuit) {
                 if (!skipError) {
-                  shepherd.log(`komodod service start error at port ${_port}, reason: port is closed`);
-                  shepherd.writeLog(`komodod service start error at port ${_port}, reason: port is closed`);
+                  shepherd.log(`daemon service start error at port ${_port}, reason: port is closed`);
+                  shepherd.writeLog(`daemon service start error at port ${_port}, reason: port is closed`);
                   shepherd.io.emit('service', {
                     komodod: {
                       error: `error starting ${_body.herd} ${_acName} daemon. Port ${_port} is already taken!`,
@@ -829,8 +883,8 @@ module.exports = (shepherd) => {
                   res.status(500);
                   res.end(JSON.stringify(obj));
                 } else {
-                  shepherd.log(`komodod service start success at port ${_port}`);
-                  shepherd.writeLog(`komodod service start success at port ${_port}`);
+                  shepherd.log(`daemon service start success at port ${_port}`);
+                  shepherd.writeLog(`daemon service start success at port ${_port}`);
                 }
               } else {
                 if (!skipError) {
@@ -843,8 +897,8 @@ module.exports = (shepherd) => {
 
                   res.end(JSON.stringify(obj));
                 } else {
-                  shepherd.log(`komodod service start error at port ${_port}, reason: unknown`);
-                  shepherd.writeLog(`komodod service start error at port ${_port}, reason: unknown`);
+                  shepherd.log(`daemon service start error at port ${_port}, reason: unknown`);
+                  shepherd.writeLog(`daemon service start error at port ${_port}, reason: unknown`);
                 }
               }
             });
