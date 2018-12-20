@@ -13,6 +13,8 @@ const _statusLookup = [
   'timeout',
 ];
 
+// TODO: fixed api(?)
+
 module.exports = (api) => {
   api.loadLocalExchangesCache = () => {
     if (fs.existsSync(`${api.agamaDir}/exchanges-cache.json`)) {
@@ -423,6 +425,7 @@ module.exports = (api) => {
       };
 
       res.end(JSON.stringify(retObj));
+      api.saveLocalExchangesCache();
     } else {
       const retObj = {
         msg: 'error',
