@@ -154,8 +154,10 @@ build:mac:
   - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
     rm $EASYDEX_GUI_BUILD
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
-  - mkdir -p assets/bin/osx
-  - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
+  - mkdir -p assets/bin/
+  - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz  --directory assets/bin/
+  - mv assets/bin/verus-cli assets/bin/osx
+  - rm assets/bin/osx/verusd
   - mv assets/bin/osx/komodod assets/bin/osx/verusd
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
   - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
