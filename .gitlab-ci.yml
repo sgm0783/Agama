@@ -158,7 +158,7 @@ build:mac:
   - gsutil cp $STAGING/$VERUS_CLI_MACOS .
   - mkdir -p assets/bin/osx/verusd
   - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
-  - mv assets/bin/osx/verusd/verusd/komodod assets/bin/osx/verusd/verusd
+  - mv assets/bin/osx/verusd/komodod assets/bin/osx/verusd/verusd
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
   - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
   - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
