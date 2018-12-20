@@ -164,6 +164,7 @@ api = require('./api/eth/utils.js')(api);
 api.exchangesCache = {
   coinswitch: {},
 };
+api = require('./api/exchange/exchange')(api);
 api = require('./api/exchange/coinswitch/coinswitch')(api);
 api.loadLocalExchangesCache();
 
