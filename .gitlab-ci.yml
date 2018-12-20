@@ -110,11 +110,11 @@ build:windows:
   - mv assets/bin/win64/komodod.exe assets/bin/win64/verusd.exe
   - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_win_${KOMODO_VERSION}.zip
   - unzip komodo_win_${KOMODO_VERSION}.zip
+  - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
   - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
   - rm komodo_win_${KOMODO_VERSION}.zip
   - rm -rf __MACOSX
   - rm -rf komodo_win_0.3.1
-  - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
   - npm install
