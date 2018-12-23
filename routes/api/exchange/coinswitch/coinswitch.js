@@ -3,16 +3,17 @@ const Promise = require('bluebird');
 
 const API_KEY_PROD = '3sie59MENW47hvcAsaUXgw0R7BCQmKZ4CapfB90c';
 const API_KEY_DEV = 'cRbHFJTlL6aSfZ0K2q7nj6MgV5Ih4hbA2fUG0ueO';
-const _statusLookup = [
-  'complete',
-  'failed',
-  'refunded',
-  'timeout',
-];
 
 // TODO: fixed api(?)
 
 module.exports = (api) => {
+  api.coinswitchStatusLookup = [
+    'complete',
+    'failed',
+    'refunded',
+    'timeout',
+  ];
+
   api.coinswitchGetStatus = (res, req, orderId) => {
     const options = {
       method: 'GET',
@@ -193,7 +194,7 @@ module.exports = (api) => {
       if (api.exchangesCache.coinswitch[_orderId]) {
         api.log(`coinswitch order ${_orderId} state is ${api.exchangesCache.coinswitch[_orderId].status}`, 'exchanges.coinswitch');
 
-        if (_statusLookup.indexOf(api.exchangesCache.coinswitch[_orderId].status) === -1) {
+        if (api.coinswitchStatusLookup.indexOf(api.exchangesCache.coinswitch[_orderId].status) === -1) {
           api.log(`coinswitch request order ${_orderId} state update`, 'exchanges.coinswitch');
           api.coinswitchGetStatus(res, req, _orderId);
         } else {

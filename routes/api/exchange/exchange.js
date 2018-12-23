@@ -148,7 +148,7 @@ module.exports = (api) => {
           api.log(`coinswitch order ${key} state is ${api.exchangesCache.coinswitch[key].status}`, 'exchanges.coinswitch');
 
           if (api.exchangesCache.coinswitch[key].status &&
-              _statusLookup.indexOf(api.exchangesCache.coinswitch[key].status) === -1) {
+              api.coinswitchStatusLookup.indexOf(api.exchangesCache.coinswitch[key].status) === -1) {
             api.log(`coinswitch request order ${key} state update`, 'exchanges.coinswitch');
             api.coinswitchGetStatus(res, req, key);
           }
