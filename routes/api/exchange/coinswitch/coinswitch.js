@@ -1,7 +1,6 @@
 const request = require('request');
 const Promise = require('bluebird');
 
-const API_KEY_PROD = '3sie59MENW47hvcAsaUXgw0R7BCQmKZ4CapfB90c';
 const API_KEY_DEV = 'cRbHFJTlL6aSfZ0K2q7nj6MgV5Ih4hbA2fUG0ueO';
 
 // TODO: fixed api(?)
@@ -15,18 +14,35 @@ module.exports = (api) => {
   ];
 
   api.coinswitchGetStatus = (res, req, orderId) => {
-    const options = {
-      method: 'GET',
-      url: `https://api.coinswitch.co/v2/order/${orderId}`,
-      headers: {
-        'x-user-ip': '127.0.0.1',
-        'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
-      },
-    };
+    let options;
+    
+    if (api.appConfig.exchanges.coinswitch) {
+      options = {
+        method: 'GET',
+        url: `https://api.coinswitch.co/v2/order/${orderId}`,
+        headers: {
+          'x-user-ip': '127.0.0.1',
+          'x-api-key': req.query.dev ? API_KEY_DEV : api.appConfig.exchanges.coinswitch,
+        },
+      };
+    } else {
+      options = {
+        method: 'GET',
+        url: `https://www.atomicexplorer.com/api/exchanges/coinswitch?method=getOrder&&orderId=${orderId}`,
+      };
+    }
+
+    console.log(options);
   
     api.exchangeHttpReq(options)
     .then((result) => {
-      console.log(result);
+      api.log(result, 'exchanges.coinswitch.order');
+
+      if (result &&
+          result.result &&
+          result.result.indexOf('\"') > -1) {
+        result.result = JSON.parse(result.result);
+      }
 
       if (result.msg === 'success' &&
           result.result.success &&
@@ -53,17 +69,31 @@ module.exports = (api) => {
 
   api.get('/exchange/coinswitch/coins', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
-      const options = {
-        method: 'GET',
-        url: 'https://api.coinswitch.co/v2/coins',
-        headers: {
-          'x-user-ip': '127.0.0.1',
-          'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
-        },
-      };
+      let options;
+
+      if (api.appConfig.exchanges.coinswitch) {
+        options = {
+          method: 'GET',
+          url: 'https://api.coinswitch.co/v2/coins',
+          headers: {
+            'x-user-ip': '127.0.0.1',
+            'x-api-key': req.query.dev ? API_KEY_DEV : api.appConfig.exchanges.coinswitch,
+          },
+        };
+      } else {
+        options = {
+          method: 'GET',
+          url: 'https://www.atomicexplorer.com/api/exchanges/coinswitch?method=getCoins',
+        };
+      }
     
       api.exchangeHttpReq(options)
       .then((result) => {
+        if (result &&
+            result.result &&
+            result.result.indexOf('\"') > -1) {
+          result.result = JSON.parse(result.result);
+        }
         res.end(JSON.stringify(result));
       });
     } else {
@@ -82,23 +112,32 @@ module.exports = (api) => {
    */
   api.get('/exchange/coinswitch/rate', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
-      const options = {
-        method: 'POST',
-        url: 'https://api.coinswitch.co/v2/rate',
-        headers: {
-          'x-user-ip': '127.0.0.1',
-          'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          depositCoin: req.query.src,
-          destinationCoin: req.query.dest,
-        }),
-      };
+      let options;
+      
+      if (api.appConfig.exchanges.coinswitch) {
+        options = {
+          method: 'POST',
+          url: 'https://api.coinswitch.co/v2/rate',
+          headers: {
+            'x-user-ip': '127.0.0.1',
+            'x-api-key': req.query.dev ? API_KEY_DEV : api.appConfig.exchanges.coinswitch,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            depositCoin: req.query.src,
+            destinationCoin: req.query.dest,
+          }),
+        };
+      } else {
+        options = {
+          method: 'GET',
+          url: `https://www.atomicexplorer.com/api/exchanges/coinswitch?method=getRate&src=${req.query.src}&dest=${req.query.dest}`,
+        };
+      }
     
       api.exchangeHttpReq(options)
       .then((result) => {
-        console.log(result);
+        api.log(result, 'exchanges.coinswitch.rate');
 
         if (result.msg === 'success' &&
             result.result.success &&
@@ -109,6 +148,11 @@ module.exports = (api) => {
           };
           res.end(JSON.stringify(retObj));
         } else {
+          if (result &&
+              result.result &&
+              result.result.indexOf('\"') > -1) {
+            result.result = JSON.parse(result.result);
+          }
           res.end(JSON.stringify(result));
         }
       });
@@ -128,31 +172,46 @@ module.exports = (api) => {
    */
   api.get('/exchange/coinswitch/order/place', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
-      const options = {
-        method: 'POST',
-        url: 'https://api.coinswitch.co/v2/order',
-        headers: {
-          'x-user-ip': '127.0.0.1',
-          'x-api-key': req.query.dev ? API_KEY_DEV : API_KEY_PROD,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          depositCoin: req.query.src,
-          destinationCoin: req.query.dest,
-          depositCoinAmount: req.query.srcAmount,
-          destinationCoinAmount: req.query.destAmount,
-          destinationAddress: {
-            address: req.query.destPub,
+      let options;
+      
+      if (api.appConfig.exchanges.coinswitch) {
+        options = {
+          method: 'POST',
+          url: 'https://api.coinswitch.co/v2/order',
+          headers: {
+            'x-user-ip': '127.0.0.1',
+            'x-api-key': req.query.dev ? API_KEY_DEV : api.appConfig.exchanges.coinswitch,
+            'content-type': 'application/json',
           },
-          refundAddress: {
-            address: req.query.refundPub,
-          },
-        }),
-      };
+          body: JSON.stringify({
+            depositCoin: req.query.src,
+            destinationCoin: req.query.dest,
+            depositCoinAmount: req.query.srcAmount,
+            destinationCoinAmount: req.query.destAmount,
+            destinationAddress: {
+              address: req.query.destPub,
+            },
+            refundAddress: {
+              address: req.query.refundPub,
+            },
+          }),
+        };
+      } else {
+        options = {
+          method: 'GET',
+          url: `https://www.atomicexplorer.com/api/exchanges/coinswitch?method=getRate&src=${req.query.src}&dest=${req.query.dest}&srcAmount=${req.query.srcAmount}&destAmount=${req.query.destAmount}&destPub=${req.query.destPub}&refundPub=${req.query.refundPub}`,
+        };
+      }
     
       api.exchangeHttpReq(options)
       .then((result) => {
-        console.log(result);
+        api.log(result, 'exchanges.coinswitch.order.place');
+
+        if (result &&
+            result.result &&
+            result.result.indexOf('\"') > -1) {
+          result.result = JSON.parse(result.result);
+        }
 
         if (result.msg === 'success' &&
             result.result.success &&
@@ -187,9 +246,9 @@ module.exports = (api) => {
    */
   api.get('/exchange/coinswitch/order', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
-      const _orderId = req.query.orderid;
+      const _orderId = req.query.orderId;
 
-      console.log(api.exchangesCache.coinswitch);
+      api.log(api.exchangesCache.coinswitch, 'exchages.coinswitch.cache');
 
       if (api.exchangesCache.coinswitch[_orderId]) {
         api.log(`coinswitch order ${_orderId} state is ${api.exchangesCache.coinswitch[_orderId].status}`, 'exchanges.coinswitch');
@@ -223,7 +282,8 @@ module.exports = (api) => {
    */
   api.post('/exchanges/cache/coinswitch/order/delete', (req, res, next) => {
     if (api.checkToken(req.body.token)) {
-      delete api.exchangesCache.coinswitch[req.query.orderid];
+      delete api.exchangesCache.coinswitch[req.query.orderId];
+      // TODO: delete deposit(s) by orderId
       api.saveLocalExchangesCache();
 
       const retObj = {
