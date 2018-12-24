@@ -166,6 +166,7 @@ api.exchangesCache = {
 };
 api = require('./api/exchange/exchange')(api);
 api = require('./api/exchange/coinswitch/coinswitch')(api);
+api = require('./api/exchange/changelly/changelly')(api);
 api.loadLocalExchangesCache();
 
 api.printDirs();
