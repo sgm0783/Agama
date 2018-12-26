@@ -40,7 +40,7 @@ module.exports = (api) => {
     });
   };
 
-  api.get('/exchange/changelly/coins', (req, res, next) => {
+  api.get('/exchanges/changelly/coins', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const options = {
         method: 'GET',
@@ -65,7 +65,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/changelly/rate', (req, res, next) => {
+  api.get('/exchanges/changelly/rate', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const options = {
         method: 'GET',
@@ -100,7 +100,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/changelly/order/place', (req, res, next) => {
+  api.get('/exchanges/changelly/order/place', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const options = {
         method: 'GET',
@@ -141,7 +141,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/changelly/getMinAmount', (req, res, next) => {
+  api.get('/exchanges/changelly/getMinAmount', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const options = {
         method: 'GET',
@@ -176,7 +176,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/changelly/order', (req, res, next) => {
+  api.get('/exchanges/changelly/order', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const _orderId = req.query.orderId;
 

@@ -67,7 +67,7 @@ module.exports = (api) => {
     });
   };
 
-  api.get('/exchange/coinswitch/coins', (req, res, next) => {
+  api.get('/exchanges/coinswitch/coins', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       let options;
 
@@ -110,7 +110,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/coinswitch/rate', (req, res, next) => {
+  api.get('/exchanges/coinswitch/rate', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       let options;
       
@@ -170,7 +170,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/coinswitch/order/place', (req, res, next) => {
+  api.get('/exchanges/coinswitch/order/place', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       let options;
       
@@ -244,7 +244,7 @@ module.exports = (api) => {
    *  type: GET
    *
    */
-  api.get('/exchange/coinswitch/order', (req, res, next) => {
+  api.get('/exchanges/coinswitch/order', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
       const _orderId = req.query.orderId;
 
