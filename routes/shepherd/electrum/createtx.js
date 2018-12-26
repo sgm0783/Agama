@@ -190,13 +190,13 @@ module.exports = (shepherd) => {
     for (let i = 0; i < tx.tx.outs.length; i++) {
       shepherd.log(tx.tx.outs[i], true);
     }
-    
+    */
 
     const rawtx = tx.build().toHex();
 
     shepherd.log('buildSignedTx signed tx hex', true);
     shepherd.log(rawtx, true);
-    */
+    
 
     return rawtx;
   }
