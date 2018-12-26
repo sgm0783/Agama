@@ -67,25 +67,61 @@ module.exports = (api) => {
    */
   api.get('/exchanges/changelly/rate', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
-      const options = {
-        method: 'GET',
-        url: `https://www.atomicexplorer.com/api/exchanges/changelly?method=getRate&src=${req.query.src}&dest=${req.query.dest}`,
-      };
+      if (req.query.combined) {
+        const urls = [
+          `https://www.atomicexplorer.com/api/exchanges/changelly?method=getRate&src=${req.query.src}&dest=${req.query.dest}`,
+          `https://www.atomicexplorer.com/api/exchanges/changelly?method=getMinAmount&src=${req.query.src}&dest=${req.query.dest}`,
+        ];
+        Promise.all(urls.map((url, index) => {
+          return new Promise((resolve, reject) => {
+            const options = {
+              method: 'GET',
+              url,
+            };
+          
+            api.exchangeHttpReq(options)
+            .then((result) => {
+              api.log(result, 'exchanges.changelly.rate.combined');
     
-      api.exchangeHttpReq(options)
-      .then((result) => {
-        api.log(result, 'exchanges.changelly.rate');
-
-        if (result.error) {
+              if (result.error) {
+                resolve(result.error);
+              } else {
+                resolve(result.result.result);
+              }
+            });
+          });
+        }))
+        .then(result => {
           const retObj = {
-            msg: 'error',
-            result: result.error,
+            msg: 'success',
+            result: {
+              rate: result[0],
+              minAmount: result[1],
+            },
           };
           res.end(JSON.stringify(retObj));
-        } else {
-          res.end(JSON.stringify(result));
-        }
-      });
+        });
+      } else {
+        const options = {
+          method: 'GET',
+          url: `https://www.atomicexplorer.com/api/exchanges/changelly?method=getRate&src=${req.query.src}&dest=${req.query.dest}`,
+        };
+      
+        api.exchangeHttpReq(options)
+        .then((result) => {
+          api.log(result, 'exchanges.changelly.rate');
+
+          if (result.error) {
+            const retObj = {
+              msg: 'error',
+              result: result.error,
+            };
+            res.end(JSON.stringify(retObj));
+          } else {
+            res.end(JSON.stringify(result));
+          }
+        });
+      }
     } else {
       const retObj = {
         msg: 'error',
@@ -104,7 +140,7 @@ module.exports = (api) => {
     if (api.checkToken(req.query.token)) {
       const options = {
         method: 'GET',
-        url: `https://www.atomicexplorer.com/api/exchanges/changelly?method=getRate&src=${req.query.src}&dest=${req.query.dest}&srcAmount=${req.query.srcAmount}&destAmount=${req.query.destAmount}&destPub=${req.query.destPub}&refundPub=${req.query.refundPub}`,
+        url: `https://www.atomicexplorer.com/api/exchanges/changelly?method=orderPlace&src=${req.query.src}&dest=${req.query.dest}&srcAmount=${req.query.srcAmount}&destAmount=${req.query.destAmount}&destPub=${req.query.destPub}&refundPub=${req.query.refundPub}`,
       };
     
       api.exchangeHttpReq(options)
@@ -136,7 +172,6 @@ module.exports = (api) => {
     }
   });
 
-  // TODO: combine into get rate call
   /*
    *  type: GET
    *
