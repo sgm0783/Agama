@@ -140,7 +140,7 @@ module.exports = (shepherd) => {
 
           res.end(JSON.stringify(obj));
         } else {
-          if (stdout.indexOf('Komodo server stopping') > -1) {
+          if (stdout.indexOf('server stopping') > -1) {
             delete shepherd.coindInstanceRegistry[_chain ? _chain : 'komodod'];
 
             const obj = {
