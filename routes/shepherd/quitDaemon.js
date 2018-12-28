@@ -81,12 +81,12 @@ module.exports = (shepherd) => {
 
         shepherd.log(`trying to safely quit ${key}`);
         execCliStopSafe();
-        setTimeout(() => {
+        setInterval(() => {
           execCliStopSafe();
         }, 30000)
         didDaemonQuitInterval[key] = setInterval(() => {
           didDaemonQuit();
-        }, 100);
+        }, 5000);
         /*
         setTimeout(() => {
           if(!daemonQuit){
