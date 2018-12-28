@@ -5,6 +5,7 @@ const bitcoinJSForks = require('bitcoinforksjs-lib');
 const bitcoinZcash = require('bitcoinjs-lib-zcash');
 const bitcoinPos = require('bitcoinjs-lib-pos');
 const coinSelect = require('coinselect');
+const kmdCoins = require('agama-wallet-lib');
 
 module.exports = (shepherd) => {
   // unsigned tx
@@ -64,6 +65,8 @@ module.exports = (shepherd) => {
     let key = bitcoinJS.ECPair.fromWIF(wif, bitcoin.networks[network]);
     let tx;
     
+    shepherd.log(`Change Value: ${changeValue}`, true);
+    shepherd.log(`Spend Value: ${spendValue}`, true);
 
     console.log('Keypair intialized and transaction defined')
 
@@ -140,18 +143,16 @@ module.exports = (shepherd) => {
     console.log('Current block height: ' + blockheight);
 
     let versionNum;
-    if ((blockheight >= 419200 && network === 'zec') || 
-        (blockheight >= 227520 && network === 'vrsc')){
+
+    if (((kmdCoins.coin.isKomodoCoin(network.toUpperCase(), false)) &&
+        (network !== 'oot' || network !== 'zilla' || network !== 'chips')) 
+        || network === 'zec'){
       versionNum = 4;
     }
     else {
-      if (network === 'zec') {
-        versionNum = 3;
-      }
-      else {
-        versionNum = 1;
-      }
+      versionNum = 1;
     }
+
 
     tx.setVersion(versionNum);
     
@@ -183,12 +184,19 @@ module.exports = (shepherd) => {
       }
     }
 
+    /*
+    shepherd.log(tx, true);
+
+    for (let i = 0; i < tx.tx.outs.length; i++) {
+      shepherd.log(tx.tx.outs[i], true);
+    }
+    */
+
     const rawtx = tx.build().toHex();
 
-    /*
     shepherd.log('buildSignedTx signed tx hex', true);
     shepherd.log(rawtx, true);
-*/
+    
 
     return rawtx;
   }
@@ -487,7 +495,7 @@ module.exports = (shepherd) => {
           if (value > _maxSpend) {
             const successObj = {
               msg: 'error',
-              result: `Spend value is too large. Max available amount is ${Number((_maxSpend * 0.00000001.toFixed(8)))}`,
+              result: `Spend value is too large. Max available amount is ${Number((_maxSpend * 0.00000001))}`,
             };
 
             res.end(JSON.stringify(successObj));
@@ -497,7 +505,7 @@ module.exports = (shepherd) => {
             shepherd.log(`sendto ${outputAddress} amount ${value} (${value * 0.00000001})`, true);
             shepherd.log(`changeto ${changeAddress} amount ${_change} (${_change * 0.00000001})`, true);
 
-            // account for KMD interest
+            // account for KMD interest            
             if ((network === 'komodo' || network.toLowerCase() === 'kmd') &&
                 totalInterest > 0) {
               // account for extra vout
@@ -521,7 +529,7 @@ module.exports = (shepherd) => {
                 _change = _change + (totalInterest - _feeOverhead);
               }
             }
-
+            
             if (!inputs &&
                 !outputs) {
               const successObj = {
@@ -557,6 +565,8 @@ module.exports = (shepherd) => {
               }
 
               let _rawtx;
+
+              shepherd.log(`Final value is ${value}`, true)
 
               if (req[reqType].nosig) {
                 const _rawObj = {
