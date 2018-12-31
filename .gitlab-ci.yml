@@ -7,10 +7,10 @@ stages:
 ########################################################################################################################
 variables:
   DOCKER_DRIVER: overlay2
-  DEFAULT_VERUSCOIN_BRANCH: master
+  DEFAULT_VERUSCOIN_BRANCH: Asher-Dev
   DEFAULT_EASYDEXGUI_BRANCH: master
-  AGAMA_VERSION: 0.5.1
-  VERUSCOIN_VERSION: 0.5.1
+  AGAMA_VERSION: 0.5.2
+  VERUSCOIN_VERSION: 0.5.2
   KOMODO_VERSION: 0.3.1
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
