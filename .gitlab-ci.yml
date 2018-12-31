@@ -7,7 +7,7 @@ stages:
 ########################################################################################################################
 variables:
   DOCKER_DRIVER: overlay2
-  DEFAULT_VERUSCOIN_BRANCH: Asher-Dev
+  DEFAULT_VERUSCOIN_BRANCH: master
   DEFAULT_EASYDEXGUI_BRANCH: master
   AGAMA_VERSION: 0.5.2
   VERUSCOIN_VERSION: 0.5.2
