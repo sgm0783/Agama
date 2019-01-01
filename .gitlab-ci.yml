@@ -7,8 +7,8 @@ stages:
 ########################################################################################################################
 variables:
   DOCKER_DRIVER: overlay2
-  DEFAULT_VERUSCOIN_BRANCH: master
-  DEFAULT_EASYDEXGUI_BRANCH: master
+  DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
+  DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
   AGAMA_VERSION: 0.5.2
   VERUSCOIN_VERSION: 0.5.2
   KOMODO_VERSION: 0.3.1
@@ -43,7 +43,7 @@ build:linux:
     gcloud auth activate-service-account
     --key-file AUTH_KEY.json &&
     rm AUTH_KEY.json
-  - if [ ${CI_COMMIT_REF_NAME} = "MichaelF-Dev" ]; then export BINARY_SOURCE="Komodo"; fi
+  - if [ ${CI_COMMIT_REF_NAME} = "MichaelF-Dev" ]; then export BINARY_SOURCE="VerusDev"; fi
   - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
     VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"
     POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
