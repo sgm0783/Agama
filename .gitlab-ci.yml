@@ -7,8 +7,8 @@ stages:
 ########################################################################################################################
 variables:
   DOCKER_DRIVER: overlay2
-  DEFAULT_VERUSCOIN_BRANCH: master
-  DEFAULT_EASYDEXGUI_BRANCH: master
+  DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
+  DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
   AGAMA_VERSION: 0.5.3
   VERUSCOIN_VERSION: 0.5.3
   KOMODO_VERSION: 0.3.1
