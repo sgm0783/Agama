@@ -176,9 +176,7 @@ module.exports = (api) => {
         api.exchangesCache[provider].deposits = {};
       }
 
-      if (provider === 'coinswitch') {
-        api.exchangesCache[provider].deposits[`${req.query.coin.toLowerCase()}-${req.query.txid}`] = req.query.orderid;
-      }
+      api.exchangesCache[provider].deposits[`${req.query.coin.toLowerCase()}-${req.query.txid}`] = req.query.orderId;
 
       const retObj = {
         msg: 'success',
