@@ -30,6 +30,7 @@ module.exports = (api) => {
     if (!network) throw new Error('Unknown network version');
     
     if (checkVersion) {
+      if (!network) throw new Error('Unknown network version');
       if (network.wifAlt && version !== network.wif && network.wifAlt.indexOf(version) === -1) throw new Error('Invalid network version');
       if (!network.wifAlt && version !== network.wif) throw new Error('Invalid network version');
     }
