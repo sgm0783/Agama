@@ -28,11 +28,7 @@ const { formatBytes } = require('agama-wallet-lib/src/utils');
 let staticVar = {}; // static shared main -> renderer vars
 
 ipcMain.on('staticVar', (event, arg) => {
-	if (!arg) {
-  	event.sender.send('staticVar', staticVar);
-	} else {
-  	event.sender.send('staticVar', staticVar[arg]);
-	}
+	event.sender.send('staticVar', !arg ? staticVar : staticVar[arg]);
 });
 
 if (osPlatform === 'linux') {
@@ -52,12 +48,7 @@ api.setVar('nativeCoindList', nativeCoindList);*/
 
 let localVersion;
 let localVersionFile = api.readVersionFile();
-
-if (localVersionFile.indexOf('\r\n') > -1) {
-  localVersion = localVersionFile.split('\r\n');
-} else {
-  localVersion = localVersionFile.split('\n');
-}
+localVersion = localVersionFile.split(localVersionFile.indexOf('\r\n') > -1 ? '\r\n' : '\n');
 
 const appBasicInfo = {
 	name: 'Agama',
@@ -86,10 +77,10 @@ for (let i = 0; i < process.argv.length; i++) {
   if (!_argv.nogui) {
   	_argv = {};
   } else {
-  	api.argv = _argv;
   	api.log('arguments', 'init');
-  	api.log(_argv, 'init');
-  }
+		api.log(_argv, 'init');
+		api.argv = _argv;
+	}
 }
 
 const appSessionHash = _argv.token ? _argv.token : randomBytes(32).toString('hex');
@@ -195,6 +186,22 @@ let forceQuitApp = false;
 
 // apply parsed argv
 if (api.argv) {
+	if (api.argv.servers) {
+		api.log('set electrum servers from argv', 'argv');
+
+		try {
+			const _servers = JSON.parse(api.argv.servers);
+
+			for (let key in _servers) {
+				if (api.electrumServers[key]) {
+					api.electrumServers[key].serverList = _servers[key];
+				}
+			}
+		} catch (e) {
+			api.log('error: malformatted servers argv', 'argv');
+		}
+	}
+
 	if (api.argv.coins) {
 		const _coins = api.argv.coins.split(',');
 
@@ -357,13 +364,12 @@ function createAppCloseWindow() {
 					appExit,
 					getMaxconKMDConf: api.getMaxconKMDConf,
 					setMaxconKMDConf: api.setMaxconKMDConf,
-					getMMCacheData: api.getMMCacheData,
+					// getMMCacheData: api.getMMCacheData,
 					activeSection: 'wallets', // temp deprecated
 					argv: process.argv,
 					getAssetChainPorts: api.getAssetChainPorts,
 					startSPV: api.startSPV,
 					startKMDNative: api.startKMDNative,
-					addressVersionCheck: api.addressVersionCheck,
 					getCoinByPub: api.getCoinByPub,
 					resetSettings: () => { api.saveLocalAppConf(__defaultAppSettings) },
 					createSeed: {
@@ -374,11 +380,6 @@ function createAppCloseWindow() {
 					checkStringEntropy: api.checkStringEntropy,
 					pinAccess: false,
 					isWatchOnly: api.isWatchOnly,
-					setPubkey: api.setPubkey,
-					getPubkeys: api.getPubkeys,
-					kvEncode: api.kvEncode,
-					kvDecode: api.kvDecode,
-					getAddressVersion: api.getAddressVersion,
 					sha256: (data) => {
 						const crypto = require('crypto');
 						return crypto.createHash('sha256').update(data).digest();
