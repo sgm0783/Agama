@@ -18,8 +18,6 @@ api.appRuntimeLog = [];
 api.lockDownAddCoin = false;
 api._isWatchOnly = false;
 
-api.staking = {};
-
 // dex cache
 api.mmupass = null;
 api.mmRatesInterval = null;

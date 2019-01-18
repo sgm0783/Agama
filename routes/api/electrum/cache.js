@@ -144,7 +144,7 @@ module.exports = (api) => {
     }
   }
 
-  api.getBlockHeader = (height, network, ecl) => {
+  api.getBlockHeader = (height, network, ecl) => {    
     return new Promise((resolve, reject) => {
       if (!api.electrumCache[network]) {
         api.electrumCache[network] = {};
@@ -167,12 +167,12 @@ module.exports = (api) => {
             }
           }
           api.electrumCache[network].blockHeader[height] = _rawtxJSON;
-          api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
+          // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
           resolve(_rawtxJSON);
         });
       } else {
         api.log(`electrum cached raw block ${height}`, 'spv.cache');
-        api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
+        // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
         resolve(api.electrumCache[network].blockHeader[height]);
       }
     });

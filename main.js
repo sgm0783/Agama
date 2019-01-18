@@ -364,13 +364,12 @@ function createAppCloseWindow() {
 					appExit,
 					getMaxconKMDConf: api.getMaxconKMDConf,
 					setMaxconKMDConf: api.setMaxconKMDConf,
-					getMMCacheData: api.getMMCacheData,
+					// getMMCacheData: api.getMMCacheData,
 					activeSection: 'wallets', // temp deprecated
 					argv: process.argv,
 					getAssetChainPorts: api.getAssetChainPorts,
 					startSPV: api.startSPV,
 					startKMDNative: api.startKMDNative,
-					addressVersionCheck: api.addressVersionCheck,
 					getCoinByPub: api.getCoinByPub,
 					resetSettings: () => { api.saveLocalAppConf(__defaultAppSettings) },
 					createSeed: {
@@ -381,11 +380,6 @@ function createAppCloseWindow() {
 					checkStringEntropy: api.checkStringEntropy,
 					pinAccess: false,
 					isWatchOnly: api.isWatchOnly,
-					setPubkey: api.setPubkey,
-					getPubkeys: api.getPubkeys,
-					kvEncode: api.kvEncode,
-					kvDecode: api.kvDecode,
-					getAddressVersion: api.getAddressVersion,
 					sha256: (data) => {
 						const crypto = require('crypto');
 						return crypto.createHash('sha256').update(data).digest();
