@@ -75,7 +75,7 @@ const chainParams = {
 	EQL: {
 		ac_supply: 500000000,
 		addnode: '46.101.124.153',
-	        ac_ccactivate: 205000,
+	  ac_ccactivate: 205000,
 	},
 	MNZ: {
 		ac_supply: 257142858,
@@ -119,7 +119,8 @@ const chainParams = {
 	},
 	ZILLA: {
 		ac_supply: 11000000,
-		addnode: '158.69.0.53',
+		ac_sapling: 5000000,
+		addnode: '51.68.215.104',
 	},
 	DSEC: {
 		ac_supply: 7000000,
@@ -197,6 +198,16 @@ const chainParams = {
 			'94.130.224.11',
 		],
 	},
+        LUMBER: {
+                ac_algo: 'verushash',
+                ac_veruspos: 80,
+                ac_cc: 2,
+                ac_supply: 1260000,
+                ac_reward: 470000000,
+                ac_halving: 2100000,
+                addnode: '149.202.84.141',
+                genproclimit: true,
+        },
 };
 
 module.exports = chainParams;

@@ -1,7 +1,7 @@
 {
-  "name": "agama-app",
+  "name": "Agama",
   "productName": "Agama",
-  "version": "0.2.44",
+  "version": "0.3.3",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "make-patch": "./make-patch.sh",
     "make-rpm": "node make-rpm.js",
     "make-deb": "node make-deb.js",
-    "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && npm install"
+    "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && npm install",
+    "postinstall": "rm -rf node_modules/bitcoinforksjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-pos/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-zcash/node_modules/create-hash && rm -rf node_modules/bitgo-utxo-lib/node_modules/create-hash"
   },
   "repository": "https://github.com/KomodoPlatform/Agama/",
   "homepage": "http://komodoplatform.com",
@@ -22,11 +23,15 @@
     "spv",
     "jumblr"
   ],
-  "author": "SuperNET Team",
+  "author": {
+    "name": "Komodo Platform Team",
+    "email": "info@komodoplatform.com",
+    "url": "https://komodoplatform.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "3.0.9",
+    "electron": "4.0.0",
     "electron-devtools-installer": "^2.2.4"
   },
   "dependencies": {
@@ -36,16 +41,17 @@
     "async": "^2.6.0",
     "bigi": "^1.4.2",
     "bip39": "^2.5.0",
-    "bitgo-utxo-lib": "git+https://github.com/pbca26/bitgo-utxo-lib.git",
     "bitcoinforksjs-lib": "git://github.com/SuperNETorg/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bitcoinjs-lib": "git://github.com/SuperNETorg/bitcoinjs-lib.git",
     "bitcoinjs-lib-pos": "git://github.com/KomodoPlatform/bitcoinjs-lib-pos",
     "bitcoinjs-lib-zcash": "git://github.com/pbca26/bitcoinjs-lib#zcash",
+    "bitgo-utxo-lib": "git+https://github.com/pbca26/bitgo-utxo-lib.git",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "buffer-reverse": "^1.0.1",
     "coinselect": "github:bitcoinjs/coinselect",
-    "electron": "3.0.9",
+    "create-hash": "git://github.com/pbca26/createHash#electron-v4",
+    "electron": "4.0.0",
     "ethereumjs-util": "^6.0.0",
     "ethers": "git://github.com/pbca26/ethers.js",
     "express": "^4.14.0",
@@ -62,6 +68,7 @@
     "ps-node": "^0.1.5",
     "remote-file-size": "^3.0.5",
     "request": "^2.88.0",
+    "semver-compare": "^1.0.0",
     "sha256": "^0.2.0",
     "socket.io": "^2.1.1",
     "tx-decoder": "git://github.com/pbca26/tx-decoder.git",

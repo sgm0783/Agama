@@ -2,11 +2,17 @@ const fs = require('fs-extra');
 const _fs = require('graceful-fs');
 const fsnode = require('fs');
 const Promise = require('bluebird');
+const bitcoin = require('bitgo-utxo-lib');
+const {
+  parseBlock,
+  electrumMerkleRoot,
+} = require('agama-wallet-lib/src/block');
+const btcnetworks = require('agama-wallet-lib/src/bitcoinjs-networks');
 
 module.exports = (api) => {
   api.loadLocalSPVCache = () => {
     if (fs.existsSync(`${api.agamaDir}/spv-cache.json`)) {
-      let localCache = fs.readFileSync(`${api.agamaDir}/spv-cache.json`, 'utf8');
+      const localCache = fs.readFileSync(`${api.agamaDir}/spv-cache.json`, 'utf8');
 
       api.log('local spv cache loaded from local file', 'spv.cache');
 
@@ -25,7 +31,7 @@ module.exports = (api) => {
   };
 
   api.saveLocalSPVCache = () => {
-    let spvCacheFileName = `${api.agamaDir}/spv-cache.json`;
+    const spvCacheFileName = `${api.agamaDir}/spv-cache.json`;
 
     _fs.access(api.agamaDir, fs.constants.R_OK, (err) => {
       if (!err) {
@@ -138,7 +144,7 @@ module.exports = (api) => {
     }
   }
 
-  api.getBlockHeader = (height, network, ecl) => {
+  api.getBlockHeader = (height, network, ecl) => {    
     return new Promise((resolve, reject) => {
       if (!api.electrumCache[network]) {
         api.electrumCache[network] = {};
@@ -147,16 +153,26 @@ module.exports = (api) => {
         api.electrumCache[network].blockHeader = {};
       }
 
-      if (!api.electrumCache[network].blockHeader[height]) {
+      if (!api.electrumCache[network].blockHeader[height] ||
+          !Object.keys(api.electrumCache[network].blockHeader[height]).length) {
         api.log(`electrum raw block ${height}`, 'spv.cache');
 
         ecl.blockchainBlockGetHeader(height)
         .then((_rawtxJSON) => {
+          if (typeof _rawtxJSON === 'string') {            
+            _rawtxJSON = parseBlock(_rawtxJSON, btcnetworks[network] || btcnetworks.kmd);
+
+            if (_rawtxJSON.merkleRoot) {
+              _rawtxJSON.merkle_root = electrumMerkleRoot(_rawtxJSON);
+            }
+          }
           api.electrumCache[network].blockHeader[height] = _rawtxJSON;
+          // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
           resolve(_rawtxJSON);
         });
       } else {
         api.log(`electrum cached raw block ${height}`, 'spv.cache');
+        // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
         resolve(api.electrumCache[network].blockHeader[height]);
       }
     });
