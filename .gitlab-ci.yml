@@ -9,9 +9,9 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.5.3
-  VERUSCOIN_VERSION: 0.5.3
-  KOMODO_VERSION: 0.3.1
+  AGAMA_VERSION: 0.5.4
+  VERUSCOIN_VERSION: 0.5.4
+  KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
   ELECTRON_BUILD_LINUX: Agama-linux-x64
@@ -23,7 +23,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   POST_COMMENT: "Pipeline Trigger: ${CI_PIPELINE_SOURCE}\n
       Branch: ${CI_COMMIT_REF_NAME}\n
-      Commit: ${CI_COMMIT_SHA}\n
+      Commit: https://github.com/VerusCoin/Agama/commit/${CI_COMMIT_SHA}\n
       ${CI_COMMIT_MESSAGE}\n"
 ########################################################################################################################
 ####END####                                        PROJECT LEVEL VARIABLES                                   ####END####
@@ -56,13 +56,15 @@ build:linux:
   - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
   - rm assets/bin/linux64/verusd/verusd
   - mv assets/bin/linux64/verusd/komodod assets/bin/linux64/verusd/verusd
-  - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_linux_${KOMODO_VERSION}.tar.gz
-  - tar xvfz komodo_linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
+  #- wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}/komodo_linux_${KOMODO_VERSION}.tar.gz
+  -  wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_linux_beta_0.3.3b.tar.gz
+#  - tar -xvfz komodo_linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
+  - tar -xzvf komodo_linux_beta_0.3.3b.tar.gz --strip=1 --directory assets/bin/linux64
   - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
   - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
-  - rm  komodo_linux_${KOMODO_VERSION}.tar.gz
+#  - rm  komodo_linux_${KOMODO_VERSION}.tar.gz
+  - rm komodo_linux_beta_0.3.3b.tar.gz
   - rm -rf __MACOSX
-  - rm -rf komodo_win_0.3.1
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
   - npm install
@@ -109,14 +111,18 @@ build:windows:
   - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
   - mv assets/bin/win64/verus-cli assets/bin/win64/verusd
   - mv assets/bin/win64/verusd/komodod.exe assets/bin/win64/verusd/verusd.exe
-  - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_win_${KOMODO_VERSION}.zip
-  - unzip komodo_win_${KOMODO_VERSION}.zip
-  - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
+ # - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}/komodo_win_${KOMODO_VERSION}.zip
+  - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_windows_beta_0.3.3.zip
+#  - unzip komodo_win_${KOMODO_VERSION}.zip
+  - unzip komodo_windows_beta_0.3.3.zip
+#  - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
+  - mv komodo_windows_beta_0.3.3/* assets/bin/win64
   - strip -g  assets/bin/win64/komodod.exe && strip -g  assets/bin/win64/komodo-cli.exe && strip -g  assets/bin/win64/komodo-tx.exe
   - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
-  - rm komodo_win_${KOMODO_VERSION}.zip
+  #- rm komodo_win_${KOMODO_VERSION}.zip
+  - rm komodo_windows_beta_0.3.3.zip
   - rm -rf __MACOSX
-  - rm -rf komodo_win_0.3.1
+  - rm -rf komodo_win_${KOMODO_VERSION}
   - npm install electron-packager -g
   - npm install electron -g --unsafe-perm=true
   - npm install
@@ -159,10 +165,13 @@ build:mac:
   - mkdir -p assets/bin/osx/verusd
   - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
   - mv assets/bin/osx/verusd/komodod assets/bin/osx/verusd/verusd
-  - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}-beta/komodo_osx_${KOMODO_VERSION}.tar.gz
-  - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
+  # - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}/komodo_osx_${KOMODO_VERSION}.tar.gz
+  - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_osx_beta_0.3.3b.tar.gz
+ # - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
+  - tar -xzvf komodo_osx_beta_0.3.3b.tar.gz  --strip=1 --directory assets/bin/osx
   - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
-  - rm komodo_osx_${KOMODO_VERSION}.tar.gz
+ # - rm komodo_osx_${KOMODO_VERSION}.tar.gz
+  - rm komodo_osx_beta_0.3.3b.tar.gz
   - npm install
   - npm install electron-packager -g
   script:
