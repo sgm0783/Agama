@@ -17,7 +17,7 @@ with this command you git clone agama - but explicitly just the dev branch (ther
 6) npm start in project root folder
 7) cd gui/EasyDEX-GUI/react/src
 8) npm start
-8) toggle dev and debug options in settings
+8) set `dev: true` and `debug: true` in ~/.agama/config.json or execute `npm start devmode`
 9) restart the app
 10) sync komodod and/or asset chains
 
