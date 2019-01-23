@@ -10,6 +10,8 @@ const {
 const btcnetworks = require('agama-wallet-lib/src/bitcoinjs-networks');
 const dpowCoins = require('agama-wallet-lib/src/electrum-servers-dpow');
 
+// TODO: dpow confs cache storage
+
 module.exports = (api) => {
   api.loadLocalSPVCache = () => {
     if (fs.existsSync(`${api.agamaDir}/spv-cache.json`)) {
