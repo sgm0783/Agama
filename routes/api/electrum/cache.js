@@ -8,6 +8,7 @@ const {
   electrumMerkleRoot,
 } = require('agama-wallet-lib/src/block');
 const btcnetworks = require('agama-wallet-lib/src/bitcoinjs-networks');
+const dpowCoins = require('agama-wallet-lib/src/electrum-servers-dpow');
 
 module.exports = (api) => {
   api.loadLocalSPVCache = () => {
@@ -111,14 +112,27 @@ module.exports = (api) => {
       if (!api.electrumCache[network].tx) {
         api.electrumCache[network].tx = {};
       }
+      if (!api.electrumCache[network].verboseTx) {
+        api.electrumCache[network].verboseTx = {};
+      }
 
-      if (!api.electrumCache[network].tx[txid]) {
+      api.log(`${network.toUpperCase()} dpow confs spv: ${dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false}`, 'spv.dpow.confs');
+      
+      if (!api.electrumCache[network].tx[txid] ||
+          !api.electrumCache[network].verboseTx[txid] ||
+          (api.electrumCache[network].verboseTx[txid] && api.electrumCache[network].verboseTx[txid].hasOwnProperty('confirmations') && api.electrumCache[network].verboseTx[txid].confirmations < 2)) {
         api.log(`electrum raw input tx ${txid}`, 'spv.cache');
 
-        ecl.blockchainTransactionGet(txid)
+        ecl.blockchainTransactionGet(txid, dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false)
         .then((_rawtxJSON) => {
-          api.electrumCache[network].tx[txid] = _rawtxJSON;
-          resolve(_rawtxJSON);
+          if (_rawtxJSON.hasOwnProperty('hex')) {
+            api.electrumCache[network].tx[txid] = _rawtxJSON.hex;
+            api.electrumCache[network].verboseTx[txid] = _rawtxJSON;
+            delete api.electrumCache[network].verboseTx[txid].hex;
+          } else {
+            api.electrumCache[network].tx[txid] = _rawtxJSON;
+          }
+          resolve(api.electrumCache[network].tx[txid]);
         });
       } else {
         api.log(`electrum cached raw input tx ${txid}`, 'spv.cached');

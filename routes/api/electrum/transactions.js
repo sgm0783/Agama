@@ -187,6 +187,17 @@ module.exports = (api) => {
                                     formattedTx.vinLen = decodedTx.inputs.length;
                                     formattedTx.vinMaxLen = api.appConfig.spv.maxVinParseLimit;
                                     formattedTx.opreturn = opreturn;
+
+                                    if (api.electrumCache[network].verboseTx &&
+                                        api.electrumCache[network].verboseTx[transaction.tx_hash]) {
+                                      formattedTx.dpowSecured = false;
+
+                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations') &&
+                                          api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
+                                        formattedTx.dpowSecured = true;
+                                      }
+                                    }
+
                                     _rawtx.push(formattedTx);
                                   } else {
                                     formattedTx[0].height = transaction.height;
@@ -209,6 +220,19 @@ module.exports = (api) => {
                                     formattedTx[1].vinLen = decodedTx.inputs.length;
                                     formattedTx[1].vinMaxLen = api.appConfig.spv.maxVinParseLimit;
                                     formattedTx[1].opreturn = opreturn[1];
+
+                                    if (api.electrumCache[network].verboseTx &&
+                                        api.electrumCache[network].verboseTx[transaction.tx_hash]) {
+                                      formattedTx[0].dpowSecured = false;
+                                      formattedTx[1].dpowSecured = false;
+
+                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations') &&
+                                          api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
+                                        formattedTx[0].dpowSecured = true;
+                                        formattedTx[1].dpowSecured = true;
+                                      }
+                                    }
+
                                     _rawtx.push(formattedTx[0]);
                                     _rawtx.push(formattedTx[1]);
                                   }
