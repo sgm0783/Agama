@@ -192,9 +192,15 @@ module.exports = (api) => {
                                         api.electrumCache[network].verboseTx[transaction.tx_hash]) {
                                       formattedTx.dpowSecured = false;
 
-                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations') &&
-                                          api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
-                                        formattedTx.dpowSecured = true;
+                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations')) {
+                                        if (api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
+                                          formattedTx.dpowSecured = true;
+                                        }
+                                        
+                                        formattedTx.verbose = {
+                                          confirmations: api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations,
+                                          rawconfirmations: api.electrumCache[network].verboseTx[transaction.tx_hash].rawconfirmations,
+                                        };                
                                       }
                                     }
 
@@ -226,10 +232,20 @@ module.exports = (api) => {
                                       formattedTx[0].dpowSecured = false;
                                       formattedTx[1].dpowSecured = false;
 
-                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations') &&
-                                          api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
-                                        formattedTx[0].dpowSecured = true;
-                                        formattedTx[1].dpowSecured = true;
+                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations')) {
+                                        if (api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
+                                          formattedTx[0].dpowSecured = true;
+                                          formattedTx[1].dpowSecured = true;
+                                        }
+
+                                        formattedTx[0].verbose = {
+                                          confirmations: api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations,
+                                          rawconfirmations: api.electrumCache[network].verboseTx[transaction.tx_hash].rawconfirmations,
+                                        };
+                                        formattedTx[1].verbose = {
+                                          confirmations: api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations,
+                                          rawconfirmations: api.electrumCache[network].verboseTx[transaction.tx_hash].rawconfirmations,
+                                        };
                                       }
                                     }
 
