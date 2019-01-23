@@ -21,9 +21,9 @@ You must have `node.js`, `npm` and `webpack` installed on your machine.
 1) cd agama
 2) mv komodod and komodo-cli *binaries to assets/bin/OS_dir
 3) npm update && npm install
-8) npm start
-9) toggle dev and debug options in settings
-10) restart the app
+4) npm start
+5) et `dev: true` and `debug: true` in ~/.agama/config.json or execute `npm start devmode`
+6) restart the app
 ```
 You re ready to dev!
 

@@ -105,6 +105,14 @@ module.exports = (api) => {
                               verified: false,
                             };
 
+                            if (api.electrumCache[network].verboseTx[_utxoItem.tx_hash].hasOwnProperty('confirmations')) {
+                              if (api.electrumCache[network].verboseTx[_utxoItem.tx_hash].confirmations >= 2) {
+                                _resolveObj.dpowSecured = true;
+                              } else {
+                                _resolveObj.dpowSecured = false;
+                              }
+                            }
+
                             // merkle root verification against another electrum server
                             if (verify) {
                               api.verifyMerkleByCoin(
@@ -137,6 +145,14 @@ module.exports = (api) => {
                               spendable: true,
                               verified: false,
                             };
+
+                            if (api.electrumCache[network].verboseTx[_utxoItem.tx_hash].hasOwnProperty('confirmations')) {
+                              if (api.electrumCache[network].verboseTx[_utxoItem.tx_hash].confirmations >= 2) {
+                                _resolveObj.dpowSecured = true;
+                              } else {
+                                _resolveObj.dpowSecured = false;
+                              }
+                            }
 
                             // merkle root verification against another electrum server
                             if (verify) {
