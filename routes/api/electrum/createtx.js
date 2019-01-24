@@ -491,6 +491,15 @@ module.exports = (api) => {
 
                             res.end(JSON.stringify(retObj));
                           } else {
+                            api.updatePendingTxCache(
+                              network,
+                              txid,
+                              {
+                                pub: changeAddress,
+                                rawtx: _rawtx,
+                              },
+                            );
+
                             const retObj = {
                               msg: 'success',
                               result: _rawObj,
@@ -599,6 +608,15 @@ module.exports = (api) => {
 
               res.end(JSON.stringify(retObj));
             } else {
+              api.updatePendingTxCache(
+                network,
+                txid,
+                {
+                  pub: req.query.changeAddress,
+                  rawtx: _rawtx,
+                },
+              );
+
               const retObj = {
                 msg: 'success',
                 result: json,
