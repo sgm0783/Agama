@@ -241,7 +241,6 @@ module.exports = (api) => {
               }
 
               for (let i = 0; i < inputs.length; i++) {
-                console.log(`dpow flag ${inputs[i].dpowSecured}`);
                 if (inputs[i].hasOwnProperty('dpowSecured') &&
                     !inputs[i].dpowSecured) {
                   dpowSecured = false;

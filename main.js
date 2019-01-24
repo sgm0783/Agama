@@ -456,7 +456,8 @@ function createAppCloseWindow() {
 			}
 
 			function appExit() {
-				if (api.appConfig.spv &&
+				if ((appConfig.dev || process.argv.indexOf('devmode') > -1) &&
+						api.appConfig.spv &&
 						api.appConfig.spv.cache) {
 					api.saveLocalSPVCache();
 				}
