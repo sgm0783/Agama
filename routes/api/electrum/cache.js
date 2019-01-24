@@ -12,6 +12,31 @@ const dpowCoins = require('agama-wallet-lib/src/electrum-servers-dpow');
 // TODO: dpow confs cache storage
 
 module.exports = (api) => {
+  api.updatePendingTxCache = (network, txid, options) => {
+    if (options.remove &&
+        api.electrumCache.pendingTx &&
+        api.electrumCache.pendingTx[network] &&
+        api.electrumCache.pendingTx[network][txid]) {
+      delete api.electrumCache.pendingTx[network][txid];
+    } else {
+      if (!api.electrumCache.pendingTx) {
+        api.electrumCache.pendingTx = {};
+      } else {
+        if (!api.electrumCache.pendingTx[network]) {
+          api.electrumCache.pendingTx[network] = {};
+        } else {
+          api.electrumCache.pendingTx[network][txid] = {
+            pub: options.pub,
+            rawtx: options.rawtx,
+          };
+        }
+      }
+    }
+
+    api.log('pending txs cache', 'spv.cache.pending');
+    api.log(api.electrumCache.pendingTx, 'spv.cache.pending');
+  };
+
   api.loadLocalSPVCache = () => {
     if (fs.existsSync(`${api.agamaDir}/spv-cache.json`)) {
       let localCache = fs.readFileSync(`${api.agamaDir}/spv-cache.json`, 'utf8');
