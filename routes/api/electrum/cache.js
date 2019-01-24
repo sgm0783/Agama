@@ -47,12 +47,25 @@ module.exports = (api) => {
       
       for (let key in _txs) {
         if (_txs[key].pub === pub) {
-          _items.push(api.electrumCache.pendingTx[network][txid].rawtx);
+          _items.push({
+            txid,
+            rawtx: api.electrumCache.pendingTx[network][txid].rawtx, 
+          });
         }
       }
     }
 
     return _items;
+  };
+
+  api.findPendingTxRawById = (network, txid) => {
+    if (api.electrumCache.pendingTx &&
+        api.electrumCache.pendingTx[network] &&
+        api.electrumCache.pendingTx[network][txid]) {
+      return api.electrumCache.pendingTx[network][txid].rawtx;
+    }
+
+    return null;
   };
 
   api.loadLocalSPVCache = () => {

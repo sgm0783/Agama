@@ -71,10 +71,38 @@ module.exports = (api) => {
               .then((json) => {
                 if (json &&
                     json.length) {
+                  const _pendingTxs = api.findPendingTxByAddress(network, config.address);
                   let _rawtx = [];
+                  let _flatTxHistory = [];
 
+                  for (let i = 0; i < json.length; i++) {
+                    _flatTxHistory.push(json[i].tx_hash);
+                  }
+                  
                   json = api.sortTransactions(json);
                   json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
+
+                  if (_pendingTxs &&
+                      _pendingTxs.length) {
+                    api.log(`found ${_pendingTxs.length} pending txs in cache`, 'spv.transactions.pending.cache');
+
+                    for (let i = 0; i < _pendingTxs.length; i++) {
+                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1) {
+                        api.updatePendingTxCache(
+                          network,
+                          config.address,
+                          {
+                            remove: true,
+                          }
+                        );
+                      } else {
+                        json.push({
+                          height: 'pending',
+                          tx_hash: _pendingTxs[i].txid,
+                        });
+                      }
+                    }
+                  }
 
                   api.log(json.length, 'spv.listtransactions');
                   let index = 0;
@@ -95,6 +123,8 @@ module.exports = (api) => {
                           ecl
                         )
                         .then((_rawtxJSON) => {
+                          if (transaction.height === 'pending') transaction.height = currentHeight;
+                          
                           api.log('electrum gettransaction ==>', 'spv.listtransactions');
                           api.log((index + ' | ' + (_rawtxJSON.length - 1)), 'spv.listtransactions');
                           // api.log(_rawtxJSON, 'spv.listtransactions');
