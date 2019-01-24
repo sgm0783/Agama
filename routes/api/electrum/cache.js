@@ -37,9 +37,27 @@ module.exports = (api) => {
     api.log(api.electrumCache.pendingTx, 'spv.cache.pending');
   };
 
+  api.findPendingTxByAddress = (network, pub) => {
+    let _items = [];
+
+    if (api.electrumCache.pendingTx &&
+        api.electrumCache.pendingTx[network] &&
+        Object.keys(api.electrumCache.pendingTx[network]).length) {
+      const _txs = api.electrumCache.pendingTx[network];
+      
+      for (let key in _txs) {
+        if (_txs[key].pub === pub) {
+          _items.push(api.electrumCache.pendingTx[network][txid].rawtx);
+        }
+      }
+    }
+
+    return _items;
+  };
+
   api.loadLocalSPVCache = () => {
     if (fs.existsSync(`${api.agamaDir}/spv-cache.json`)) {
-      let localCache = fs.readFileSync(`${api.agamaDir}/spv-cache.json`, 'utf8');
+      const localCache = fs.readFileSync(`${api.agamaDir}/spv-cache.json`, 'utf8');
 
       api.log('local spv cache loaded from local file', 'spv.cache');
 
@@ -58,7 +76,7 @@ module.exports = (api) => {
   };
 
   api.saveLocalSPVCache = () => {
-    let spvCacheFileName = `${api.agamaDir}/spv-cache.json`;
+    const spvCacheFileName = `${api.agamaDir}/spv-cache.json`;
 
     _fs.access(api.agamaDir, fs.constants.R_OK, (err) => {
       if (!err) {
