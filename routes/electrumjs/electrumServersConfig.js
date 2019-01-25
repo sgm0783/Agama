@@ -15,6 +15,7 @@ const disableCoins = [
   'btcp', // sort out kv
   'blk',
   // untested coins
+  'smart',
   'usc',
   'bca',
   'mnx',
