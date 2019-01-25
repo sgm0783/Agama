@@ -176,9 +176,8 @@ api.setVar = (_name, _body) => {
 };
 
 // spv
-if ((appConfig.dev || process.argv.indexOf('devmode') > -1) &&
-    api.appConfig.spv &&
-    api.appConfig.spv.cache) {
+if (((api.appConfig.dev || process.argv.indexOf('devmode') > -1) && api.appConfig.spv.cache) ||
+    (!api.appConfig.dev && process.argv.indexOf('devmode') === -1)) {
   api.loadLocalSPVCache();
 }
 

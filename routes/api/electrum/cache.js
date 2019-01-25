@@ -9,7 +9,7 @@ const {
 const btcnetworks = require('agama-wallet-lib/src/bitcoinjs-networks');
 const dpowCoins = require('agama-wallet-lib/src/electrum-servers-dpow');
 
-// TODO: dpow confs cache storage
+// TODO: dpow confs cache storage, eth/erc20 pending txs cache 
 
 module.exports = (api) => {
   api.updatePendingTxCache = (network, txid, options) => {
@@ -17,20 +17,25 @@ module.exports = (api) => {
         api.electrumCache.pendingTx &&
         api.electrumCache.pendingTx[network] &&
         api.electrumCache.pendingTx[network][txid]) {
+      api.log(`pending txs cache remove ${network} txid ${txid}`, 'spv.cache.pending');
       delete api.electrumCache.pendingTx[network][txid];
+
+      if (!Object.keys(api.electrumCache.pendingTx[network]).length) {
+        delete api.electrumCache.pendingTx[network];
+      }
     } else {
       if (!api.electrumCache.pendingTx) {
         api.electrumCache.pendingTx = {};
-      } else {
-        if (!api.electrumCache.pendingTx[network]) {
-          api.electrumCache.pendingTx[network] = {};
-        } else {
-          api.electrumCache.pendingTx[network][txid] = {
-            pub: options.pub,
-            rawtx: options.rawtx,
-          };
-        }
       }
+      if (!api.electrumCache.pendingTx[network]) {
+        api.electrumCache.pendingTx[network] = {};
+      }
+
+      api.electrumCache.pendingTx[network][txid] = {
+        pub: options.pub,
+        rawtx: options.rawtx,
+      };
+      api.log(`pending txs cache add ${network} txid ${txid} pub ${options.pub}`, 'spv.cache.pending');
     }
 
     api.log('pending txs cache', 'spv.cache.pending');
@@ -48,8 +53,8 @@ module.exports = (api) => {
       for (let key in _txs) {
         if (_txs[key].pub === pub) {
           _items.push({
-            txid,
-            rawtx: api.electrumCache.pendingTx[network][txid].rawtx, 
+            txid: key,
+            rawtx: api.electrumCache.pendingTx[network][key].rawtx, 
           });
         }
       }
@@ -173,27 +178,34 @@ module.exports = (api) => {
         api.electrumCache[network].verboseTx = {};
       }
 
-      api.log(`${network.toUpperCase()} dpow confs spv: ${dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false}`, 'spv.dpow.confs');
+      const _pendingTxFromCache = api.findPendingTxRawById(network, txid);
       
-      if (!api.electrumCache[network].tx[txid] ||
-          !api.electrumCache[network].verboseTx[txid] ||
-          (api.electrumCache[network].verboseTx[txid] && api.electrumCache[network].verboseTx[txid].hasOwnProperty('confirmations') && api.electrumCache[network].verboseTx[txid].confirmations < 2)) {
-        api.log(`electrum raw input tx ${txid}`, 'spv.cache');
-
-        ecl.blockchainTransactionGet(txid, dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false)
-        .then((_rawtxJSON) => {
-          if (_rawtxJSON.hasOwnProperty('hex')) {
-            api.electrumCache[network].tx[txid] = _rawtxJSON.hex;
-            api.electrumCache[network].verboseTx[txid] = _rawtxJSON;
-            delete api.electrumCache[network].verboseTx[txid].hex;
-          } else {
-            api.electrumCache[network].tx[txid] = _rawtxJSON;
-          }
-          resolve(api.electrumCache[network].tx[txid]);
-        });
+      if (_pendingTxFromCache) {
+        api.log(`${network} ${txid} get from pending txs cache`, 'spv.cache.transaction.pending');
+        resolve(_pendingTxFromCache);
       } else {
-        api.log(`electrum cached raw input tx ${txid}`, 'spv.cached');
-        resolve(api.electrumCache[network].tx[txid]);
+        api.log(`${network.toUpperCase()} dpow confs spv: ${dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false}`, 'spv.dpow.confs');
+        
+        if (!api.electrumCache[network].tx[txid] ||
+            !api.electrumCache[network].verboseTx[txid] ||
+            (api.electrumCache[network].verboseTx[txid] && api.electrumCache[network].verboseTx[txid].hasOwnProperty('confirmations') && api.electrumCache[network].verboseTx[txid].confirmations < 2)) {
+          api.log(`electrum raw input tx ${txid}`, 'spv.cache');
+
+          ecl.blockchainTransactionGet(txid, dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false)
+          .then((_rawtxJSON) => {
+            if (_rawtxJSON.hasOwnProperty('hex')) {
+              api.electrumCache[network].tx[txid] = _rawtxJSON.hex;
+              api.electrumCache[network].verboseTx[txid] = _rawtxJSON;
+              delete api.electrumCache[network].verboseTx[txid].hex;
+            } else {
+              api.electrumCache[network].tx[txid] = _rawtxJSON;
+            }
+            resolve(api.electrumCache[network].tx[txid]);
+          });
+        } else {
+          api.log(`electrum cached raw input tx ${txid}`, 'spv.cache');
+          resolve(api.electrumCache[network].tx[txid]);
+        }
       }
     });
   }
@@ -215,36 +227,43 @@ module.exports = (api) => {
     }
   }
 
-  api.getBlockHeader = (height, network, ecl) => {    
+  api.getBlockHeader = (height, network, ecl) => {
     return new Promise((resolve, reject) => {
-      if (!api.electrumCache[network]) {
-        api.electrumCache[network] = {};
-      }
-      if (!api.electrumCache[network].blockHeader) {
-        api.electrumCache[network].blockHeader = {};
-      }
-
-      if (!api.electrumCache[network].blockHeader[height] ||
-          !Object.keys(api.electrumCache[network].blockHeader[height]).length) {
-        api.log(`electrum raw block ${height}`, 'spv.cache');
-
-        ecl.blockchainBlockGetHeader(height)
-        .then((_rawtxJSON) => {
-          if (typeof _rawtxJSON === 'string') {            
-            _rawtxJSON = parseBlock(_rawtxJSON, btcnetworks[network] || btcnetworks.kmd);
-
-            if (_rawtxJSON.merkleRoot) {
-              _rawtxJSON.merkle_root = electrumMerkleRoot(_rawtxJSON);
-            }
-          }
-          api.electrumCache[network].blockHeader[height] = _rawtxJSON;
-          // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
-          resolve(_rawtxJSON);
+      if (height === 'pending') {
+        api.log(`electrum raw block ${height} use current time`, 'spv.cache.pending');
+        resolve({
+          timestamp: Math.floor(Date.now() / 1000),
         });
       } else {
-        api.log(`electrum cached raw block ${height}`, 'spv.cache');
-        // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
-        resolve(api.electrumCache[network].blockHeader[height]);
+        if (!api.electrumCache[network]) {
+          api.electrumCache[network] = {};
+        }
+        if (!api.electrumCache[network].blockHeader) {
+          api.electrumCache[network].blockHeader = {};
+        }
+
+        if (!api.electrumCache[network].blockHeader[height] ||
+            !Object.keys(api.electrumCache[network].blockHeader[height]).length) {
+          api.log(`electrum raw block ${height}`, 'spv.cache');
+
+          ecl.blockchainBlockGetHeader(height)
+          .then((_rawtxJSON) => {
+            if (typeof _rawtxJSON === 'string') {            
+              _rawtxJSON = parseBlock(_rawtxJSON, btcnetworks[network] || btcnetworks.kmd);
+
+              if (_rawtxJSON.merkleRoot) {
+                _rawtxJSON.merkle_root = electrumMerkleRoot(_rawtxJSON);
+              }
+            }
+            api.electrumCache[network].blockHeader[height] = _rawtxJSON;
+            // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
+            resolve(_rawtxJSON);
+          });
+        } else {
+          api.log(`electrum cached raw block ${height}`, 'spv.cache');
+          // api.log(api.electrumCache[network].blockHeader[height], 'spv.cache');
+          resolve(api.electrumCache[network].blockHeader[height]);
+        }
       }
     });
   }
