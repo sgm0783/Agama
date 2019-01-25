@@ -241,7 +241,6 @@ module.exports = (api) => {
               }
 
               for (let i = 0; i < inputs.length; i++) {
-                console.log(`dpow flag ${inputs[i].dpowSecured}`);
                 if (inputs[i].hasOwnProperty('dpowSecured') &&
                     !inputs[i].dpowSecured) {
                   dpowSecured = false;
@@ -492,6 +491,15 @@ module.exports = (api) => {
 
                             res.end(JSON.stringify(retObj));
                           } else {
+                            api.updatePendingTxCache(
+                              network,
+                              txid,
+                              {
+                                pub: changeAddress,
+                                rawtx: _rawtx,
+                              },
+                            );
+
                             const retObj = {
                               msg: 'success',
                               result: _rawObj,
@@ -600,6 +608,17 @@ module.exports = (api) => {
 
               res.end(JSON.stringify(retObj));
             } else {
+              if (req.query.pub) {
+                api.updatePendingTxCache(
+                  network,
+                  txid,
+                  {
+                    pub: req.query.pub,
+                    rawtx: _rawtx,
+                  },
+                );
+              }
+
               const retObj = {
                 msg: 'success',
                 result: json,
