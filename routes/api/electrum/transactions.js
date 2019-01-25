@@ -87,23 +87,25 @@ module.exports = (api) => {
                     api.log(`found ${_pendingTxs.length} pending txs in cache`, 'spv.transactions.pending.cache');
 
                     for (let i = 0; i < _pendingTxs.length; i++) {
-                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1) {
+                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1) {                        
                         api.updatePendingTxCache(
                           network,
-                          config.address,
+                          _pendingTxs[i].txid,
                           {
                             remove: true,
                           }
                         );
                       } else {
-                        json.push({
+                        api.log(`push ${_pendingTxs[i].txid} from pending txs in cache to transactions history`, 'spv.transactions.pending.cache');
+                        
+                        json.unshift({
                           height: 'pending',
                           tx_hash: _pendingTxs[i].txid,
                         });
                       }
                     }
                   }
-
+                  
                   api.log(json.length, 'spv.listtransactions');
                   let index = 0;
 
