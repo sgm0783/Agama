@@ -608,14 +608,16 @@ module.exports = (api) => {
 
               res.end(JSON.stringify(retObj));
             } else {
-              api.updatePendingTxCache(
-                network,
-                txid,
-                {
-                  pub: req.query.changeAddress,
-                  rawtx: _rawtx,
-                },
-              );
+              if (req.query.pub) {
+                api.updatePendingTxCache(
+                  network,
+                  txid,
+                  {
+                    pub: req.query.pub,
+                    rawtx: _rawtx,
+                  },
+                );
+              }
 
               const retObj = {
                 msg: 'success',
