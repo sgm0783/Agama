@@ -77,6 +77,8 @@ module.exports = (api) => {
                   
                   json = api.sortTransactions(json);
 
+                  api.log(json, 'spv.transactions.json');
+
                   for (let i = 0; i < json.length; i++) {
                     _flatTxHistory.push(json[i].tx_hash);
                   }
@@ -88,9 +90,8 @@ module.exports = (api) => {
                     api.log(`found ${_pendingTxs.length} pending txs in cache`, 'spv.transactions.pending.cache');
 
                     for (let i = 0; i < _pendingTxs.length; i++) {
-                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1 &&
-                          (_flatTxHistory.indexOf(_pendingTxs[i].txid) <= json.length)) {
-                        api.log(`found ${_pendingTxs[i].txid} pending txs in cache for removal at pos ${_flatTxHistory.indexOf(_pendingTxs[i].txid)} total json len ${json.length}`, 'spv.transactions.pending.cache');
+                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1) {
+                        api.log(`found ${_pendingTxs[i].txid} pending txs in cache for removal at pos ${_flatTxHistory.indexOf(_pendingTxs[i].txid)}`, 'spv.transactions.pending.cache');
 
                         api.updatePendingTxCache(
                           network,
