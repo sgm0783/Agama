@@ -74,12 +74,13 @@ module.exports = (api) => {
                   const _pendingTxs = api.findPendingTxByAddress(network, config.address);
                   let _rawtx = [];
                   let _flatTxHistory = [];
+                  
+                  json = api.sortTransactions(json);
 
                   for (let i = 0; i < json.length; i++) {
                     _flatTxHistory.push(json[i].tx_hash);
                   }
-                  
-                  json = api.sortTransactions(json);
+
                   json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
 
                   if (_pendingTxs &&
@@ -87,7 +88,10 @@ module.exports = (api) => {
                     api.log(`found ${_pendingTxs.length} pending txs in cache`, 'spv.transactions.pending.cache');
 
                     for (let i = 0; i < _pendingTxs.length; i++) {
-                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1) {                        
+                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1 &&
+                          (_flatTxHistory.indexOf(_pendingTxs[i].txid) <= json.length)) {
+                        api.log(`found ${_pendingTxs[i].txid} pending txs in cache for removal at pos ${_flatTxHistory.indexOf(_pendingTxs[i].txid)} total json len ${json.length}`, 'spv.transactions.pending.cache');
+
                         api.updatePendingTxCache(
                           network,
                           _pendingTxs[i].txid,
