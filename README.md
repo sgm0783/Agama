@@ -19,7 +19,7 @@ You must have `node.js`, `npm` and `webpack` installed on your machine.
 2) Start Agama App (electron)
 ```shell
 1) cd agama
-2) mv komodod and komodo-cli *binaries to assets/bin/OS_dir
+2) mv komodod and komodo-cli *binaries to assets/bin/OS_dir, chmod +x if applicable
 3) npm update && npm install
 4) npm start
 5) et `dev: true` and `debug: true` in ~/.agama/config.json or execute `npm start devmode`
