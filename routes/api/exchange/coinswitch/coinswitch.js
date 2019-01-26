@@ -205,7 +205,6 @@ module.exports = (api) => {
           },
           body: JSON.stringify(_body),
         };
-        api.log('coinswitch local', 'exchanges');
       } else {
         options = {
           method: 'GET',
@@ -264,7 +263,8 @@ module.exports = (api) => {
       if (api.exchangesCache.coinswitch[_orderId]) {
         api.log(`coinswitch order ${_orderId} state is ${api.exchangesCache.coinswitch[_orderId].status}`, 'exchanges.coinswitch');
 
-        if (api.coinswitchStatusLookup.indexOf(api.exchangesCache.coinswitch[_orderId].status) === -1) {
+        if (api.coinswitchStatusLookup.indexOf(api.exchangesCache.coinswitch[_orderId].status) === -1 &&
+            !api.exchangesCache.coinswitch[_orderId].outputTransactionHash) {
           api.log(`coinswitch request order ${_orderId} state update`, 'exchanges.coinswitch');
           api.coinswitchGetStatus(res, req, _orderId);
         } else {
