@@ -78,7 +78,7 @@ module.exports = (api) => {
           };
         
           resolve(retObj);
-          api.log(error, 'exchanges.coinswitch');
+          api.log(error, 'exchanges');
         } else {
           try {
             const json = JSON.parse(body);
@@ -89,7 +89,7 @@ module.exports = (api) => {
           
             resolve(retObj);
           } catch (e) {
-            api.log(`can\'t parse json from [${options.method}] ${options.url}`, 'exchanges.coinswitch');
+            api.log(`can\'t parse json from [${options.method}] ${options.url}`, 'exchanges');
             const retObj = {
               msg: 'error',
               result: `can\'t parse json from [${options.method}] ${options.url}`,
