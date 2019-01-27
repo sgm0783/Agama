@@ -71,11 +71,54 @@ module.exports = (api) => {
               .then((json) => {
                 if (json &&
                     json.length) {
+<<<<<<< HEAD
                   let _rawtx = [];
 
                   json = api.sortTransactions(json);
                   json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
 
+=======
+                  const _pendingTxs = api.findPendingTxByAddress(network, config.address);
+                  let _rawtx = [];
+                  let _flatTxHistory = [];
+                  
+                  json = api.sortTransactions(json);
+
+                  api.log(json, 'spv.transactions.json');
+
+                  for (let i = 0; i < json.length; i++) {
+                    _flatTxHistory.push(json[i].tx_hash);
+                  }
+
+                  json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
+
+                  if (_pendingTxs &&
+                      _pendingTxs.length) {
+                    api.log(`found ${_pendingTxs.length} pending txs in cache`, 'spv.transactions.pending.cache');
+
+                    for (let i = 0; i < _pendingTxs.length; i++) {
+                      if (_flatTxHistory.indexOf(_pendingTxs[i].txid) > -1) {
+                        api.log(`found ${_pendingTxs[i].txid} pending txs in cache for removal at pos ${_flatTxHistory.indexOf(_pendingTxs[i].txid)}`, 'spv.transactions.pending.cache');
+
+                        api.updatePendingTxCache(
+                          network,
+                          _pendingTxs[i].txid,
+                          {
+                            remove: true,
+                          }
+                        );
+                      } else {
+                        api.log(`push ${_pendingTxs[i].txid} from pending txs in cache to transactions history`, 'spv.transactions.pending.cache');
+                        
+                        json.unshift({
+                          height: 'pending',
+                          tx_hash: _pendingTxs[i].txid,
+                        });
+                      }
+                    }
+                  }
+                  
+>>>>>>> 468c54c5bb443b249901df450a587f34852d8068
                   api.log(json.length, 'spv.listtransactions');
                   let index = 0;
 
@@ -95,6 +138,11 @@ module.exports = (api) => {
                           ecl
                         )
                         .then((_rawtxJSON) => {
+<<<<<<< HEAD
+=======
+                          if (transaction.height === 'pending') transaction.height = currentHeight;
+                          
+>>>>>>> 468c54c5bb443b249901df450a587f34852d8068
                           api.log('electrum gettransaction ==>', 'spv.listtransactions');
                           api.log((index + ' | ' + (_rawtxJSON.length - 1)), 'spv.listtransactions');
                           // api.log(_rawtxJSON, 'spv.listtransactions');
@@ -149,6 +197,7 @@ module.exports = (api) => {
                               }
                             }
                           }
+<<<<<<< HEAD
 
                           if (decodedTx &&
                               decodedTx.inputs &&
@@ -209,6 +258,107 @@ module.exports = (api) => {
                                     formattedTx[1].vinLen = decodedTx.inputs.length;
                                     formattedTx[1].vinMaxLen = api.appConfig.spv.maxVinParseLimit;
                                     formattedTx[1].opreturn = opreturn[1];
+=======
+
+                          if (decodedTx &&
+                              decodedTx.inputs &&
+                              decodedTx.inputs.length) {
+                            async.eachOfSeries(decodedTx.inputs, (_decodedInput, ind2, callback2) => {
+                              const checkLoop = () => {
+                                index2++;
+
+                                if (index2 === decodedTx.inputs.length ||
+                                    index2 === api.appConfig.spv.maxVinParseLimit) {
+                                  api.log(`tx history decode inputs ${decodedTx.inputs.length} | ${index2} => main callback`, 'spv.listtransactions');
+                                  const _parsedTx = {
+                                    network: decodedTx.network,
+                                    format: decodedTx.format,
+                                    inputs: txInputs,
+                                    outputs: decodedTx.outputs,
+                                    height: transaction.height,
+                                    timestamp: Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timestamp,
+                                    confirmations: Number(transaction.height) === 0 || Number(transaction.height) === -1 ? 0 : currentHeight - transaction.height,
+                                  };
+
+                                  const formattedTx = api.parseTransactionAddresses(
+                                    _parsedTx,
+                                    config.address,
+                                    network.toLowerCase() === 'kmd'
+                                  );
+
+                                  if (formattedTx.type) {
+                                    formattedTx.height = transaction.height;
+                                    formattedTx.blocktime = Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timestamp;
+                                    formattedTx.timereceived = Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timereceived;
+                                    formattedTx.hex = _rawtxJSON;
+                                    formattedTx.inputs = decodedTx.inputs;
+                                    formattedTx.outputs = decodedTx.outputs;
+                                    formattedTx.locktime = decodedTx.format.locktime;
+                                    formattedTx.vinLen = decodedTx.inputs.length;
+                                    formattedTx.vinMaxLen = api.appConfig.spv.maxVinParseLimit;
+                                    formattedTx.opreturn = opreturn;
+
+                                    if (api.electrumCache[network] &&
+                                        api.electrumCache[network].verboseTx &&
+                                        api.electrumCache[network].verboseTx[transaction.tx_hash]) {
+                                      formattedTx.dpowSecured = false;
+
+                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations')) {
+                                        if (api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
+                                          formattedTx.dpowSecured = true;
+                                          formattedTx.rawconfirmations = formattedTx.confirmations;
+                                        } else {
+                                          formattedTx.confirmations = api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations;
+                                          formattedTx.rawconfirmations = api.electrumCache[network].verboseTx[transaction.tx_hash].rawconfirmations;
+                                        }             
+                                      }
+                                    }
+
+                                    _rawtx.push(formattedTx);
+                                  } else {
+                                    formattedTx[0].height = transaction.height;
+                                    formattedTx[0].blocktime = Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timestamp;
+                                    formattedTx[0].timereceived = Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timereceived;
+                                    formattedTx[0].hex = _rawtxJSON;
+                                    formattedTx[0].inputs = decodedTx.inputs;
+                                    formattedTx[0].outputs = decodedTx.outputs;
+                                    formattedTx[0].locktime = decodedTx.format.locktime;
+                                    formattedTx[0].vinLen = decodedTx.inputs.length;
+                                    formattedTx[0].vinMaxLen = api.appConfig.spv.maxVinParseLimit;
+                                    formattedTx[0].opreturn = opreturn[0];
+                                    formattedTx[1].height = transaction.height;
+                                    formattedTx[1].blocktime = Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timestamp;
+                                    formattedTx[1].timereceived = Number(transaction.height) === 0 || Number(transaction.height) === -1 ? Math.floor(Date.now() / 1000) : blockInfo.timereceived;
+                                    formattedTx[1].hex = _rawtxJSON;
+                                    formattedTx[1].inputs = decodedTx.inputs;
+                                    formattedTx[1].outputs = decodedTx.outputs;
+                                    formattedTx[1].locktime = decodedTx.format.locktime;
+                                    formattedTx[1].vinLen = decodedTx.inputs.length;
+                                    formattedTx[1].vinMaxLen = api.appConfig.spv.maxVinParseLimit;
+                                    formattedTx[1].opreturn = opreturn[1];
+
+                                    if (api.electrumCache[network] &&
+                                        api.electrumCache[network].verboseTx &&
+                                        api.electrumCache[network].verboseTx[transaction.tx_hash]) {
+                                      formattedTx[0].dpowSecured = false;
+                                      formattedTx[1].dpowSecured = false;
+
+                                      if (api.electrumCache[network].verboseTx[transaction.tx_hash].hasOwnProperty('confirmations')) {
+                                        if (api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations >= 2) {
+                                          formattedTx[0].dpowSecured = true;
+                                          formattedTx[1].dpowSecured = true;
+                                          formattedTx[0].rawconfirmations = formattedTx[0].confirmations;
+                                          formattedTx[1].rawconfirmations = formattedTx[1].confirmations;
+                                        } else {
+                                          formattedTx[0].confirmations = api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations;
+                                          formattedTx[1].confirmations = api.electrumCache[network].verboseTx[transaction.tx_hash].confirmations;
+                                          formattedTx[0].rawconfirmations = api.electrumCache[network].verboseTx[transaction.tx_hash].rawconfirmations;
+                                          formattedTx[1].rawconfirmations = api.electrumCache[network].verboseTx[transaction.tx_hash].rawconfirmations;
+                                        }
+                                      }
+                                    }
+
+>>>>>>> 468c54c5bb443b249901df450a587f34852d8068
                                     _rawtx.push(formattedTx[0]);
                                     _rawtx.push(formattedTx[1]);
                                   }

@@ -138,7 +138,7 @@ module.exports = (api) => {
       const provider = req.query.provider;
       const retObj = {
         msg: 'success',
-        result: api.exchangesCache[provider],
+        result: api.exchangesCache[provider] ? api.exchangesCache[provider] : {},
       };
 
       res.end(JSON.stringify(retObj));
