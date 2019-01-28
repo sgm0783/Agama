@@ -11,16 +11,27 @@ module.exports = (api) => {
 
       try {
         api.exchangesCache = JSON.parse(localCache);
+
+        if (!api.exchangesCache.coinswitch) {
+          api.exchangesCache = {
+            coinswitch: {},
+          };
+        }
+
         api.log('local exchanges cache loaded from local file', 'exchanges.cache');
       } catch (e) {
         api.log('local exchanges cache file is damaged, create new', 'exchanges.cache');
+        api.exchangesCache = {
+          coinswitch: {},
+        };
         api.saveLocalExchangesCache();
-        api.exchangesCache = {};
       }
     } else {
       api.log('local exchanges cache file is not found, create new', 'exchanges.cache');
+      api.exchangesCache = {
+        coinswitch: {},
+      };
       api.saveLocalExchangesCache();
-      api.exchangesCache = {};
     }
   };
 
