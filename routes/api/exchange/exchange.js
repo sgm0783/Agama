@@ -76,7 +76,7 @@ module.exports = (api) => {
             msg: 'error',
             result: error,
           };
-        
+
           resolve(retObj);
           api.log(error, 'exchanges');
         } else {
@@ -86,7 +86,7 @@ module.exports = (api) => {
               msg: 'success',
               result: json,
             };
-          
+
             resolve(retObj);
           } catch (e) {
             api.log(`can\'t parse json from [${options.method}] ${options.url}`, 'exchanges');
@@ -94,7 +94,7 @@ module.exports = (api) => {
               msg: 'error',
               result: `can\'t parse json from [${options.method}] ${options.url}`,
             };
-          
+
             resolve(retObj);
           }
         }
@@ -134,7 +134,7 @@ module.exports = (api) => {
    *
    */
   api.get('/exchanges/cache', (req, res, next) => {
-    if (api.checkToken(req.body.token)) {
+    if (api.checkToken(req.query.token)) {
       const provider = req.query.provider;
       const retObj = {
         msg: 'success',
@@ -169,7 +169,7 @@ module.exports = (api) => {
    *
    */
   api.get('/exchanges/deposit/update', (req, res, next) => {
-    if (api.checkToken(req.body.token)) {
+    if (api.checkToken(req.query.token)) {
       const provider = req.query.provider;
 
       if (!api.exchangesCache[provider].deposits) {
@@ -200,7 +200,7 @@ module.exports = (api) => {
    *
    */
   api.get('/exchanges/deposit', (req, res, next) => {
-    if (api.checkToken(req.body.token)) {
+    if (api.checkToken(req.query.token)) {
       const provider = req.query.provider;
 
       if (api.exchangesCache[provider] &&
