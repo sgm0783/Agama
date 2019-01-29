@@ -156,12 +156,14 @@ module.exports = (api) => {
 
       if (provider === 'coinswitch') {
         for (key in api.exchangesCache.coinswitch) {
-          api.log(`coinswitch order ${key} state is ${api.exchangesCache.coinswitch[key].status}`, 'exchanges.coinswitch');
+          if (key !== 'deposits') {
+            api.log(`coinswitch order ${key} state is ${api.exchangesCache.coinswitch[key].status}`, 'exchanges.coinswitch');
 
-          if (api.exchangesCache.coinswitch[key].status &&
-              api.coinswitchStatusLookup.indexOf(api.exchangesCache.coinswitch[key].status) === -1) {
-            api.log(`coinswitch request order ${key} state update`, 'exchanges.coinswitch');
-            api.coinswitchGetStatus(res, req, key);
+            if (api.exchangesCache.coinswitch[key].status &&
+                api.coinswitchStatusLookup.indexOf(api.exchangesCache.coinswitch[key].status) === -1) {
+              api.log(`coinswitch request order ${key} state update`, 'exchanges.coinswitch');
+              api.coinswitchGetStatus(res, req, key);
+            }
           }
         }
       }
