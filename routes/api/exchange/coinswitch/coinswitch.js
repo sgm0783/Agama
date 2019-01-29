@@ -15,14 +15,16 @@ module.exports = (api) => {
 
   api.coinswitchGetStatus = (res, req, orderId) => {
     let options;
+    let apiKey = api.exchangesCache.coinswitch[orderId] && api.exchangesCache.coinswitch[orderId].apiKey ? api.exchangesCache.coinswitch[orderId].apiKey : null;
     
-    if (api.appConfig.exchanges.coinswitchKey) {
+    if (apiKey) {
+      api.log(`order ${orderId} has API key ${apiKey}`, 'exchanges.coinswitch.order');
       options = {
         method: 'GET',
         url: `https://api.coinswitch.co/v2/order/${orderId}`,
         headers: {
           'x-user-ip': '127.0.0.1',
-          'x-api-key': req.query.dev ? API_KEY_DEV : api.appConfig.exchanges.coinswitchKey,
+          'x-api-key': req.query.dev ? API_KEY_DEV : apiKey,
         },
       };
     } else {
@@ -31,8 +33,6 @@ module.exports = (api) => {
         url: `https://www.atomicexplorer.com/api/exchanges/coinswitch?method=getOrder&&orderId=${orderId}`,
       };
     }
-
-    console.log(options);
   
     api.exchangeHttpReq(options)
     .then((result) => {
@@ -58,6 +58,11 @@ module.exports = (api) => {
         if (result.result.data &&
             result.result.data.orderId) {
           api.exchangesCache.coinswitch[result.result.data.orderId] = result.result.data;
+          
+          if (api.appConfig.exchanges.coinswitchKey) {
+            api.exchangesCache.coinswitch[result.result.data.orderId].apiKey = api.appConfig.exchanges.coinswitchKey;
+          }
+
           api.saveLocalExchangesCache();
           api.log(`coinswitch request order ${orderId} state update success, new state is ${result.result.data.status}`, 'exchanges.coinswitch');
         } else {
