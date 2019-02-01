@@ -371,7 +371,34 @@ module.exports = (api) => {
         .then((result) => {
           if (result &&
               result.msg === 'success') {
-            res.end(JSON.stringify(result.result));
+            if (req.query.save) {
+              const _remoteOrdersList = result.result.result;
+
+              if (_remoteOrdersList &&
+                  _remoteOrdersList.length &&
+                  typeof _remoteOrdersList === 'object' &&
+                  _remoteOrdersList[0].hasOwnProperty('orderId')) {
+                api.log(`found ${result.result.result.length} orders in remote history`, 'exchanges.coinswitch.history.sync');
+
+                // TODO: validate order data
+                for (let i = 0; i < _remoteOrdersList.length; i++) {
+                  if (!api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId]) {
+                    api.log(`found order ${_remoteOrdersList[i].orderId} in remote history, append`, 'exchanges.coinswitch.history.sync');
+                    api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId] = _remoteOrdersList[i];
+                  }
+                }
+                api.saveLocalExchangesCache();
+              } else {
+                const retObj = {
+                  msg: 'error',
+                  result: 'unable to sync orders history',
+                };
+          
+                res.end(JSON.stringify(retObj));
+              }
+            } else {
+              res.end(JSON.stringify(result.result));
+            }
           } else {
             const retObj = {
               msg: 'error',
