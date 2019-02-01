@@ -1,6 +1,7 @@
 const request = require('request');
 const Promise = require('bluebird');
-
+const { randomBytes } = require('crypto');
+const signature = require('agama-wallet-lib/src/message');
 const API_KEY_DEV = 'cRbHFJTlL6aSfZ0K2q7nj6MgV5Ih4hbA2fUG0ueO';
 
 // TODO: fixed api(?)
@@ -308,6 +309,86 @@ module.exports = (api) => {
       };
 
       res.end(JSON.stringify(retObj));
+    } else {
+      const retObj = {
+        msg: 'error',
+        result: 'unauthorized access',
+      };
+
+      res.end(JSON.stringify(retObj));
+    }
+  });
+
+  /*
+   *  type: GET
+   *
+   */
+  api.get('/exchanges/coinswitch/history/sync', (req, res, next) => {
+    if (api.checkToken(req.query.token)) {
+      let electrumCoinsList = [];
+      let ethereumCoins = [];
+
+      for (let key in api.electrumCoins) {
+        if (key !== 'auth') {
+          electrumCoinsList.push(key.toUpperCase());
+        }
+      }
+
+      for (let key in api.eth.coins) {
+        ethereumCoins.push(key);
+      }
+
+      api.log(`spv coins: ${electrumCoinsList.join(',')}${ethereumCoins.length ? ', eth' : ''}`, 'exchages.coinswitch.cache.sync');
+      
+      if (electrumCoinsList &&
+          electrumCoinsList.length) {
+        let _addressPayload = [];
+
+        for (let i = 0;  i < electrumCoinsList.length; i++) {
+          const _randomString = randomBytes(32).toString('hex');
+          const _keys = api.electrumKeys[electrumCoinsList[i].toLowerCase()];
+          const _sig = signature.btc.sign(_keys.priv, _randomString);
+          
+          api.log(`${electrumCoinsList[i]} ${_keys.pub} sig ${_sig}`, 'exchages.coinswitch.cache.sync');
+          _addressPayload.push({
+            pub: _keys.pub,
+            sig: _sig,
+            message: _randomString,
+          });
+        }
+        const options = {
+          method: 'POST',
+          url: 'https://www.atomicexplorer.com/api/exchanges/coinswitch/history',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            address: _addressPayload,
+          }),
+        };
+        
+        api.exchangeHttpReq(options)
+        .then((result) => {
+          if (result &&
+              result.msg === 'success') {
+            res.end(JSON.stringify(result.result));
+          } else {
+            const retObj = {
+              msg: 'error',
+              result: 'unable to sync orders history',
+            };
+      
+            res.end(JSON.stringify(retObj));
+          }
+        });
+      } else {
+        const retObj = {
+          msg: 'error',
+          result: 'no coins to sync',
+        };
+  
+        res.end(JSON.stringify(retObj));
+      }
     } else {
       const retObj = {
         msg: 'error',
