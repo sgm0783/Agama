@@ -19,7 +19,7 @@ git clone --recursive https://github.com/komodoplatform/agama --branch master --
 cd agama/gui/EasyDEX-GUI/react/
 git checkout master && git pull origin master
 npm update && npm install && npm install webpack
-npm build && npm start
+npm run build && npm start
 ```
 Leave the above process running and use a new terminal windows/tab when proceeding with the below steps.
 
