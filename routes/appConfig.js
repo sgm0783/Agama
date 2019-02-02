@@ -270,7 +270,7 @@ const appConfig = {
       type: 'string',
     },
     exchanges: {
-      display: true,
+      display: false,
       displayName: 'Exchanges',
       coinswitchKey: {
         display: true,
