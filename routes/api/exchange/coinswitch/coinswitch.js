@@ -3,7 +3,7 @@ const Promise = require('bluebird');
 const { randomBytes } = require('crypto');
 const signature = require('agama-wallet-lib/src/message');
 const API_KEY_DEV = 'cRbHFJTlL6aSfZ0K2q7nj6MgV5Ih4hbA2fUG0ueO';
-
+const COINSWITCH_TIMEOUT = 2000;
 // TODO: fixed api(?)
 
 module.exports = (api) => {
@@ -325,96 +325,186 @@ module.exports = (api) => {
    */
   api.get('/exchanges/coinswitch/history/sync', (req, res, next) => {
     if (api.checkToken(req.query.token)) {
-      let electrumCoinsList = [];
-      let ethereumCoins = [];
-
-      for (let key in api.electrumCoins) {
-        if (key !== 'auth') {
-          electrumCoinsList.push(key.toUpperCase());
-        }
-      }
-
-      for (let key in api.eth.coins) {
-        ethereumCoins.push(key);
-      }
-
-      api.log(`spv coins: ${electrumCoinsList.join(',')}${ethereumCoins.length ? ', eth' : ''}`, 'exchages.coinswitch.cache.sync');
-      
-      if (electrumCoinsList &&
-          electrumCoinsList.length) {
-        let _addressPayload = [];
-
-        for (let i = 0;  i < electrumCoinsList.length; i++) {
-          const _randomString = randomBytes(32).toString('hex');
-          const _keys = api.electrumKeys[electrumCoinsList[i].toLowerCase()];
-          const _sig = signature.btc.sign(_keys.priv, _randomString);
-          
-          api.log(`${electrumCoinsList[i]} ${_keys.pub} sig ${_sig}`, 'exchages.coinswitch.cache.sync');
-          _addressPayload.push({
-            pub: _keys.pub,
-            sig: _sig,
-            message: _randomString,
-          });
-        }
-        const options = {
-          method: 'POST',
-          url: 'https://www.atomicexplorer.com/api/exchanges/coinswitch/history',
+      // personal API key
+      if (api.appConfig.exchanges.coinswitchKey) {
+        let options = {
+          method: 'GET',
+          url: 'https://api.coinswitch.co/v2/orders',
           headers: {
-            'content-type': 'application/json',
+            'x-user-ip': '127.0.0.1',
+            'x-api-key': api.appConfig.exchanges.coinswitchKey,
           },
-          body: JSON.stringify({
-            address: _addressPayload,
-          }),
         };
-        
+        const parseOrders = (ordersList, chunk) => {          
+          if (ordersList &&
+              ordersList.length &&
+              typeof ordersList === 'object' &&
+              ordersList[0].hasOwnProperty('orderId')) {
+            api.log(`found ${ordersList.length} orders in personal API key history`, 'exchanges.coinswitch.history.sync');
+
+            // TODO: validate order data
+            for (let i = 0; i < ordersList.length; i++) {
+              if (!api.exchangesCache.coinswitch[ordersList[i].orderId]) {
+                api.log(`found order ${ordersList[i].orderId} in personal API key history, merge`, 'exchanges.coinswitch.history.sync');
+                api.exchangesCache.coinswitch[ordersList[i].orderId] = ordersList[i];
+              }
+            }
+
+            api.log(`merge orders chunk ${chunk} from personal API key history`, 'exchanges.coinswitch.history.sync');
+            api.saveLocalExchangesCache();
+
+            return true;
+          } else {
+            api.log(`orders chunk ${chunk} parse from personal API key history failed`, 'exchanges.coinswitch.history.sync');
+          }
+        };
+
         api.exchangeHttpReq(options)
         .then((result) => {
+          console.log(result);
           if (result &&
               result.msg === 'success') {
-            if (req.query.save) {
-              const _remoteOrdersList = result.result.result;
+            const res = result.result;
+                
+            if (res.success &&
+                res.data &&
+                res.data.items) {
+              if (res.data.totalCount > res.data.count) {
+                const _chunks = Math.ceil(res.data.totalCount / 25) - 1;
+                api.log(`coinswitch orders list is too big, need to split in ${_chunks} chunks`, 'exchanges.coinswitch.history.sync');                
+                
+                parseOrders(res.data.items, 0);
+                
+                for (let i = 0; i < _chunks; i++) {
+                  api.log(`coinswitch chunk url https://api.coinswitch.co/v2/orders?start=${((i + 1) * 25) + 1}`, 'exchanges.coinswitch.history.sync');
+                  
+                  setTimeout(() => {
+                    options = {
+                      method: 'GET',
+                      url: `https://api.coinswitch.co/v2/orders?start=${(i + 1) * 25}`,
+                      headers: {
+                        'x-user-ip': '127.0.0.1',
+                        'x-api-key': api.appConfig.exchanges.coinswitchKey,
+                      },
+                    };
 
-              if (_remoteOrdersList &&
-                  _remoteOrdersList.length &&
-                  typeof _remoteOrdersList === 'object' &&
-                  _remoteOrdersList[0].hasOwnProperty('orderId')) {
-                api.log(`found ${result.result.result.length} orders in remote history`, 'exchanges.coinswitch.history.sync');
-
-                // TODO: validate order data
-                for (let i = 0; i < _remoteOrdersList.length; i++) {
-                  if (!api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId]) {
-                    api.log(`found order ${_remoteOrdersList[i].orderId} in remote history, append`, 'exchanges.coinswitch.history.sync');
-                    api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId] = _remoteOrdersList[i];
-                  }
+                    api.exchangeHttpReq(options)
+                    .then((resultChunk) => {
+                      if (resultChunk &&
+                          resultChunk.msg === 'success') {
+                        const resChunk = resultChunk.result;
+                            
+                        if (resChunk.success &&
+                            resChunk.data &&
+                            resChunk.data.items) {
+                          parseOrders(resChunk.data.items, i + 1);
+                        }
+                      } else {
+                        api.log(`failed to get chunk ${i + 1} of orders from personal API key history`, 'exchanges.coinswitch.history.sync');
+                      }
+                    });
+                  }, i * COINSWITCH_TIMEOUT);
                 }
-                api.saveLocalExchangesCache();
               } else {
-                const retObj = {
-                  msg: 'error',
-                  result: 'unable to sync orders history',
-                };
-          
-                res.end(JSON.stringify(retObj));
+                parseOrders(res.data.items, 0);
               }
-            } else {
-              res.end(JSON.stringify(result.result));
             }
           } else {
-            const retObj = {
-              msg: 'error',
-              result: 'unable to sync orders history',
-            };
-      
-            res.end(JSON.stringify(retObj));
+            api.log('failed to get chunk 0 of orders from personal API key history', 'exchanges.coinswitch.history.sync');
           }
         });
-      } else {
-        const retObj = {
-          msg: 'error',
-          result: 'no coins to sync',
-        };
-  
-        res.end(JSON.stringify(retObj));
+      } else { // remote
+        let electrumCoinsList = [];
+        let ethereumCoins = [];
+
+        for (let key in api.electrumCoins) {
+          if (key !== 'auth') {
+            electrumCoinsList.push(key.toUpperCase());
+          }
+        }
+
+        for (let key in api.eth.coins) {
+          ethereumCoins.push(key);
+        }
+
+        api.log(`spv coins: ${electrumCoinsList.join(',')}${ethereumCoins.length ? ', eth' : ''}`, 'exchages.coinswitch.cache.sync');
+        
+        if (electrumCoinsList &&
+            electrumCoinsList.length) {
+          let _addressPayload = [];
+
+          for (let i = 0;  i < electrumCoinsList.length; i++) {
+            const _randomString = randomBytes(32).toString('hex');
+            const _keys = api.electrumKeys[electrumCoinsList[i].toLowerCase()];
+            const _sig = signature.btc.sign(_keys.priv, _randomString);
+            
+            api.log(`${electrumCoinsList[i]} ${_keys.pub} sig ${_sig}`, 'exchages.coinswitch.cache.sync');
+            _addressPayload.push({
+              pub: _keys.pub,
+              sig: _sig,
+              message: _randomString,
+            });
+          }
+          const options = {
+            method: 'POST',
+            url: 'https://www.atomicexplorer.com/api/exchanges/coinswitch/history',
+            headers: {
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              address: _addressPayload,
+            }),
+          };
+          
+          api.exchangeHttpReq(options)
+          .then((result) => {
+            if (result &&
+                result.msg === 'success') {
+              if (req.query.save) {
+                const _remoteOrdersList = result.result.result;
+
+                if (_remoteOrdersList &&
+                    _remoteOrdersList.length &&
+                    typeof _remoteOrdersList === 'object' &&
+                    _remoteOrdersList[0].hasOwnProperty('orderId')) {
+                  api.log(`found ${result.result.result.length} orders in remote history`, 'exchanges.coinswitch.history.sync');
+
+                  // TODO: validate order data
+                  for (let i = 0; i < _remoteOrdersList.length; i++) {
+                    if (!api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId]) {
+                      api.log(`found order ${_remoteOrdersList[i].orderId} in remote history, merge`, 'exchanges.coinswitch.history.sync');
+                      api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId] = _remoteOrdersList[i];
+                    }
+                  }
+                  api.saveLocalExchangesCache();
+                } else {
+                  const retObj = {
+                    msg: 'error',
+                    result: 'unable to sync orders history',
+                  };
+            
+                  res.end(JSON.stringify(retObj));
+                }
+              } else {
+                res.end(JSON.stringify(result.result));
+              }
+            } else {
+              const retObj = {
+                msg: 'error',
+                result: 'unable to sync orders history',
+              };
+        
+              res.end(JSON.stringify(retObj));
+            }
+          });
+        } else {
+          const retObj = {
+            msg: 'error',
+            result: 'no coins to sync',
+          };
+    
+          res.end(JSON.stringify(retObj));
+        }
       }
     } else {
       const retObj = {
