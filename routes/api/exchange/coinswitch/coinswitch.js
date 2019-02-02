@@ -351,7 +351,9 @@ module.exports = (api) => {
             }
 
             api.log(`merge orders chunk ${chunk} from personal API key history`, 'exchanges.coinswitch.history.sync');
-            api.saveLocalExchangesCache();
+            if (req.query.save) {
+              api.saveLocalExchangesCache();
+            }
 
             return true;
           } else {
