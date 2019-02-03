@@ -363,19 +363,18 @@ module.exports = (api) => {
 
         api.exchangeHttpReq(options)
         .then((result) => {
-          console.log(result);
           if (result &&
               result.msg === 'success') {
-            const res = result.result;
+            const resChunkMain = result.result;
                 
-            if (res.success &&
-                res.data &&
-                res.data.items) {
-              if (res.data.totalCount > res.data.count) {
-                const _chunks = Math.ceil(res.data.totalCount / 25) - 1;
+            if (resChunkMain.success &&
+                resChunkMain.data &&
+                resChunkMain.data.items) {
+              if (resChunkMain.data.totalCount > resChunkMain.data.count) {
+                const _chunks = Math.ceil(resChunkMain.data.totalCount / 25) - 1;
                 api.log(`coinswitch orders list is too big, need to split in ${_chunks} chunks`, 'exchanges.coinswitch.history.sync');                
                 
-                parseOrders(res.data.items, 0);
+                parseOrders(resChunkMain.data.items, 0);
                 
                 for (let i = 0; i < _chunks; i++) {
                   api.log(`coinswitch chunk url https://api.coinswitch.co/v2/orders?start=${((i + 1) * 25) + 1}`, 'exchanges.coinswitch.history.sync');
@@ -400,6 +399,15 @@ module.exports = (api) => {
                             resChunk.data &&
                             resChunk.data.items) {
                           parseOrders(resChunk.data.items, i + 1);
+
+                          if (i === _chunks - 1) {
+                            const retObj = {
+                              msg: 'success',
+                              result: api.exchangesCache.coinswitch,
+                            };
+                      
+                            res.end(JSON.stringify(retObj));
+                          }
                         }
                       } else {
                         api.log(`failed to get chunk ${i + 1} of orders from personal API key history`, 'exchanges.coinswitch.history.sync');
@@ -408,7 +416,14 @@ module.exports = (api) => {
                   }, i * COINSWITCH_TIMEOUT);
                 }
               } else {
-                parseOrders(res.data.items, 0);
+                parseOrders(resChunkMain.data.items, 0);
+
+                const retObj = {
+                  msg: 'success',
+                  result: api.exchangesCache.coinswitch,
+                };
+          
+                res.end(JSON.stringify(retObj));
               }
             }
           } else {
@@ -438,14 +453,18 @@ module.exports = (api) => {
           for (let i = 0;  i < electrumCoinsList.length; i++) {
             const _randomString = randomBytes(32).toString('hex');
             const _keys = api.electrumKeys[electrumCoinsList[i].toLowerCase()];
-            const _sig = signature.btc.sign(_keys.priv, _randomString);
-            
-            api.log(`${electrumCoinsList[i]} ${_keys.pub} sig ${_sig}`, 'exchages.coinswitch.cache.sync');
-            _addressPayload.push({
-              pub: _keys.pub,
-              sig: _sig,
-              message: _randomString,
-            });
+
+            if (_keys.priv &&
+                _keys.priv !== _keys.pub) {
+              const _sig = signature.btc.sign(_keys.priv, _randomString);
+              
+              api.log(`${electrumCoinsList[i]} ${_keys.pub} sig ${_sig}`, 'exchages.coinswitch.cache.sync');
+              _addressPayload.push({
+                pub: _keys.pub,
+                sig: _sig,
+                message: _randomString,
+              });
+            }
           }
           const options = {
             method: 'POST',
@@ -478,6 +497,12 @@ module.exports = (api) => {
                       api.exchangesCache.coinswitch[_remoteOrdersList[i].orderId] = _remoteOrdersList[i];
                     }
                   }
+                  const retObj = {
+                    msg: 'success',
+                    result: api.exchangesCache.coinswitch,
+                  };
+            
+                  res.end(JSON.stringify(retObj));
                   api.saveLocalExchangesCache();
                 } else {
                   const retObj = {
