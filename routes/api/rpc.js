@@ -116,7 +116,9 @@ module.exports = (api) => {
               _arg = `${_arg} -datadir=${api.appConfig.native.dataDir  + (_chain ? '/' + key : '')}`;
             }
 
-            exec(`"${_coindCliBin}" ${_arg}`, (error, stdout, stderr) => {
+            exec(`"${_coindCliBin}" ${_arg}`, {
+              maxBuffer: 1024 * 1000000 // 1000 mb
+            }, (error, stdout, stderr) => {
               // api.log(`stdout: ${stdout}`, 'native.debug');
               // api.log(`stderr: ${stderr}`, 'native.debug');
 
@@ -306,7 +308,9 @@ module.exports = (api) => {
           }
 
           _arg = _arg.trim().split(' ');
-          execFile(_coindCliBin, _arg, (error, stdout, stderr) => {
+          execFile(_coindCliBin, _arg, {
+            maxBuffer: 1024 * 1000000 // 1000 mb
+          }, (error, stdout, stderr) => {
             api.log(`stdout: ${stdout}`, 'native.debug');
             api.log(`stderr: ${stderr}`, 'native.debug');
 
