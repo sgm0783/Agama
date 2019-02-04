@@ -159,6 +159,15 @@ api = require('./api/eth/gasPrice.js')(api);
 api = require('./api/eth/createtx.js')(api);
 api = require('./api/eth/utils.js')(api);
 
+// exchanges
+api.exchangesCache = {
+  coinswitch: {},
+};
+api = require('./api/exchange/exchange')(api);
+api = require('./api/exchange/coinswitch/coinswitch')(api);
+api = require('./api/exchange/changelly/changelly')(api);
+api.loadLocalExchangesCache();
+
 api.printDirs();
 
 // default route

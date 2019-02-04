@@ -17,6 +17,7 @@ module.exports = (api) => {
         kv: req.query.kv,
         maxlength: api.appConfig.spv.listtransactionsMaxLength,
         full: req.query.full,
+        txid: req.query.txid,
       })
       .then((txhistory) => {
         res.end(JSON.stringify(txhistory));
@@ -74,16 +75,25 @@ module.exports = (api) => {
                   const _pendingTxs = api.findPendingTxByAddress(network, config.address);
                   let _rawtx = [];
                   let _flatTxHistory = [];
+                  let _flatTxHistoryFull = {};
                   
                   json = api.sortTransactions(json);
 
-                  api.log(json, 'spv.transactions.json');
-
                   for (let i = 0; i < json.length; i++) {
                     _flatTxHistory.push(json[i].tx_hash);
+                    _flatTxHistoryFull[json[i].tx_hash] = json[i];
                   }
 
-                  json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
+                  if (config.txid) {
+                    if (_flatTxHistoryFull[config.txid]) {
+                      api.log(`found txid match ${_flatTxHistoryFull[config.txid].tx_hash}`, 'spv.transactions.txid');
+                      json = [_flatTxHistoryFull[config.txid]];
+                    } else {
+                      json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
+                    }
+                  } else {
+                    json = json.length > MAX_TX ? json.slice(0, MAX_TX) : json;
+                  }
 
                   if (_pendingTxs &&
                       _pendingTxs.length) {
