@@ -34,7 +34,7 @@ cd agama
 npm update && npm install
 npm start
 ```
-In order to use debug/dev mode plz stop Agama App (electron) and either set `dev: true` and `debug: true` in `~/.agama/config.json` and then restart the app or replace step 4) from above with the start command below:
+In order to use debug/dev mode please stop Agama App (electron) and either set `dev: true` and `debug: true` in `~/.agama/config.json` and then restart the app or replace step 4) from above with the start command below:
 
 ```shell
 npm start devmode
