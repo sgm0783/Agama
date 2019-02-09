@@ -35,6 +35,7 @@ module.exports = (api) => {
     if (!network) throw new Error('Unknown network version');
     
     if (checkVersion) {
+      if (!network) throw new Error('Unknown network version');
       if (network.wifAlt && version !== network.wif && network.wifAlt.indexOf(version) === -1) throw new Error('Invalid network version');
       if (!network.wifAlt && version !== network.wif) throw new Error('Invalid network version');
     }
@@ -110,7 +111,7 @@ module.exports = (api) => {
     }
 
     const d = bigi.fromBuffer(bytes);
-    const _network = network.pubKeyHash ? network : api.getNetworkData(network.toLowerCase());
+    const _network = network.hasOwnProperty('pubKeyHash') ? network : api.getNetworkData(network.toLowerCase());
     let keyPair = _network.isZcash ? new bitcoinZcash.ECPair(d, null, { network: _network }) : new bitcoin.ECPair(d, null, { network: _network });
     let keys = {
       pub: keyPair.getAddress(),

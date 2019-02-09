@@ -188,9 +188,14 @@ module.exports = (api) => {
         
         if (!api.electrumCache[network].tx[txid] ||
             !api.electrumCache[network].verboseTx[txid] ||
-            (api.electrumCache[network].verboseTx[txid] && api.electrumCache[network].verboseTx[txid].hasOwnProperty('confirmations') && api.electrumCache[network].verboseTx[txid].confirmations < 2)) {
+            (api.electrumCache[network].verboseTx[txid] && api.electrumCache[network].verboseTx[txid].hasOwnProperty('confirmations') && api.electrumCache[network].verboseTx[txid].hasOwnProperty('rawconfirmations') && api.electrumCache[network].verboseTx[txid].confirmations < 2) ||
+            (!api.electrumCache[network].verboseTx[txid].hasOwnProperty('confirmations') || !api.electrumCache[network].verboseTx[txid].hasOwnProperty('rawconfirmations'))) {
           api.log(`electrum raw input tx ${txid}`, 'spv.cache');
 
+          if (dpowCoins.indexOf(network.toUpperCase()) > -1) {
+            api.log(`${network.toUpperCase()} request dpow data update`, 'spv.dpow.confs');
+          }
+          
           ecl.blockchainTransactionGet(txid, dpowCoins.indexOf(network.toUpperCase()) > -1 ? true : false)
           .then((_rawtxJSON) => {
             if (_rawtxJSON.hasOwnProperty('hex')) {

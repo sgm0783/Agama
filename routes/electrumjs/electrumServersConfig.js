@@ -67,6 +67,12 @@ const disableCoins = [
   'edrc',
   'ccn',
   'cmp',
+  // temp disable
+  'mue',
+  'xbc',
+  'pac',
+  'lcc',
+  'axe',
 ];
 
 module.exports = disableCoins;
