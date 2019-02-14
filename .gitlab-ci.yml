@@ -65,8 +65,6 @@ build:linux:
 #  - rm  komodo_linux_${KOMODO_VERSION}.tar.gz
   - rm komodo_linux_beta_0.3.3b.tar.gz
   - rm -rf __MACOSX
-  - npm install electron-packager -g
-  - npm install electron -g --unsafe-perm=true
   - npm install
   script:
   - npm run package-linux
@@ -123,8 +121,6 @@ build:windows:
   - rm komodo_windows_beta_0.3.3.zip
   - rm -rf __MACOSX
   - rm -rf komodo_win_${KOMODO_VERSION}
-  - npm install electron-packager -g
-  - npm install electron -g --unsafe-perm=true
   - npm install
   script:
   - npm run package-win
@@ -173,7 +169,6 @@ build:mac:
  # - rm komodo_osx_${KOMODO_VERSION}.tar.gz
   - rm komodo_osx_beta_0.3.3b.tar.gz
   - npm install
-  - npm install electron-packager -g
   script:
   - npm run package-mac
   - npm run create-installer-mac
