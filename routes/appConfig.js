@@ -3,7 +3,7 @@ const fiatList = require('./fiatList');
 const appConfig = {
   config: { // default config
     host: '127.0.0.1',
-    agamaPort: 17777,
+    agamaPort: 17776,
     maxDescriptors: {
       darwin: 90000,
       linux: 1000000,
@@ -16,7 +16,7 @@ const appConfig = {
       walletUnlockTimeout: 3600,
     },
     lang: 'EN',
-    fiatRates: false,
+    fiatRates: true,
     defaultFiatCurrency: 'usd',
     loadCoinsFromStorage: false,
     requirePinToConfirmTx: false,
@@ -33,15 +33,19 @@ const appConfig = {
     },
     native: {
       rpc2cli: false,
-      cliStopTimeout: 1000,
+      cliStopTimeout: 30000,
       failedRPCAttemptsThreshold: 10,
       stopNativeDaemonsOnQuit: true,
       dataDir: '',
       listtransactionsMaxLength: 300,
       csvListtransactionsMaxLength: 1000,
-      zlistreceivedbyaddress: false,
+      zlistreceivedbyaddress: true,
       zgetoperationresult: false,
-      zshieldcoinbase: false,
+      zshieldcoinbase: true,
+    },
+    verus: {
+      stakeGuard: '',
+      autoStakeVRSC: false,
     },
     pubkey: '',
     exchanges: {
@@ -263,10 +267,26 @@ const appConfig = {
         type: 'boolean',
       },
     },
+    verus: {
+      display: true,
+      displayName: 'Verus Specific Settings',
+      autoStakeVRSC: {
+        display: true,
+        initDisplay: true,
+        displayName: 'Automatically start staking VerusCoin when it is launched in native mode',
+        type: 'boolean',
+      },
+      stakeGuard: {
+        display: true,
+        info: 'You can enter a Verus sapling address in this field, and receive awards for finding double-stakers',
+        displayName: 'Your VRSC sapling address for StakeGuard',
+        type: 'string',
+      },
+    },
     pubkey: {
       display: true,
       displayName: 'Pubkey',
-      info: 'Append pubkey (-pubkey) to daemon launch params list',
+      info: 'Public Key you would like to mine to',
       type: 'string',
     },
     exchanges: {

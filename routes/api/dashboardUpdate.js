@@ -185,6 +185,7 @@ module.exports = (api) => {
                           address: _address,
                           amount: __json.result,
                           type: 'private',
+                          txs: []
                         };
                       }
                     });
@@ -194,6 +195,7 @@ module.exports = (api) => {
                   // get z_listreceivedbyaddress history
                   if (api.appConfig.native.zlistreceivedbyaddress ||
                       (chainParams[coin] && chainParams[coin].ac_private)) {
+
                     Promise.all(result[1].map((_address, index) => {
                       return new Promise((resolve, reject) => {
                         _bitcoinRPC(
@@ -210,18 +212,43 @@ module.exports = (api) => {
     
                           if (__json &&
                               __json.error) {
-                            resolve(0);
+                            throw new Error("JSON ERROR");
                           } else {
-                            resolve(__json.result);
-                            newAddressArray[1][index].txs = __json.result
+                            //newAddressArray[1][index].txs = __json.result
+                            return (__json.result);
                           }
-                        });
+                        })
+                        .then((receivedByAddressList) => {
+                          return getZTransactionGroups(coin, receivedByAddressList, [receivedByAddressList])
+                        })
+                        .then((gottenTransactionsArray) => {
+                          let receivedByAddressList = gottenTransactionsArray.shift();
+
+                          for (let i = 0; i < gottenTransactionsArray.length; i++) {
+                            let tx = gottenTransactionsArray[i];
+                            let pvtx = receivedByAddressList[i];
+                            tx.amount = pvtx.amount;
+                            tx.memo = pvtx.memo;
+                            tx.address = _address;
+                            tx.category = 'receive';
+                            tx.ztx = true;
+                          }
+
+                          resolve(gottenTransactionsArray)
+                        })
                       });
                     }))
                     .then(zresultHistory => {
+
+                      let newPvAddressArray = newAddressArray[1]
+
+                      for (let i = 0; i < zresultHistory.length; i++) {
+                        newPvAddressArray[i].txs = zresultHistory[i]
+                      }
+
                       _returnObj.addresses = {
                         public: newAddressArray[0],
-                        private: newAddressArray[1],
+                        private: newPvAddressArray,
                       };
     
                       const retObj = {
@@ -332,6 +359,58 @@ module.exports = (api) => {
             resolve(body);
           });
         });
+      }
+
+      const getZTransactionGroups = (coin, array, results) => {
+
+        let txInputGroups = [{ coin: coin, group: array.slice(0, 100)}];
+        let numCounted = txInputGroups[0].group.length;
+      
+        while (numCounted < array.length) {
+          txInputGroups.push({coin: coin, group: array.slice(numCounted, numCounted + 100)});
+          numCounted += txInputGroups[txInputGroups.length - 1].group.length;
+        }
+      
+        return txInputGroups.reduce((p, a) => {
+          return p.then(chainResults => {
+            return getZTransactions(a.coin, a.group).then( txGroup => {
+              return chainResults.concat(txGroup);
+            })
+          })},
+          Promise.resolve(results)
+        )
+      }
+      
+      const getZTransactions = (coin, array) => {
+        let promiseArray = [];
+        for (let i = 0; i < array.length; i++)
+        {
+          
+            promiseArray.push(
+              new Promise((resolve, reject) => {
+                _bitcoinRPC(
+                  coin,
+                  'gettransaction',
+                  [array[i].txid]
+                )
+                .then((__json) => {
+                  try {
+                    __json = JSON.parse(__json);
+                  } catch (e) {
+                    __json = { error: 'can\'t parse json' };
+                  }
+
+                  if (__json &&
+                      __json.error) {
+                    throw new Error("JSON ERROR");
+                  } else {
+                    resolve(__json.result);
+                  }
+                })
+              }
+            ));
+        }
+        return Promise.all(promiseArray);
       }
 
       Promise.all(_promiseStack.map((_call, index) => {

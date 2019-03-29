@@ -76,9 +76,15 @@ module.exports = (api) => {
   // TODO: json.stringify wrapper
 
   const herder = (flock, data, coind) => {
+    let acDaemon = false
+    
     if (data === undefined) {
       data = 'none';
       api.log('it is undefined', 'native.confd');
+    } else if (data.ac_daemon !== undefined) {
+      flock = data.ac_daemon;
+      acDaemon = true;
+      api.customPathsDaemons(flock);
     }
 
     api.log(`herder flock: ${flock} coind: ${coind}`, 'native.confd');
@@ -86,7 +92,7 @@ module.exports = (api) => {
 
     // TODO: notify gui that reindex/rescan param is used to reflect on the screen
     //       asset chain debug.log unlink
-    if (flock === 'komodod') {
+    if (flock === 'komodod' || acDaemon) {
       let kmdDebugLogLocation = (data.ac_name !== 'komodod' ? `${api.komodoDir}/${data.ac_name}` : api.komodoDir) + '/debug.log';
 
       // get custom coind port
@@ -210,10 +216,16 @@ module.exports = (api) => {
             const isChain = data.ac_name.match(/^[A-Z]*$/);
             const coindACParam = isChain ? ` -ac_name=${data.ac_name} ` : '';
 
-            api.log(`exec ${api.komododBin} ${coindACParam} ${data.ac_options.join(' ')}${_customParam}`, 'native.process');
-            api.writeLog(`exec ${api.komododBin} ${coindACParam} ${data.ac_options.join(' ')}${_customParam}`);
-            api.log(`daemon param ${data.ac_custom_param}`, 'native.confd');
-
+            if (acDaemon) {
+              api.log(`exec ${api[flock + 'Bin']} ${coindACParam} ${data.ac_options.join(' ')}${_customParam}`, 'native.process');
+              api.writeLog(`exec ${api[flock + 'Bin']} ${coindACParam} ${data.ac_options.join(' ')}${_customParam}`);
+              api.log(`daemon param ${data.ac_custom_param}`, 'native.confd');
+            } else {
+              api.log(`exec ${api.komododBin} ${coindACParam} ${data.ac_options.join(' ')}${_customParam}`, 'native.process');
+              api.writeLog(`exec ${api.komododBin} ${coindACParam} ${data.ac_options.join(' ')}${_customParam}`);
+              api.log(`daemon param ${data.ac_custom_param}`, 'native.confd');
+            }
+            
             api.coindInstanceRegistry[data.ac_name] = true;
             if (!api.kmdMainPassiveMode) {
               let _arg = `${coindACParam}${data.ac_options.join(' ')}${_customParam}`;
@@ -235,42 +247,79 @@ module.exports = (api) => {
                 let spawnOut = fs.openSync(_daemonLogName, 'a');
                 let spawnErr = fs.openSync(_daemonLogName, 'a');
 
-                spawn(api.komododBin, _arg, {
-                  stdio: [
-                    'ignore',
-                    spawnOut,
-                    spawnErr
-                  ],
-                  detached: true,
-                })
-                .unref();
+                if (acDaemon) {
+                  spawn(api[flock + 'Bin'], _arg, {
+                    stdio: [
+                      'ignore',
+                      spawnOut,
+                      spawnErr
+                    ],
+                    detached: true,
+                  }).unref();
+                } 
+                else {
+                  spawn(api.komododBin, _arg, {
+                    stdio: [
+                      'ignore',
+                      spawnOut,
+                      spawnErr
+                    ],
+                    detached: true,
+                  }).unref();
+                }
+
               } else {
                 let logStream = fs.createWriteStream(
                   _daemonLogName,
                   { flags: 'a' }
                 );
 
-                let _daemonChildProc = execFile(`${api.komododBin}`, _arg, {
-                  maxBuffer: 1024 * 1000000, // 1000 mb
-                }, (error, stdout, stderr) => {
-                  api.writeLog(`stdout: ${stdout}`, 'native.debug');
-                  api.writeLog(`stderr: ${stderr}`, 'native.debug');
+                let _daemonChildProc;
 
-                  if (error !== null) {
-                    api.log(`exec error: ${error}`, 'native.debug');
-                    api.writeLog(`exec error: ${error}`, 'native.debug');
-
-                    // TODO: check other edge cases
-                    if (error.toString().indexOf('using -reindex') > -1) {
-                      api.io.emit('service', {
-                        komodod: {
-                          error: 'run -reindex',
-                        },
-                      });
+                if (acDaemon) {
+                  _daemonChildProc = execFile(`${api[flock + 'Bin']}`, _arg, {
+                    maxBuffer: 1024 * 1000000, // 1000 mb
+                  }, (error, stdout, stderr) => {
+                    api.writeLog(`stdout: ${stdout}`, 'native.debug');
+                    api.writeLog(`stderr: ${stderr}`, 'native.debug');
+  
+                    if (error !== null) {
+                      api.log(`exec error: ${error}`, 'native.debug');
+                      api.writeLog(`exec error: ${error}`, 'native.debug');
+  
+                      // TODO: check other edge cases
+                      if (error.toString().indexOf('using -reindex') > -1) {
+                        api.io.emit('service', {
+                          komodod: {
+                            error: 'run -reindex',
+                          },
+                        });
+                      }
                     }
-                  }
-                });
-
+                  });
+                } else {
+                  _daemonChildProc = execFile(`${api.komododBin}`, _arg, {
+                    maxBuffer: 1024 * 1000000, // 1000 mb
+                  }, (error, stdout, stderr) => {
+                    api.writeLog(`stdout: ${stdout}`, 'native.debug');
+                    api.writeLog(`stderr: ${stderr}`, 'native.debug');
+  
+                    if (error !== null) {
+                      api.log(`exec error: ${error}`, 'native.debug');
+                      api.writeLog(`exec error: ${error}`, 'native.debug');
+  
+                      // TODO: check other edge cases
+                      if (error.toString().indexOf('using -reindex') > -1) {
+                        api.io.emit('service', {
+                          komodod: {
+                            error: 'run -reindex',
+                          },
+                        });
+                      }
+                    }
+                  });
+                }
+                
                 // TODO: logger add verbose native output
                 _daemonChildProc.stdout.on('data', (data) => {
                   // api.log(`${_daemonName} stdout: \n${data}`);
@@ -469,7 +518,10 @@ module.exports = (api) => {
 
       // get komodod instance port
       const _port = api.nativeCoindList[coind.toLowerCase()].port;
-      const coindBin = `${api.coindRootDir}/${coind.toLowerCase()}/${api.nativeCoindList[coind.toLowerCase()].bin.toLowerCase()}d`;
+      const coindBin = acDaemon ? 
+        `${api[flock + 'Bin']}/${coind.toLowerCase()}/${api.nativeCoindList[coind.toLowerCase()].bin.toLowerCase()}d`
+        :
+        `${api.coindRootDir}/${coind.toLowerCase()}/${api.nativeCoindList[coind.toLowerCase()].bin.toLowerCase()}d`;
 
       try {
         // check if coind instance is already running
@@ -846,8 +898,8 @@ module.exports = (api) => {
                   res.status(500);
                   res.end(JSON.stringify(retObj));
                 } else {
-                  api.log(`komodod service start success at port ${_port}`, 'native.process');
-                  api.writeLog(`komodod service start success at port ${_port}`);
+                  api.log(`daemon service start success at port ${_port}`, 'native.process');
+                  api.writeLog(`daemon service start success at port ${_port}`);
                 }
               } else {
                 if (!skipError) {

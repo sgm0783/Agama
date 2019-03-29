@@ -29,8 +29,19 @@ module.exports = (api) => {
           for (let i = 0; i < chainParams[acName][key].length; i++) {
             herdData.ac_options.push(`-addnode=${chainParams[acName][key][i]}`);
           }
+        } else if (key === 'ac_daemon') {
+          herdData.ac_daemon = chainParams[acName][key]
         } else {
           herdData.ac_options.push(`-${key}=${chainParams[acName][key]}`);
+        }
+      }
+
+      if (acName === 'VRSC') {
+        if(api.appConfig.verus.autoStakeVRSC) {
+          herdData.ac_options.push('-mint');
+        }
+        if(api.appConfig.verus.stakeGuard.length === 78) {
+          herdData.ac_options.push('-cheatcatcher=' + api.appConfig.verus.stakeGuard);
         }
       }
     
@@ -49,7 +60,7 @@ module.exports = (api) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          herd: 'komodod',
+          herd: herdData.ac_daemon ? herdData.ac_daemon : 'komodod',
           options: herdData,
           token: api.appSessionHash,
         }),
@@ -79,7 +90,8 @@ module.exports = (api) => {
       selection === 'JUMRLR' ||
       selection === 'MNZ' ||
       selection === 'BTCH' ||
-      selection === 'PIRATE'
+      selection === 'PIRATE' ||
+      selection === 'VRSC'
     ) {
       herdData = {
         ac_name: selection,

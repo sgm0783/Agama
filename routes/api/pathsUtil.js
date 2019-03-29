@@ -2,20 +2,32 @@ const path = require('path');
 const fixPath = require('fix-path');
 const os = require('os');
 
-const pathsAgama = () => {
+const pathsAgama = (api) => {
+  if (!api) api = {};
+
   switch (os.platform()) {
     case 'darwin':
       fixPath();
-      return `${process.env.HOME}/Library/Application Support/Agama`;
+      api.agamaDirKMD = `${process.env.HOME}/Library/Application Support/Agama`;
+
+      api.agamaDir = `${process.env.HOME}/Library/Application Support/VerusAgama`;
+      return api;
       break;
 
     case 'linux':
-      return `${process.env.HOME}/.agama`;
+      api.agamaDirKMD = `${process.env.HOME}/.agama`;
+
+      api.agamaDir = `${process.env.HOME}/.verus-agama`;
+      return api;
       break;
 
     case 'win32':
-      const agamaDir = `${process.env.APPDATA}/Agama`;
-      return path.normalize(agamaDir);
+      api.agamaDirKMD = `${process.env.APPDATA}/Agama`;
+      api.agamaDirKMD = path.normalize(shepherd.agamaDirKMD);
+
+      api.agamaDir = `${process.env.APPDATA}/VerusAgama`;
+      api.agamaDir = path.normalize(shepherd.agamaDir);
+      return api;
       break;
   }
 };
@@ -26,7 +38,7 @@ const pathsDaemons = (api) => {
   switch (os.platform()) {
     case 'darwin':
       fixPath();
-      api.agamaTestDir = `${process.env.HOME}/Library/Application Support/Agama/test`,
+      api.agamaTestDir = `${process.env.HOME}/Library/Application Support/VerusAgama/test`,
       api.komododBin = path.join(__dirname, '../../assets/bin/osx/komodod'),
       api.komodocliBin = path.join(__dirname, '../../assets/bin/osx/komodo-cli'),
       api.komodocliDir = path.join(__dirname, '../../assets/bin/osx'),
@@ -44,7 +56,7 @@ const pathsDaemons = (api) => {
       break;
 
     case 'linux':
-      api.agamaTestDir = `${process.env.HOME}/.agama/test`,
+      api.agamaTestDir = `${process.env.HOME}/.verus-agama/test`,
       api.komododBin = path.join(__dirname, '../../assets/bin/linux64/komodod'),
       api.komodocliBin = path.join(__dirname, '../../assets/bin/linux64/komodo-cli'),
       api.komodocliDir = path.join(__dirname, '../../assets/bin/linux64'),
@@ -59,7 +71,7 @@ const pathsDaemons = (api) => {
       break;
 
     case 'win32':
-      api.agamaTestDir = `${process.env.APPDATA}/Agama/test`;
+      api.agamaTestDir = `${process.env.APPDATA}/VerusAgama/test`;
       api.agamaTestDir = path.normalize(api.agamaTestDir);
       api.komododBin = path.join(__dirname, '../../assets/bin/win64/komodod.exe'),
       api.komododBin = path.normalize(api.komododBin),
@@ -86,7 +98,30 @@ const pathsDaemons = (api) => {
   }
 }
 
+const customPathsDaemons = (api, daemonName) => {
+  if (!api) api = {};
+
+  let binName = daemonName + "Bin";
+  switch (os.platform()) {
+    case 'darwin':
+      fixPath();
+      api[binName] = path.join(__dirname, `../../assets/bin/osx/${daemonName}/${daemonName}`);
+      return api;
+      break;
+    case 'linux':
+      api[binName] = path.join(__dirname, `../../assets/bin/linux64/${daemonName}/${daemonName}`);
+      return api;
+      break;
+    case 'win32':
+      api[binName] = path.join(__dirname, `../../assets/bin/win64/${daemonName}/${daemonName}.exe`),
+      api[binName] = path.normalize(api[binName]);
+      return api;
+      break;
+  }
+}
+
 module.exports = {
   pathsAgama,
   pathsDaemons,
+  customPathsDaemons
 };
