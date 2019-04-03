@@ -23,10 +23,10 @@ const pathsAgama = (api) => {
 
     case 'win32':
       api.agamaDirKMD = `${process.env.APPDATA}/Agama`;
-      api.agamaDirKMD = path.normalize(shepherd.agamaDirKMD);
+      api.agamaDirKMD = path.normalize(api.agamaDirKMD);
 
       api.agamaDir = `${process.env.APPDATA}/VerusAgama`;
-      api.agamaDir = path.normalize(shepherd.agamaDir);
+      api.agamaDir = path.normalize(api.agamaDir);
       return api;
       break;
   }
