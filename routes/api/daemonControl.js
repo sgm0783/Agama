@@ -578,6 +578,7 @@ module.exports = (api) => {
     }
 
     switch (flock) {
+      case 'verusd':
       case 'komodod':
         DaemonConfPath = `${api.komodoDir}/komodo.conf`;
 
