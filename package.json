@@ -97,7 +97,7 @@
       "!gui/EasyDEX/react/src${/*}",
       "!gui/EasyDEX/react/www${/*}"
     ],
-
+    "asar": false,
     "mac": {
       "icon": "assets/icons/agama_icons/agama_app_icon.icns",
       "target": [
