@@ -579,6 +579,12 @@ module.exports = (api) => {
 
     switch (flock) {
       case 'verusd':
+        DaemonConfPath = `${api.verusDir}/VRSC.conf`;
+
+        if (_platform === 'win32') {
+          DaemonConfPath = path.normalize(DaemonConfPath);
+        }
+        break;
       case 'komodod':
         DaemonConfPath = `${api.komodoDir}/komodo.conf`;
 
