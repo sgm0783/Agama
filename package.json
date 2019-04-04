@@ -41,8 +41,6 @@
     "jquery": "^3.3.1",
     "mocha": "^5.2.0",
     "spectron": "^3.8.0"
-
-
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -108,16 +106,15 @@
       ]
     },
     "dmg": {
-      "background": "assets/backgrounds/trianglify-8.png",
       "icon": "assets/icons/agama_icons/agama_app_icon.icns",
       "contents": [
         {
-          "x": 192,
-          "y": 344
+          "x": 135,
+          "y": 220
         },
         {
-          "x": 448,
-          "y": 344,
+          "x": 405,
+          "y": 220,
           "type": "link",
           "path": "/Applications"
         }
