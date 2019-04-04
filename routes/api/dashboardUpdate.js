@@ -214,7 +214,6 @@ module.exports = (api) => {
                               __json.error) {
                             throw new Error("JSON ERROR");
                           } else {
-                            //newAddressArray[1][index].txs = __json.result
                             return (__json.result);
                           }
                         })
@@ -435,30 +434,46 @@ module.exports = (api) => {
                 !json) {
               _returnObj[_call] = { error: 'daemon is busy' };
             } else {
-              const _jsonParsed = JSON.parse(json);
+              let _jsonParsed = JSON.parse(json);
 
-              if (api.appConfig.native.zgetoperationresult &&
-                  _call === 'z_getoperationstatus' &&
-                  _jsonParsed &&
+              if (_jsonParsed &&
                   _jsonParsed.result &&
                   _jsonParsed.result.length) {
-                api.log('found runtime z data, purge all', 'native');
 
-                _bitcoinRPC(
-                  _coin,
-                  'z_getoperationresult',
-                  []
-                )
-                .then((_json) => {
-                  const __jsonParsed = JSON.parse(_json);
-                  
-                  if (__jsonParsed &&
-                      __jsonParsed.result) {
-                    api.log('found runtime z data, purge success', 'native');
-                  } else {
-                    api.log('found runtime z data, purge error' + JSON.stringify(__jsonParsed.error), 'native');
-                  }
-                });
+                if(_call = 'listtransactions') {
+                  _jsonParsed.result = _jsonParsed.result.filter(
+                    (tx) => {
+                      if (tx.category === 'stake') {
+                        if (tx.amount > 0) {
+                          return true;
+                        }
+                        else {
+                          return false;
+                        }
+                      }
+                      else {
+                        return true
+                      }
+                  });
+                } else if (api.appConfig.native.zgetoperationresult && _call === 'z_getoperationstatus') {
+                  api.log('found runtime z data, purge all', 'native');
+
+                  _bitcoinRPC(
+                    _coin,
+                    'z_getoperationresult',
+                    []
+                  )
+                  .then((_json) => {
+                    const __jsonParsed = JSON.parse(_json);
+                    
+                    if (__jsonParsed &&
+                        __jsonParsed.result) {
+                      api.log('found runtime z data, purge success', 'native');
+                    } else {
+                      api.log('found runtime z data, purge error' + JSON.stringify(__jsonParsed.error), 'native');
+                    }
+                  });
+                } 
               }
               _returnObj[_call] = _jsonParsed;
             }
