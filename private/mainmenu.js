@@ -101,28 +101,28 @@ const template = [
         }
       },
       {
-        label: 'Contact help desk',
+        label: 'Join our Discord',
         click (item, focusedWindow) {
-          shell.openExternal('https://support.komodoplatform.com/support/tickets/new');
+          shell.openExternal('https://discord.gg/VRKMP2S');
         }
       },
       // ref: https://github.com/sindresorhus/new-github-issue-url
       {
         label: 'Add Github issue',
         click (item, focusedWindow) {
-          shell.openExternal('https://github.com/komodoplatform/agama/issues/new?body=Please+describe+your+issue+in+details.+Attach+screenshots+if+you+can,+they+help+a+lot.');
+          shell.openExternal('https://github.com/VerusCoin/agama/issues/new?body=Please+describe+your+issue+in+details.+Attach+screenshots+if+you+can,+they+help+a+lot.');
         }
       },
       {
         label: 'Show Agama data folder',
         click (item, focusedWindow) {
-          shell.openItem(pathsAgama());
+          shell.openItem(pathsAgama().agamaDir);
         }
       },
       {
-        label: 'Show Komodo data folder (default)',
+        label: 'Show Verus data folder (default)',
         click (item, focusedWindow) {
-          shell.openItem(pathsDaemons().komodoDir);
+          shell.openItem(pathsDaemons().verusDir);
         }
       },
       {
