@@ -86,6 +86,8 @@
     "appId": "Verus",
     "files": [
       "**/*",
+      "!buildscripts",
+      "!dist",
       "!test${/*}",
       "!windeps${/*}",
       "!.git*",
@@ -142,7 +144,10 @@
     "win": {
       "target": [
         "nsis",
-        "portable"
+        "portable",
+        "zip",
+        "dir"
+
       ],
       "icon": "assets/icons/agama_app_icon.ico"
     }
