@@ -22,11 +22,13 @@ module.exports = (api) => {
           getbalance: {},
           listunspent: {},
           addresses: {},
+          getwalletinfo: {},
         };
         _promiseStack = [
           'getinfo',
           'listtransactions',
-          'getbalance'
+          'getbalance',
+          'getwalletinfo'
         ];
       } else {
         _returnObj = {
@@ -36,12 +38,14 @@ module.exports = (api) => {
           z_getoperationstatus: {},
           listunspent: {},
           addresses: {},
+          getwalletinfo: {}
         };
         _promiseStack = [
           'getinfo',
           'listtransactions',
           'z_gettotalbalance',
           'z_getoperationstatus',
+          'getwalletinfo'
         ];
       }
 
