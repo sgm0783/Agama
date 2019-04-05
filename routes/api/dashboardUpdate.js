@@ -214,6 +214,7 @@ module.exports = (api) => {
                               __json.error) {
                             throw new Error("JSON ERROR");
                           } else {
+                            //newAddressArray[1][index].txs = __json.result
                             return (__json.result);
                           }
                         })
@@ -439,23 +440,8 @@ module.exports = (api) => {
               if (_jsonParsed &&
                   _jsonParsed.result &&
                   _jsonParsed.result.length) {
-
-                if(_call = 'listtransactions') {
-                  _jsonParsed.result = _jsonParsed.result.filter(
-                    (tx) => {
-                      if (tx.category === 'stake') {
-                        if (tx.amount > 0) {
-                          return true;
-                        }
-                        else {
-                          return false;
-                        }
-                      }
-                      else {
-                        return true
-                      }
-                  });
-                } else if (api.appConfig.native.zgetoperationresult && _call === 'z_getoperationstatus') {
+                if (api.appConfig.native.zgetoperationresult &&
+                  _call === 'z_getoperationstatus') {
                   api.log('found runtime z data, purge all', 'native');
 
                   _bitcoinRPC(
@@ -473,7 +459,22 @@ module.exports = (api) => {
                       api.log('found runtime z data, purge error' + JSON.stringify(__jsonParsed.error), 'native');
                     }
                   });
-                } 
+                } else if (_call === 'listtransactions') {
+                  _jsonParsed.result = _jsonParsed.result.filter(
+                    (tx) => {
+                      if (tx.category === 'stake') {
+                        if (tx.amount > 0) {
+                          return true;
+                        }
+                        else {
+                          return false;
+                        }
+                      }
+                      else {
+                        return true
+                      }
+                  });
+                }
               }
               _returnObj[_call] = _jsonParsed;
             }
