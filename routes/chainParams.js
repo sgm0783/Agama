@@ -202,6 +202,9 @@ const chainParams = {
     ac_timeunlockto: 1180800,
     ac_veruspos: 50,
   },
+  VRSCTEST: {
+    ac_daemon: 'verusd',
+  },
 	SPLTEST: {
 		ac_supply: 5555555,
 		ac_reward: 10000000000000,

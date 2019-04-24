@@ -46,6 +46,7 @@ const appConfig = {
     verus: {
       stakeGuard: '',
       autoStakeVRSC: false,
+      pbaasTestmode: true,
     },
     pubkey: '',
     exchanges: {
@@ -281,6 +282,12 @@ const appConfig = {
         info: 'You can enter a Verus sapling address in this field, and receive awards for finding double-stakers',
         displayName: 'Your VRSC sapling address for StakeGuard',
         type: 'string',
+      },
+      pbaasTestmode: {
+        display: false,
+        info: 'Choose whether to run PBaaS in testmode, or on the Verus network. Will not work on mainnet while PBaaS is only on testnet.',
+        displayName: 'PBaaS Test Mode',
+        type: 'boolean',
       },
     },
     pubkey: {
