@@ -17,9 +17,6 @@ const _electrumServersExtend = {
   zen: {
     txfee: 10000,
   },
-  xzc: {
-    txfee: 10000,
-  },
   iop: {
     txfee: 1000,
   },
@@ -38,9 +35,6 @@ const _electrumServersExtend = {
   bsd: {
     txfee: 100000,
   },
-  gbx: {
-    txfee: 1000,
-  },
   efl: {
     txfee: 100000,
   },
@@ -57,9 +51,6 @@ const _electrumServersExtend = {
     txfee: 10000,
   },
   uno: {
-    txfee: 10000,
-  },
-  smart: {
     txfee: 10000,
   },
   rdd: {
@@ -83,17 +74,11 @@ const _electrumServersExtend = {
   mnx: {
     txfee: 10000,
   },
-  lcc: {
-    txfee: 1000000,
-  },
   nlg: {
     txfee: 1000000,
   },
   flash: {
     txfee: 100,
-  },
-  ftc: {
-    txfee: 2000000,
   },
   excl: {
     txfee: 10000,
@@ -224,9 +209,6 @@ const _electrumServersExtend = {
   brit: {
     txfee: 10000,
   },
-  xbc: {
-    txfee: 10000,
-  },
   bela: {
     txfee: 10000,
   },
@@ -246,9 +228,6 @@ const _electrumServersExtend = {
     txfee: 10000,
   },
   slm: {
-    txfee: 10000,
-  },
-  axe: {
     txfee: 10000,
   },
   ppc: {
@@ -292,12 +271,21 @@ const _electrumServersExtend = {
 };
 
 let electrumServers = Object.assign({}, _electrumServers, _electrumServersExtend);
+let electrumServersFlag = Object.assign({}, _electrumServers, _electrumServersExtend);
 
 for (let i = 0; i < disableCoins.length; i++) {
   if (electrumServers[disableCoins[i]]) {
     delete electrumServers[disableCoins[i]];
+    delete electrumServersFlag[disableCoins[i]];
     // console.log(`disable spv coin ${disableCoins[i]}`);
   }
 }
 
-module.exports = electrumServers;
+for (key in electrumServersFlag) {
+  electrumServersFlag[key] = true;
+}
+
+module.exports = {
+  electrumServers,
+  electrumServersFlag,
+};

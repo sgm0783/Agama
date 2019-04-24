@@ -1,3 +1,6 @@
+const fiatList = require('./fiatList');
+const chainParams = require('./chainParams')
+
 const appConfig = {
   config: { // default config
     host: '127.0.0.1',
@@ -10,23 +13,12 @@ const appConfig = {
     debug: false,
     roundValues: false,
     experimentalFeatures: false,
-    dataDir: '',
-    autoStartVRSC: false,
-    autoStakeVRSC: false,
-    //darkMode: false,
-    stakeGuard: '',
-    pubKey: '',
     dex: {
       walletUnlockTimeout: 3600,
     },
-    transactionCountPublic: 1000,
-    transactionCountPrivate: 1000,
-    cliStopTimeout: 1000,
-    failedRPCAttemptsThreshold: 10,
-    stopNativeDaemonsOnQuit: true,
     lang: 'EN',
-    rpc2cli: false,
-    fiatRates: false,
+    fiatRates: true,
+    defaultFiatCurrency: 'usd',
     loadCoinsFromStorage: false,
     requirePinToConfirmTx: false,
     spv: {
@@ -36,7 +28,35 @@ const appConfig = {
       socketTimeout: 10000,
       customServers: false,
       syncServerListFromKv: false,
+      allowCustomFees: false,
+      listtransactionsMaxLength: 10,
+      csvListtransactionsMaxLength: 400,
     },
+    native: {
+      rpc2cli: false,
+      cliStopTimeout: 30000,
+      failedRPCAttemptsThreshold: 10,
+      stopNativeDaemonsOnQuit: true,
+      dataDir: '',
+      listtransactionsMaxLength: 300,
+      csvListtransactionsMaxLength: 1000,
+      zlistreceivedbyaddress: true,
+      zgetoperationresult: false,
+      zshieldcoinbase: true,
+    },
+    verus: {
+      stakeGuard: '',
+      autoStakeVRSC: false,
+      pbaasTestmode: true,
+    },
+    pbaasChains: {},
+    reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
+    pubkey: '',
+    exchanges: {
+      coinswitchKey: '',
+    },
+    // coinControl: false,
+    // darkmode: false,
   },
   schema: {
     host: {
@@ -91,45 +111,6 @@ const appConfig = {
       displayName: 'Enable advanced features',
       type: 'boolean',
     },
-    autoStartVRSC: {
-      display: true,
-      initDisplay: true,
-      displayName: 'Automatically start VerusCoin on launch in native mode',
-      type: 'boolean',
-    },
-    autoStakeVRSC: {
-      display: true,
-      initDisplay: true,
-      displayName: 'Automatically start staking VerusCoin when it is launched in native mode',
-      type: 'boolean',
-    },
-    /*
-    darkMode: {
-      display: true,
-      initDisplay: true,
-      displayName: 'Change UI to dark mode',
-      type: 'boolean',
-    },
-    */
-    stakeGuard: {
-      display: true,
-      info: 'As part of the VerusCoin Something at Stake solution, you can enter a Verus sapling address in this field, and receive awards for finding double-stakers',
-      displayName: 'Your VRSC sapling address for StakeGuard',
-      type: 'string',
-    },
-    pubKey: {
-      display: true,
-      info: 'Your VRSC public key to mine to, not an address',
-      displayName: 'Pubkey VRSC mining key',
-      type: 'string',
-    },
-    dataDir: {
-      display: true,
-      initDisplay: true,
-      displayName: 'Komodo data directory',
-      info: 'The data directory is the location where Komodo data files are stored, including the wallet data file<br/>It must be an already existing folder e.g. /home/user/komodo_data_dir.',
-      type: 'folder',
-    },
     dex: {
       display: false,
       displayName: 'dex',
@@ -139,56 +120,25 @@ const appConfig = {
         type: 'number',
       },
     },
-    transactionCountPublic: {
-      display: true,
-      displayName: 'Public Transaction Count',
-      info: 'Max number of public transactions to load and display in the native mode gui. Note: This number will be called on an interval, and setting a number too high can cause wallet to be unusable.',
-      type: 'number',
-    },
-    transactionCountPrivate: {
-      display: true,
-      displayName: 'Private Transaction Count',
-      info: 'Max number of private transactions to load and display in the native mode gui. Note: This number will be called on an interval, and setting a number too high can cause wallet to be unusable.',
-      type: 'number',
-    },
-    cliStopTimeout: {
-      display: true,
-      displayName: 'CLI stop timeout',
-      info: 'Timeout between consequent CLI stop commands. Value is in milliseconds.',
-      type: 'number',
-    },
-    stopNativeDaemonsOnQuit: {
-      display: true,
-      displayName: 'Stop native daemons on app quit',
-      info: 'If set to false agama will run in detached coin daemon mode',
-      type: 'boolean',
-    },
-    failedRPCAttemptsThreshold: {
-      display: true,
-      displayName: 'Failed RPC connect attempts threshold',
-      info: 'Number of allowed consequent RPC connect failures before the app marks native coin daemon as not running properly',
-      type: 'number',
-    },
     lang: {
       display: true,
       displayName: 'Language',
       type: 'select',
-      data: [
-        { name: 'EN', label: 'English' },
-        { name: 'DE', label: 'German' }
-      ],
-    },
-    rpc2cli: {
-      display: true,
-      displayName: 'Disable RPC',
-      info: 'Use CLI instead of RPC JSON server in native mode',
-      type: 'boolean',
+      translateSelector: 'LANG',
+      data: ['en', 'de'],
     },
     fiatRates: {
       display: true,
       displayName: 'Fetch fiat rates',
       info: 'Get coin fiat rates from atomicexplorer.com',
       type: 'boolean',
+    },
+    defaultFiatCurrency: {
+      display: true,
+      displayName: 'Fiat currency',
+      type: 'select',
+      translateSelector: 'FIAT_CURRENCIES',
+      data: fiatList,
     },
     loadCoinsFromStorage: {
       display: true,
@@ -198,7 +148,8 @@ const appConfig = {
     },
     requirePinToConfirmTx: {
       display: true,
-      displayName: 'Require PIN to confirm a transaction',
+      displayName: 'Require PIN to confirm a transaction.',
+      info: 'Only if you are using seed storage authorization method.<br/>Will not work with a plain seed/WIF.',
       type: 'boolean',
     },
     spv: {
@@ -218,7 +169,7 @@ const appConfig = {
       proxy: {
         display: true,
         displayName: 'Use proxy',
-        // info: 'Use remote http proxy to reduce data usage (gzip compression).',
+        info: 'Enable specialized electrum proxy service',
         type: 'boolean',
       },
       socketTimeout: {
@@ -236,10 +187,145 @@ const appConfig = {
       syncServerListFromKv: {
         display: true,
         displayName: 'Sync electrum servers list from KV',
-        info: 'Warning, this is highly experimental feature!',
+        info: 'Warning: this is highly experimental feature!',
+        type: 'boolean',
+      },
+      allowCustomFees: {
+        display: true,
+        displayName: 'Allow custom fees',
+        type: 'boolean',
+      },
+      listtransactionsMaxLength: {
+        display: true,
+        displayName: 'Max transactions history count',
+        type: 'number',
+      },
+      csvListtransactionsMaxLength: {
+        display: true,
+        displayName: 'CSV export max transactions history count',
+        info: 'Warning: keep this settings option within a sane range of values (default value: 400).<br/>The higher the value the more time it will require to process transactions history.<br/>If multiple transactions are considerably large it may froze the app completely.',
+        type: 'number',
+      },
+    },
+    native: {
+      display: true,
+      displayName: 'Native mode',
+      dataDir: {
+        display: true,
+        initDisplay: true,
+        displayName: 'Komodo data directory',
+        info: 'The data directory is the location where Komodo data files are stored, including the wallet data file<br/>It must be an already existing folder e.g. /home/user/komodo_data_dir.',
+        type: 'folder',
+      },
+      rpc2cli: {
+        display: true,
+        displayName: 'Disable RPC',
+        info: 'Use CLI instead of RPC JSON server in native mode',
+        type: 'boolean',
+      },
+      cliStopTimeout: {
+        display: true,
+        displayName: 'CLI stop timeout',
+        info: 'Timeout between consequent CLI stop commands. Value is in milliseconds.',
+        type: 'number',
+      },
+      stopNativeDaemonsOnQuit: {
+        display: true,
+        displayName: 'Stop native daemons on app quit',
+        info: 'If set to false agama will run in detached coin daemon mode',
+        type: 'boolean',
+      },
+      failedRPCAttemptsThreshold: {
+        display: true,
+        displayName: 'Failed RPC connect attempts threshold',
+        info: 'Number of allowed consequent RPC connect failures before the app marks native coin daemon as not running properly',
+        type: 'number',
+      },
+      listtransactionsMaxLength: {
+        display: true,
+        displayName: 'Max transactions history count',
+        type: 'number',
+      },
+      csvListtransactionsMaxLength: {
+        display: true,
+        displayName: 'CSV export max transactions history count',
+        info: 'Warning: keep this settings option within a sane range of values (default value: 1000).<br/>The higher the value the more time it will require to process transactions history.',
+        type: 'number',
+      },
+      zlistreceivedbyaddress: {
+        display: true,
+        displayName: 'Fetch received z transactions (z_listreceivedbyaddress)',
+        info: 'Warning: turning on this option may have an impact on weak systems.<br>If you don\'t use private addresses or don\'t need to see all private transactions to your addresses keep this option disabled.',
+        type: 'boolean',
+      },
+      zgetoperationresult: {
+        display: true,
+        displayName: 'Clear runtime Z transactions data automatically',
+        info: 'For maximum privacy it\'s advised to clear all traces of your outgoing z transactions including runtime data.',
+        type: 'boolean',
+      },
+      zshieldcoinbase: {
+        display: true,
+        displayName: 'Enable shield coinbase button',
+        info: 'A handy option if you\'re mining.',
         type: 'boolean',
       },
     },
+    verus: {
+      display: true,
+      displayName: 'Verus Specific Settings',
+      autoStakeVRSC: {
+        display: true,
+        initDisplay: true,
+        displayName: 'Automatically start staking VerusCoin when it is launched in native mode',
+        type: 'boolean',
+      },
+      stakeGuard: {
+        display: true,
+        info: 'You can enter a Verus sapling address in this field, and receive awards for finding double-stakers',
+        displayName: 'Your VRSC sapling address for StakeGuard',
+        type: 'string',
+      },
+      pbaasTestmode: {
+        display: false,
+        info: 'Choose whether to run PBaaS in testmode, or on the Verus network. Will not work on mainnet while PBaaS is only on testnet.',
+        displayName: 'PBaaS Test Mode',
+        type: 'boolean',
+      },
+    },
+    pbaasChains: {
+      display: false,
+    },
+    reservedChains: {
+      display: false,
+    },
+    pubkey: {
+      display: true,
+      displayName: 'Pubkey',
+      info: 'Public Key you would like to mine to',
+      type: 'string',
+    },
+    exchanges: {
+      display: false,
+      displayName: 'Exchanges',
+      coinswitchKey: {
+        display: true,
+        displayName: 'Coinswitch API key',
+        info: 'Your personal Coinswitch API key',
+        type: 'string',
+      },
+    },
+    /*coinControl: {
+      display: true,
+      displayName: 'Coin control',
+      info: 'Advanced coin control e.g. UTXO management, split/merge. <br/>Warning: only for experienced users!',
+      type: 'boolean',
+    },
+    /*darkmode: {
+      display: true,
+      displayName: 'Dark UI theme',
+      type: 'boolean',
+    },*/
   },
 };
 

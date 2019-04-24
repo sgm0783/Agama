@@ -1,6 +1,3 @@
-//let networks = require('agama-wallet-lib/src/bitcoinjs-networks');
-let networks = require('bitgo-utxo-lib');
-
-//networks.komodo = networks.kmd;
+let networks = require('agama-wallet-lib/src/bitcoinjs-networks');
 
 module.exports = networks;
