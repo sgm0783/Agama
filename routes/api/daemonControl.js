@@ -39,7 +39,7 @@ module.exports = (api) => {
 
     //If the coin uses verusd as it's daemon and isn't Verus, we assume it's
     //directory will lie in PBaaS territory, outside of the komodoDir
-    if (coind === 'verusd' && (flock !== 'VRSC' || flock !== 'VRSCTEST')) {
+    if (api.appConfig.reservedChains.indexOf(flock) === -1) {
       if (api.appConfig.verus.pbaasTestmode) {
         pbaasCoinDir = path.normalize(path.join(api.verusTestDir, `/PBAAS/${flock}`));
         api.log(`Assuming PBAAS chain in test mode, using conf path as ${pbaasCoinDir}`, 'native.confd');
@@ -107,10 +107,21 @@ module.exports = (api) => {
     // TODO: notify gui that reindex/rescan param is used to reflect on the screen
     //       asset chain debug.log unlink
     if (flock === 'komodod' || acDaemon) {
-      let kmdDebugLogLocation = (data.ac_name !== 'komodod' ? `${api.komodoDir}/${data.ac_name}` : api.komodoDir) + '/debug.log';
+      let kmdDebugLogLocation
+      let _coindConf
+      
+      //If these conditions pass, we can assume PBaaS chain
+      if (acDaemon && data.ac_daemon === 'verusd' && (api.appConfig.reservedChains.indexOf(data.ac_name) === -1)) {
+        kmdDebugLogLocation = `${api.appConfig.verus.pbaasTestmode ? api.verusTestDir : api.verusDir}/PBAAS/${data.ac_name}/debug.log`;
+        _coindConf = `${api.appConfig.verus.pbaasTestmode ? api.verusTestDir : api.verusDir}/PBAAS/${data.ac_name}/${data.ac_name}.conf`;
+        api.log(`Assuming PBAAS chain, using ${kmdDebugLogLocation}`, 'native.confd');
+      } else {
+        kmdDebugLogLocation = (data.ac_name !== 'komodod' ? `${api.komodoDir}/${data.ac_name}` : api.komodoDir) + '/debug.log';
+        _coindConf = data.ac_name !== 'komodod' ? `${api.komodoDir}/${data.ac_name}/${data.ac_name}.conf` : `${api.komodoDir}/komodo.conf`;
+      }
 
       // get custom coind port
-      const _coindConf = data.ac_name !== 'komodod' ? `${api.komodoDir}/${data.ac_name}/${data.ac_name}.conf` : `${api.komodoDir}/komodo.conf`;
+      
 
       try {
         const _coindConfContents = fs.readFileSync(_coindConf, 'utf8');
@@ -593,7 +604,12 @@ module.exports = (api) => {
 
     switch (flock) {
       case 'verusd':
-        DaemonConfPath = `${api.vrscDir}/VRSC.conf`;
+        if (coind && api.appConfig.reservedChains.indexOf(coind) === -1) {
+          DaemonConfPath = `${api.verusDir}/PBAAS/${coind}.conf`;
+        } else {
+          DaemonConfPath = `${api.vrscDir}/VRSC.conf`;
+        }
+        
 
         if (_platform === 'win32') {
           DaemonConfPath = path.normalize(DaemonConfPath);

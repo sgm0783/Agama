@@ -1,4 +1,5 @@
 const fiatList = require('./fiatList');
+const chainParams = require('./chainParams')
 
 const appConfig = {
   config: { // default config
@@ -48,6 +49,8 @@ const appConfig = {
       autoStakeVRSC: false,
       pbaasTestmode: true,
     },
+    pbaasChains: {},
+    reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
     pubkey: '',
     exchanges: {
       coinswitchKey: '',
@@ -289,6 +292,12 @@ const appConfig = {
         displayName: 'PBaaS Test Mode',
         type: 'boolean',
       },
+    },
+    pbaasChains: {
+      display: false,
+    },
+    reservedChains: {
+      display: false,
     },
     pubkey: {
       display: true,
