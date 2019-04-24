@@ -9,6 +9,8 @@ module.exports = (api) => {
     let _confLocation = chain === 'komodod' ? `${api.komodoDir}/komodo.conf` : `${api.komodoDir}/${chain}/${chain}.conf`;
     _confLocation = chain === 'CHIPS' ? `${api.chipsDir}/chips.conf` : _confLocation;
 
+   
+
     // any coind
     if (chain) {
       if (api.nativeCoindList[chain.toLowerCase()]) {
@@ -16,7 +18,15 @@ module.exports = (api) => {
         let coindDebugLogLocation = `${_osHome}/.${api.nativeCoindList[chain.toLowerCase()].bin.toLowerCase()}/debug.log`;
 
         _confLocation = `${_osHome}/.${api.nativeCoindList[chain.toLowerCase()].bin.toLowerCase()}/${api.nativeCoindList[chain.toLowerCase()].bin.toLowerCase()}.conf`;
+      } else if (api.appConfig.reservedChains.indexOf(chain) === -1) {
+        _confLocation = `${api.appConfig.verus.pbaasTestmode ? api.verusTestDir : api.verusDir}/PBAAS/${chain}/${chain}.conf`;
+      } else if (chain === 'chips') {
+        _confLocation = `${api.chipsDir}/chips.conf`;
+      } else {
+        _confLocation = chain === 'komodod' ? `${api.komodoDir}/komodo.conf` : `${api.komodoDir}/${chain}/${chain}.conf`;
       }
+
+      api.log(`Checking conf location: ${_confLocation}`, 'native.confd');
 
       if (fs.existsSync(_confLocation)) {
         const _rpcConf = fs.readFileSync(_confLocation, 'utf8');
@@ -224,7 +234,9 @@ module.exports = (api) => {
                 const _osHome = os.platform === 'win32' ? process.env.APPDATA : process.env.HOME;
                 let coindDebugLogLocation;
 
-                if (_chain === 'CHIPS') {
+                if (api.appConfig.reservedChains.indexOf(_chain) === -1) {
+                  coindDebugLogLocation = `${api.appConfig.verus.pbaasTestmode ? api.verusTestDir : api.verusDir}/PBAAS/${_chain}/debug.log`;
+                } else if (_chain === 'CHIPS') {
                   coindDebugLogLocation = `${api.chipsDir}/debug.log`;
                 } else {
                   coindDebugLogLocation = `${_osHome}/.${api.nativeCoindList[_chain.toLowerCase()].bin.toLowerCase()}/debug.log`;

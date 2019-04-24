@@ -1,4 +1,5 @@
 const fiatList = require('./fiatList');
+const chainParams = require('./chainParams')
 
 const appConfig = {
   config: { // default config
@@ -46,7 +47,10 @@ const appConfig = {
     verus: {
       stakeGuard: '',
       autoStakeVRSC: false,
+      pbaasTestmode: true,
     },
+    pbaasChains: {},
+    reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
     pubkey: '',
     exchanges: {
       coinswitchKey: '',
@@ -282,6 +286,18 @@ const appConfig = {
         displayName: 'Your VRSC sapling address for StakeGuard',
         type: 'string',
       },
+      pbaasTestmode: {
+        display: false,
+        info: 'Choose whether to run PBaaS in testmode, or on the Verus network. Will not work on mainnet while PBaaS is only on testnet.',
+        displayName: 'PBaaS Test Mode',
+        type: 'boolean',
+      },
+    },
+    pbaasChains: {
+      display: false,
+    },
+    reservedChains: {
+      display: false,
     },
     pubkey: {
       display: true,

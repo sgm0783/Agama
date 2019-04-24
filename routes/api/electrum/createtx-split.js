@@ -72,7 +72,8 @@ module.exports = (api) => {
 
       let versionNum;
       if ((utxo[0].currentHeight >= 419200 && network === 'zec') || 
-          (utxo[0].currentHeight >= 227520 && network === 'vrsc')){
+          (utxo[0].currentHeight >= 227520 && network === 'vrsc') || 
+          network === 'vrsctest'){
         versionNum = 4;
       } else {
         if (network === 'zec') {
@@ -96,7 +97,8 @@ module.exports = (api) => {
           );
         } else {
           if (network === 'zec' ||
-              network === 'vrsc') {
+              network === 'vrsc' || 
+              network === 'vrsctest') {
             tx.sign(i, key, '', null, utxo[i].value || utxo[i].amountSats);
           } else {
             tx.sign(i, key);

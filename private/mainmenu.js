@@ -122,7 +122,7 @@ const template = [
       {
         label: 'Show Verus data folder (default)',
         click (item, focusedWindow) {
-          shell.openItem(pathsDaemons().verusDir);
+          shell.openItem(pathsDaemons().vrscDir);
         }
       },
       {
