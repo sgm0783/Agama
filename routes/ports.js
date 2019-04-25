@@ -47,6 +47,8 @@ const assetChainPorts = {
   PTX: 61939,
   ZEX: 26476,
   LUMBER: 26301,
+  VRSCTEST: 38793,
+  VRSC: 27486
 };
 
 module.exports = assetChainPorts;
