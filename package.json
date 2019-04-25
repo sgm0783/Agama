@@ -1,19 +1,21 @@
 {
   "name": "Agama",
   "productName": "Agama",
-  "version": "0.3.4",
+  "version": "0.6.0",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
     "make-patch": "./make-patch.sh",
-    "make-rpm": "node make-rpm.js",
-    "make-deb": "node make-deb.js",
+    "pack": "electron-builder --dir agama-unpacked",
+    "dist": "electron-builder --publish=never --x64  ",
+    "dist-win": "electron-builder --publish=never  --win --x64 ",
+    "test": "mocha",
     "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && npm install",
     "postinstall": "rm -rf node_modules/bitcoinforksjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-pos/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-zcash/node_modules/create-hash && rm -rf node_modules/bitgo-utxo-lib/node_modules/create-hash"
   },
-  "repository": "https://github.com/KomodoPlatform/Agama/",
-  "homepage": "http://komodoplatform.com",
+  "repository": "https://github.com/VerusCoin/Agama/",
+  "homepage": "https://veruscoin.io",
   "keywords": [
     "agama",
     "SuperNET",
@@ -21,17 +23,19 @@
     "multicoin",
     "wallet",
     "spv",
-    "jumblr"
+    "jumblr",
+    "verus"
   ],
   "author": {
-    "name": "Komodo Platform Team",
-    "email": "info@komodoplatform.com",
-    "url": "https://komodoplatform.com"
+    "name": "Verus",
+    "email": "development@veruscoin.io",
+    "url": "https://veruscoin.io"
   },
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "4.0.0",
+    "electron": "4.1.3",
+    "electron-builder": "^20.38.5",
     "electron-devtools-installer": "^2.2.4"
   },
   "dependencies": {
@@ -51,14 +55,13 @@
     "buffer-reverse": "^1.0.1",
     "coinselect": "github:bitcoinjs/coinselect",
     "create-hash": "git://github.com/pbca26/createHash#electron-v4",
-    "electron": "4.0.0",
     "ethereumjs-util": "^6.0.0",
     "ethers": "git://github.com/pbca26/ethers.js",
     "express": "^4.14.0",
     "fix-path": "^2.1.0",
     "fs-extra": "^7.0.0",
     "graceful-fs": "^4.1.11",
-    "hoek": "^5.0.4",
+    "hoek": "^6.1.3",
     "iocane": "^1.0.0",
     "js-sha256": "^0.7.1",
     "marketmaker": "git://github.com/pbca26/marketmaker",
@@ -74,5 +77,81 @@
     "tx-decoder": "git://github.com/pbca26/tx-decoder.git",
     "wif": "^2.0.6",
     "winston": "^3.1.0"
+  },
+  "build": {
+    "appId": "Verus",
+    "compression": "normal",
+    "files": [
+      "**/*",
+      "!buildscripts",
+      "!dist",
+      "!test${/*}",
+      "!windeps${/*}",
+      "!.git*",
+      "!Brewfile",
+      "!README.md",
+      "!make*",
+      "!check_submodule.sh",
+      "!gui/EasyDEX/react/node_modules${/*}",
+      "!gui/EasyDEX/react/src${/*}",
+      "!gui/EasyDEX/react/www${/*}"
+    ],
+    "asar": false,
+    "mac": {
+      "artifactName": "${productName}-MacOS-${version}.${ext}",
+      "icon": "assets/icons/agama_icons/agama_app_icon.icns",
+      "target": [
+        "dmg",
+        "pkg"
+      ]
+    },
+    "dmg": {
+      "icon": "assets/icons/agama_icons/agama_app_icon.icns",
+      "contents": [
+        {
+          "x": 135,
+          "y": 220
+        },
+        {
+          "x": 405,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "artifactName": "${productName}-Linux-${version}.${ext}",
+      "icon": "assets/icons/agama_icons",
+      "desktop": {
+        "Encoding": "UTF-8"
+      },
+      "target": [
+        "appimage",
+        "tar.gz",
+        "deb"
+
+      ]
+    },
+    "deb": {
+      "depends": [
+        "libgomp1",
+        "libcurl4-openssl-dev",
+        "libgconf2-4"
+      ]
+    },
+    "win": {
+      "artifactName": "${productName}-Windows-${version}.${ext}",
+      "target": [
+        "zip",
+        "nsis"
+
+      ],
+      "icon": "assets/icons/agama_app_icon.ico"
+    }
+  },
+  "resolutions": {
+    "lodash": "^4.17.11",
+    "tar": "^4.4.8"
   }
 }
