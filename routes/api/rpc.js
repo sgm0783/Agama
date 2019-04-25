@@ -321,7 +321,7 @@ module.exports = (api) => {
             }
           }
         } else {
-          let _coindCliBin = _chain && api.appConfig.reservedChains.indexOf(coin) === -1 ? api.veruscliBin : api.komodocliBin;
+          let _coindCliBin = _chain && api.appConfig.reservedChains.indexOf(_chain) === -1 ? api.veruscliBin : api.komodocliBin;
 
           if (api.nativeCoindList &&
               _chain &&
