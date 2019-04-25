@@ -102,7 +102,7 @@ module.exports = (api) => {
 
         if (_mode === 'default') {
           if (payload.rpc2cli === true) {
-            let _coindCliBin = api.komodocliBin;
+            let _coindCliBin = api.appConfig.reservedChains.indexOf(_chain) === -1 ? api.veruscliBin : api.komodocliBin;
 
             api.log(`${payload.chain} ${payload.cmd} ${payload.rpc2cli}`, 'native.rpc2cli');
 
@@ -321,7 +321,7 @@ module.exports = (api) => {
             }
           }
         } else {
-          let _coindCliBin = api.komodocliBin;
+          let _coindCliBin = _chain && api.appConfig.reservedChains.indexOf(coin) === -1 ? api.veruscliBin : api.komodocliBin;
 
           if (api.nativeCoindList &&
               _chain &&
