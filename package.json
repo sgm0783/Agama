@@ -8,8 +8,8 @@
     "start": "cross-env NODE_ENV=development electron .",
     "make-patch": "./make-patch.sh",
     "pack": "electron-builder --dir agama-unpacked",
-    "dist": "electron-builder --publish=never ",
-    "dist-win": "electron-builder --publish=never  --win",
+    "dist": "electron-builder --publish=never --x64 ",
+    "dist-win": "electron-builder --publish=never  --win --x64",
     "test": "mocha",
     "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && npm install",
     "postinstall": "rm -rf node_modules/bitcoinforksjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-pos/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-zcash/node_modules/create-hash && rm -rf node_modules/bitgo-utxo-lib/node_modules/create-hash"
@@ -141,9 +141,7 @@
     "win": {
       "target": [
         "nsis",
-        "portable",
-        "zip",
-        "dir"
+        "zip"
 
       ],
       "icon": "assets/icons/agama_app_icon.ico"

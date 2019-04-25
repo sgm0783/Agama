@@ -49,7 +49,7 @@ const appConfig = {
       autoStakeVRSC: false,
       pbaasTestmode: true,
     },
-    pbaasChains: {},
+    pbaasChains: [],
     reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
     pubkey: '',
     exchanges: {

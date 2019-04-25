@@ -122,7 +122,6 @@ module.exports = (api) => {
 
       // get custom coind port
       
-
       try {
         const _coindConfContents = fs.readFileSync(_coindConf, 'utf8');
 
@@ -147,7 +146,13 @@ module.exports = (api) => {
         if (api.rpcConf[data.ac_name === 'komodod' ? 'KMD' : data.ac_name]) {
           api.rpcConf[data.ac_name === 'komodod' ? 'KMD' : data.ac_name].port = api.assetChainPortsDefault[data.ac_name];
         }
-        api.assetChainPorts[data.ac_name] = api.assetChainPortsDefault[data.ac_name];
+
+        if (data.ac_init_rpc_port) {
+          api.assetChainPorts[data.ac_name] = data.ac_init_rpc_port;
+        } else {
+          api.assetChainPorts[data.ac_name] = api.assetChainPortsDefault[data.ac_name];
+        }
+
         api.log(`${data.ac_name} port ${api.assetChainPorts[data.ac_name]}`, 'native.confd');
       }
 
