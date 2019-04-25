@@ -32,7 +32,6 @@ module.exports = (api) => {
 
       if (_ac && api.appConfig.reservedChains.indexOf(_ac) === -1) {
         _location = `${api.appConfig.verus.pbaasTestmode ? api.verusTestDir : api.verusDir}/PBAAS/${_ac}`
-        api.log(`Using debug log location as ${_location} for PBAAS chain`, 'native.debug');
       } else if (_herd === 'komodo') {
         _location = api.komodoDir;
       } else if (_ac) {

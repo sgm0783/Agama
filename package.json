@@ -8,8 +8,8 @@
     "start": "cross-env NODE_ENV=development electron .",
     "make-patch": "./make-patch.sh",
     "pack": "electron-builder --dir agama-unpacked",
-    "dist": "electron-builder --publish=never --x64  ",
-    "dist-win": "electron-builder --publish=never  --win --x64 ",
+    "dist": "electron-builder --publish=never --x64 ",
+    "dist-win": "electron-builder --publish=never  --win --x64",
     "test": "mocha",
     "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && npm install",
     "postinstall": "rm -rf node_modules/bitcoinforksjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-pos/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-zcash/node_modules/create-hash && rm -rf node_modules/bitgo-utxo-lib/node_modules/create-hash"
@@ -35,8 +35,9 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "electron": "4.1.3",
-    "electron-builder": "^20.38.5",
+    "electron-builder": "20.40.2",
     "electron-devtools-installer": "^2.2.4"
+
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -80,7 +81,6 @@
   },
   "build": {
     "appId": "Verus",
-    "compression": "normal",
     "files": [
       "**/*",
       "!buildscripts",
@@ -98,7 +98,6 @@
     ],
     "asar": false,
     "mac": {
-      "artifactName": "${productName}-MacOS-${version}.${ext}",
       "icon": "assets/icons/agama_icons/agama_app_icon.icns",
       "target": [
         "dmg",
@@ -121,7 +120,6 @@
       ]
     },
     "linux": {
-      "artifactName": "${productName}-Linux-${version}.${ext}",
       "icon": "assets/icons/agama_icons",
       "desktop": {
         "Encoding": "UTF-8"
@@ -141,10 +139,9 @@
       ]
     },
     "win": {
-      "artifactName": "${productName}-Windows-${version}.${ext}",
       "target": [
-        "zip",
-        "nsis"
+        "nsis",
+        "zip"
 
       ],
       "icon": "assets/icons/agama_app_icon.ico"
@@ -152,6 +149,7 @@
   },
   "resolutions": {
     "lodash": "^4.17.11",
+    "js-yaml": "^3.13.1",
     "tar": "^4.4.8"
   }
 }
