@@ -91,7 +91,7 @@ module.exports = (api) => {
 
   const herder = (flock, data, coind) => {
     let acDaemon = false
-    
+
     if (data === undefined) {
       data = 'none';
       api.log('it is undefined', 'native.confd');
@@ -243,7 +243,7 @@ module.exports = (api) => {
               _customParam = _customParam + ' -datadir=' + api.appConfig.native.dataDir + (data.ac_name !== 'komodod' ? '/' + data.ac_name : '');
             }
 
-            const isChain = data.ac_name.match(/^[A-Z]*$/);
+            const isChain = data.ac_name !== 'komodod' && data.ac_name !== 'chipsd';
             const coindACParam = isChain ? ` -ac_name=${data.ac_name} ` : '';
 
             if (acDaemon) {
