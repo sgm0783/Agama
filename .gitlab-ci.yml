@@ -9,7 +9,7 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.6.0-Tech-Preview-02.2
+  AGAMA_VERSION: 0.6.0-Tech-Preview-03
   VERUSCOIN_VERSION: 0.6.0-Tech-Preview-02
   KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
@@ -51,8 +51,6 @@ build:linux:
     - mkdir -p assets/bin/linux64/verusd
     - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
     - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
-    - rm assets/bin/linux64/verusd/verusd
-    - mv assets/bin/linux64/verusd/komodod assets/bin/linux64/verusd/verusd
     - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_linux_beta_0.3.3b.tar.gz
     - tar -xzvf komodo_linux_beta_0.3.3b.tar.gz --strip=1 --directory assets/bin/linux64
     - rm komodo_linux_beta_0.3.3b.tar.gz
@@ -99,7 +97,6 @@ build:windows:
     - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
     - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
     - mv assets/bin/win64/verus-cli assets/bin/win64/verusd
-    - mv assets/bin/win64/verusd/komodod.exe assets/bin/win64/verusd/verusd.exe
     - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_windows_beta_0.3.3.zip
     - unzip komodo_windows_beta_0.3.3.zip
     - rm komodo_windows_beta_0.3.3.zip
@@ -146,7 +143,6 @@ build:mac:
     - gsutil cp $STAGING/macos.tar.gz .
     - mkdir -p assets/bin/osx/verusd
     - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
-    - mv assets/bin/osx/verusd/komodod assets/bin/osx/verusd/verusd
     - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_osx_beta_0.3.3b.tar.gz
     - tar -xzvf komodo_osx_beta_0.3.3b.tar.gz --strip=1 --directory assets/bin/osx
     - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
