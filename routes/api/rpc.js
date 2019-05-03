@@ -321,7 +321,7 @@ module.exports = (api) => {
             }
           }
         } else {
-          let _coindCliBin = _chain && api.appConfig.reservedChains.indexOf(_chain) === -1 ? api.veruscliBin : api.komodocliBin;
+          let _coindCliBin = _chain && (_chain === 'VRSC' || _chain === 'VRSCTEST' || api.appConfig.reservedChains.indexOf(_chain) === -1) ? api.veruscliBin : api.komodocliBin;
 
           if (api.nativeCoindList &&
               _chain &&
@@ -361,7 +361,7 @@ module.exports = (api) => {
             }
 
             res.end(JSON.stringify(retObj));
-            api.killRogueProcess('komodo-cli');
+            api.killRogueProcess(_chain && (_chain === 'VRSC' || _chain === 'VRSCTEST' || api.appConfig.reservedChains.indexOf(_chain) === -1) ? 'verus' : 'komodo-cli');
           });
         }
       }
