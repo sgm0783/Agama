@@ -10,7 +10,7 @@ variables:
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
   AGAMA_VERSION: 0.6.0-Tech-Preview-03
-  VERUSCOIN_VERSION: 0.6.0-Tech-Preview-02
+  VERUSCOIN_VERSION: 0.6.0-Tech-Preview-03
   KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
@@ -47,13 +47,13 @@ build:linux:
         export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
     - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
     - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm ${EASYDEX_GUI_BUILD}
-    - gsutil cp $STAGING/$VERUS_CLI_LINUX .
     - mkdir -p assets/bin/linux64/verusd
+    - gsutil cp $STAGING/$VERUS_CLI_LINUX .
     - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
     - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
-    - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_linux_beta_0.3.3b.tar.gz
-    - tar -xzvf komodo_linux_beta_0.3.3b.tar.gz --strip=1 --directory assets/bin/linux64
-    - rm komodo_linux_beta_0.3.3b.tar.gz
+    - gsutil cp $STAGING/linux64.tar.gz .
+    - tar -xzvf linux64.tar.gz --strip=1 --directory assets/bin/linux64
+    - rm linux64.tar.gz
     - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
     - yarn install
   script:
@@ -97,11 +97,11 @@ build:windows:
     - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
     - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
     - mv assets/bin/win64/verus-cli assets/bin/win64/verusd
-    - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_windows_beta_0.3.3.zip
-    - unzip komodo_windows_beta_0.3.3.zip
-    - rm komodo_windows_beta_0.3.3.zip
-    - mv komodo_windows_beta_0.3.3/* assets/bin/win64
-    - rm -rf komodo_windows_beta_0.3.3
+    - gsutil cp $STAGING/win64.zip .
+    - unzip win64.zip
+    - mv win64/* assets/bin/win64
+    - rm -rf win64
+    - rm win64.zip
     - strip -g  assets/bin/win64/komodod.exe && strip -g  assets/bin/win64/komodo-cli.exe && strip -g  assets/bin/win64/komodo-tx.exe
     - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
     - yarn install
@@ -129,7 +129,7 @@ build:windows:
 ########################################################################################################################
 build:mac:
   stage: build
-  tags: ["High Sierra"]
+  tags: ["Mojave"]
   before_script:
     - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
       VERUS_CLI_MACOS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/MacOS/Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz";
@@ -143,10 +143,10 @@ build:mac:
     - gsutil cp $STAGING/macos.tar.gz .
     - mkdir -p assets/bin/osx/verusd
     - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
-    - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_osx_beta_0.3.3b.tar.gz
-    - tar -xzvf komodo_osx_beta_0.3.3b.tar.gz --strip=1 --directory assets/bin/osx
+    - gsutil cp $STAGING/macos.tar.gz .
+    - tar -xzvf macos.tar.gz  --strip=1 --directory assets/bin/osx
+    - rm macos.tar.gz
     - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
-    - rm komodo_osx_beta_0.3.3b.tar.gz
     - yarn install
   script:
     - export USE_HARD_LINKS=false
