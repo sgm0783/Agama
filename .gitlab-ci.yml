@@ -14,6 +14,7 @@ variables:
   KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
+  AGAMA_APPIMAGE: Agama-Linux-v${AGAMA_VERSION}.AppImage
   AGAMA_LINUX_TAR: Agama-Linux-v${AGAMA_VERSION}.tar.gz
   AGAMA_WINDOWS_ZIP: Agama-Windows-v${AGAMA_VERSION}.zip
   AGAMA_MACOS: Agama-MacOS-v${AGAMA_VERSION}.dmg
@@ -62,6 +63,9 @@ build:linux:
     - cd dist
     - sha256sum ${AGAMA_LINUX_TAR} > ${AGAMA_LINUX_TAR}.sha256
     - mv ${AGAMA_LINUX_TAR} ${AGAMA_LINUX_TAR}.sha256 ..
+    - chmod 755 ${AGAMA_APPIMAGE}
+    - sha256sum ${AGAMA_APPIMAGE} > ${AGAMA_APPIMAGE}.sha256
+    - mv ${AGAMA_APPIMAGE} ${AGAMA_APPIMAGE}.sha256 ..
   after_script:
     - curl -F file=@"$AGAMA_LINUX_TAR"
       -F channels="$AGAMA_POST_CHANNEL"
@@ -72,6 +76,8 @@ build:linux:
     paths:
       - ${AGAMA_LINUX_TAR}
       - ${AGAMA_LINUX_TAR}.sha256
+      - ${AGAMA_APPIMAGE}
+      - ${AGAMA_APPIMAGE}.sha256 ..
       - dist
     expire_in: 1 week
 ########################################################################################################################
