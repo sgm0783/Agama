@@ -1,7 +1,7 @@
 {
   "name": "Agama",
   "productName": "Agama",
-  "version": "0.6.0+3",
+  "version": "0.6.0-3",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -126,16 +126,7 @@
         "Encoding": "UTF-8"
       },
       "target": [
-        "appimage",
-        "tar.gz",
-        "deb"
-      ]
-    },
-    "deb": {
-      "depends": [
-        "libgomp1",
-        "libcurl4-openssl-dev",
-        "libgconf2-4"
+        "appimage"
       ]
     },
     "win": {

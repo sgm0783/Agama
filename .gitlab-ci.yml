@@ -9,8 +9,8 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.6.0-2-PBaaS-Cross-chain-Technology-Preview
-  VERUSCOIN_VERSION: 0.6.0-2-PBaaS-Cross-chain-Technology-Preview
+  AGAMA_VERSION: 0.6.0-3-PBaaS-Cross-chain-Technology-Preview
+  VERUSCOIN_VERSION: 0.6.0-3-PBaaS-Cross-chain-Technology-Preview
   KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
@@ -61,11 +61,10 @@ build:linux:
   script:
     - yarn run dist
     - cd dist
+    - chmod 755 ${AGAMA_APPIMAGE}
+    - tar -czvf ${AGAMA_LINUX_TAR} ${AGAMA_APPIMAGE}
     - sha256sum ${AGAMA_LINUX_TAR} > ${AGAMA_LINUX_TAR}.sha256
     - mv ${AGAMA_LINUX_TAR} ${AGAMA_LINUX_TAR}.sha256 ..
-    - chmod 755 ${AGAMA_APPIMAGE}
-    - sha256sum ${AGAMA_APPIMAGE} > ${AGAMA_APPIMAGE}.sha256
-    - mv ${AGAMA_APPIMAGE} ${AGAMA_APPIMAGE}.sha256 ..
   after_script:
     - curl -F file=@"$AGAMA_LINUX_TAR"
       -F channels="$AGAMA_POST_CHANNEL"
