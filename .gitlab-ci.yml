@@ -9,11 +9,12 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.6.0-Tech-Preview-03
-  VERUSCOIN_VERSION: 0.6.0-Tech-Preview-03
+  AGAMA_VERSION: 0.6.0-6-PBaaS-Cross-chain-Technology-Preview
+  VERUSCOIN_VERSION: 0.6.0-6-PBaaS-Cross-chain-Technology-Preview
   KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
+  AGAMA_APPIMAGE: Agama-Linux-v${AGAMA_VERSION}.AppImage
   AGAMA_LINUX_TAR: Agama-Linux-v${AGAMA_VERSION}.tar.gz
   AGAMA_WINDOWS_ZIP: Agama-Windows-v${AGAMA_VERSION}.zip
   AGAMA_MACOS: Agama-MacOS-v${AGAMA_VERSION}.dmg
@@ -55,10 +56,13 @@ build:linux:
     - tar -xzvf linux64.tar.gz --strip=1 --directory assets/bin/linux64
     - rm linux64.tar.gz
     - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
+    - strip -g  assets/bin/linux64/verusd/verusd && strip -g  assets/bin/linux64/verusd/verus
     - yarn install
   script:
     - yarn run dist
     - cd dist
+    - chmod 755 ${AGAMA_APPIMAGE}
+    - tar -czvf ${AGAMA_LINUX_TAR} ${AGAMA_APPIMAGE}
     - sha256sum ${AGAMA_LINUX_TAR} > ${AGAMA_LINUX_TAR}.sha256
     - mv ${AGAMA_LINUX_TAR} ${AGAMA_LINUX_TAR}.sha256 ..
   after_script:
@@ -71,6 +75,8 @@ build:linux:
     paths:
       - ${AGAMA_LINUX_TAR}
       - ${AGAMA_LINUX_TAR}.sha256
+      - ${AGAMA_APPIMAGE}
+      - ${AGAMA_APPIMAGE}.sha256 ..
       - dist
     expire_in: 1 week
 ########################################################################################################################
@@ -103,6 +109,7 @@ build:windows:
     - rm -rf win64
     - rm win64.zip
     - strip -g  assets/bin/win64/komodod.exe && strip -g  assets/bin/win64/komodo-cli.exe && strip -g  assets/bin/win64/komodo-tx.exe
+    - strip -g  assets/bin/win64/verusd/verusd.exe && strip -g  assets/bin/win64/verusd/verus.exe
     - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
     - yarn install
   script:
