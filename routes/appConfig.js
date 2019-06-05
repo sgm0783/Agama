@@ -47,7 +47,7 @@ const appConfig = {
     verus: {
       stakeGuard: '',
       autoStakeVRSC: false,
-      pbaasTestmode: true,
+      pbaasTestmode: false,
     },
     pbaasChains: [],
     reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
