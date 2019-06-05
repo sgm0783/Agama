@@ -205,6 +205,12 @@ const chainParams = {
   VRSCTEST: {
     ac_daemon: 'verusd',
   },
+  K64: {
+    ac_supply: 64000777,
+    ac_reward: 0,
+    ac_staked: 10,
+    addnode: ['18.197.20.211']
+  },
 	SPLTEST: {
 		ac_supply: 5555555,
 		ac_reward: 10000000000000,

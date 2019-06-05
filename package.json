@@ -40,7 +40,8 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
-    "agama-wallet-lib": "git://github.com/pbca26/agama-wallet-lib#dev",
+    "agama-wallet-lib": "git://github.com/VerusCoin/agama-wallet-lib#dev",
+    "coins": "https://github.com/jl777/coins.git",
     "arch": "^2.1.0",
     "async": "^2.6.0",
     "bigi": "^1.4.2",

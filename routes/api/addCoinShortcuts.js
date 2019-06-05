@@ -91,7 +91,8 @@ module.exports = (api) => {
       selection === 'MNZ' ||
       selection === 'BTCH' ||
       selection === 'PIRATE' ||
-      selection === 'VRSC'
+      selection === 'VRSC' ||
+      selection === 'K64'
     ) {
       herdData = {
         ac_name: selection,

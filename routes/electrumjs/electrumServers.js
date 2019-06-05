@@ -1,5 +1,6 @@
 const disableCoins = require('./electrumServersConfig');
 const _electrumServers = require('agama-wallet-lib/src/electrum-servers');
+//const fs = require('fs');
 
 const _electrumServersExtend = {
   vpn: {
