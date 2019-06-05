@@ -47,7 +47,7 @@ const assetChainPorts = {
   PTX: 61939,
   ZEX: 26476,
   LUMBER: 26301,
-  VRSCTEST: 61147,
+  VRSCTEST: 18361,
   VRSC: 27486,
   K64: 12245
 };
