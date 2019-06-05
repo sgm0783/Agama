@@ -52,9 +52,9 @@ module.exports = (api) => {
       };
 
       if (localAppConfig) {
+        let _localAppConfig = JSON.parse(localAppConfig);
         // update config to v2.42 compatible
-        if (!JSON.parse(localAppConfig).native) {
-          let _localAppConfig = JSON.parse(localAppConfig);
+        if (!_localAppConfig.native) {
           const _confProps = [
             'dataDir',
             'cliStopTimeout',
@@ -79,6 +79,14 @@ module.exports = (api) => {
           }
 
           api.log('update config to v2.42 compatible', 'settings');
+          localAppConfig = JSON.stringify(_localAppConfig);
+          api.saveLocalAppConf(_localAppConfig);
+        }
+
+        if (_localAppConfig.verus && _localAppConfig.verus.hasOwnProperty('pbaasTestmode') && 
+          _localAppConfig.verus.pbaasTestmode !== defaultConf.verus.pbaasTestmode) {
+          _localAppConfig.verus.pbaasTestmode = defaultConf.verus.pbaasTestmode
+          api.log('Changed PBaaS Testmode to ' + defaultConf.verus.pbaasTestmode, 'settings');
           localAppConfig = JSON.stringify(_localAppConfig);
           api.saveLocalAppConf(_localAppConfig);
         }
