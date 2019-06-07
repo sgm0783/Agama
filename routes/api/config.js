@@ -83,10 +83,10 @@ module.exports = (api) => {
           api.saveLocalAppConf(_localAppConfig);
         }
 
-        if (_localAppConfig.verus && _localAppConfig.verus.hasOwnProperty('pbaasTestmode') && 
-          _localAppConfig.verus.pbaasTestmode !== defaultConf.verus.pbaasTestmode) {
-          _localAppConfig.verus.pbaasTestmode = defaultConf.verus.pbaasTestmode
-          api.log('Changed PBaaS Testmode to ' + defaultConf.verus.pbaasTestmode, 'settings');
+        if (_localAppConfig.hasOwnProperty('enableVrsctest') && 
+          _localAppConfig.enableVrsctest !== defaultConf.enableVrsctest) {
+          _localAppConfig.enableVrsctest = defaultConf.enableVrsctest
+          api.log('Changed PBaaS enableVrsctest to ' + defaultConf.enableVrsctest, 'settings');
           localAppConfig = JSON.stringify(_localAppConfig);
           api.saveLocalAppConf(_localAppConfig);
         }
