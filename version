@@ -1,4 +1,3 @@
-version=0.5.6a
-minversion=0.5.6a
-
-
+version=0.5.7
+type=beta
+minversion=0.5.7

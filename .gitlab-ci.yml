@@ -1,7 +1,7 @@
 stages:
-- build
-- test
-- deploy
+  - build
+  - test
+  - deploy
 ########################################################################################################################
 ####START####                                     PROJECT LEVEL VARIABLES                                  ####START####
 ########################################################################################################################
@@ -9,17 +9,15 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.5.6a
-  VERUSCOIN_VERSION: 0.5.6a
+  AGAMA_VERSION: 0.5.7
+  VERUSCOIN_VERSION: 0.5.7
   KOMODO_VERSION: 0.3.3b-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
-  ELECTRON_BUILD_LINUX: Agama-linux-x64
-  ELECTRON_BUILD_WINDOWS: Agama-win32-x64
-  ELECTRON_BUILD_MACOS: Agama-darwin-x64
-  AGAMA_LINUX: ${ELECTRON_BUILD_LINUX}-v${AGAMA_VERSION}.tar.gz
-  AGAMA_WINDOWS: ${ELECTRON_BUILD_WINDOWS}-v${AGAMA_VERSION}.zip
-  AGAMA_MACOS: Agama-MacOS-v${AGAMA_VERSION}
+  AGAMA_APPIMAGE: Agama-Linux-v${AGAMA_VERSION}.AppImage
+  AGAMA_LINUX_TAR: Agama-Linux-v${AGAMA_VERSION}.tar.gz
+  AGAMA_WINDOWS_ZIP: Agama-Windows-v${AGAMA_VERSION}.zip
+  AGAMA_MACOS: Agama-MacOS-v${AGAMA_VERSION}.dmg
   GIT_SUBMODULE_STRATEGY: recursive
   POST_COMMENT: "Pipeline Trigger: ${CI_PIPELINE_SOURCE}\n
       Branch: ${CI_COMMIT_REF_NAME}\n
@@ -39,48 +37,47 @@ build:linux:
   image: asherd/agama-builder
   stage: build
   before_script:
-  - echo "$AUTH_KEY" > AUTH_KEY.json &&
-    gcloud auth activate-service-account
-    --key-file AUTH_KEY.json &&
-    rm AUTH_KEY.json
-  - if [ ${CI_COMMIT_REF_NAME} = "MichaelF-Dev" ]; then export BINARY_SOURCE="Komodo"; fi
-  - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-    VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"
-    POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
-    else
-    export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
-  - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-  - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm ${EASYDEX_GUI_BUILD}
-  - gsutil cp $STAGING/$VERUS_CLI_LINUX .
-  - mkdir -p assets/bin/linux64/verusd
-  - gsutil cp $STAGING/linux64.tar.gz .
-  - tar -xzvf linux64.tar.gz --strip=1 --directory assets/bin/linux64
-  - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
-  - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
-  - rm assets/bin/linux64/verusd/verusd
-  - mv assets/bin/linux64/verusd/komodod assets/bin/linux64/verusd/verusd
-  #- wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}/komodo_linux_${KOMODO_VERSION}.tar.gz
-# -  wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_linux_beta_0.3.3b.tar.gz
-  - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
-  - rm linux64.tar.gz
-#  - rm  komodo_linux_${KOMODO_VERSION}.tar.gz
-  - npm install
+    - echo "$AUTH_KEY" > AUTH_KEY.json &&
+      gcloud auth activate-service-account
+      --key-file AUTH_KEY.json &&
+      rm AUTH_KEY.json
+    - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
+        VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"
+        POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+      else
+        export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
+    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
+    - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm ${EASYDEX_GUI_BUILD}
+    - mkdir -p assets/bin/linux64/verusd
+    - gsutil cp $STAGING/$VERUS_CLI_LINUX .
+    - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
+    - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
+    - gsutil cp $STAGING/linux64.tar.gz .
+    - tar -xzvf linux64.tar.gz --strip=1 --directory assets/bin/linux64
+    - rm linux64.tar.gz
+    - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
+    - strip -g  assets/bin/linux64/verusd/verusd && strip -g  assets/bin/linux64/verusd/verus
+    - yarn install
   script:
-  - npm run package-linux
-  - cd build
-  - tar -czf ${AGAMA_LINUX} $ELECTRON_BUILD_LINUX
-  - sha256sum ${AGAMA_LINUX} > ${AGAMA_LINUX}.sha256
-  - mv $AGAMA_LINUX ${AGAMA_LINUX}.sha256 ..
+    - yarn run dist
+    - cd dist
+    - chmod 755 ${AGAMA_APPIMAGE}
+    - tar -czvf ${AGAMA_LINUX_TAR} ${AGAMA_APPIMAGE}
+    - sha256sum ${AGAMA_LINUX_TAR} > ${AGAMA_LINUX_TAR}.sha256
+    - mv ${AGAMA_LINUX_TAR} ${AGAMA_LINUX_TAR}.sha256 ..
   after_script:
-  - curl -F file=@"$AGAMA_LINUX"
+    - curl -F file=@"$AGAMA_LINUX_TAR"
       -F channels="$AGAMA_POST_CHANNEL"
       -F initial_comment="${POST_COMMENT}"
       -H "${SLACK_BOT_AUTH}"
       "https://slack.com/api/files.upload"
   artifacts:
     paths:
-    - ${AGAMA_LINUX}
-    - ${AGAMA_LINUX}.sha256
+      - ${AGAMA_LINUX_TAR}
+      - ${AGAMA_LINUX_TAR}.sha256
+      - ${AGAMA_APPIMAGE}
+      - ${AGAMA_APPIMAGE}.sha256 ..
+      - dist
     expire_in: 1 week
 ########################################################################################################################
 ####END####                                              LINUX                                               ####END####
@@ -91,50 +88,46 @@ build:windows:
   stage: build
   image: asherd/agama-builder:windows
   before_script:
-  - echo "$AUTH_KEY" > AUTH_KEY.json &&
-    gcloud auth activate-service-account
-    --key-file AUTH_KEY.json &&
-    rm AUTH_KEY.json
-  - if [ ${CI_COMMIT_REF_NAME} = "MichaelF-Dev" ]; then export BINARY_SOURCE="Komodo"; fi
-  - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-    VERUS_CLI_WINDOWS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Windows/Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip"
-    POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
-    else
-    export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
-  - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-  - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
-  - mkdir -p assets/bin/
-  - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
-  - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
-  - mv assets/bin/win64/verus-cli assets/bin/win64/verusd
-  - mv assets/bin/win64/verusd/komodod.exe assets/bin/win64/verusd/verusd.exe
- # - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}/komodo_win_${KOMODO_VERSION}.zip
-  - gsutil cp $STAGING/win64.zip .
-  - unzip win64.zip
-#  - mv komodo_win_${KOMODO_VERSION}/* assets/bin/win64
-  - mv win64/* assets/bin/win64
-  - rm -rf win64
-  - rm win64.zip
-  - strip -g  assets/bin/win64/komodod.exe && strip -g  assets/bin/win64/komodo-cli.exe && strip -g  assets/bin/win64/komodo-tx.exe
-  - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
-  #- rm komodo_win_${KOMODO_VERSION}.zip
-  - npm install
+    - echo "$AUTH_KEY" > AUTH_KEY.json &&
+      gcloud auth activate-service-account
+      --key-file AUTH_KEY.json &&
+      rm AUTH_KEY.json
+    - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
+      VERUS_CLI_WINDOWS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Windows/Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip"
+      POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+      else
+      export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
+    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
+    - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
+    - mkdir -p assets/bin/
+    - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
+    - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
+    - mv assets/bin/win64/verus-cli assets/bin/win64/verusd
+    - gsutil cp $STAGING/win64.zip .
+    - unzip win64.zip
+    - mv win64/* assets/bin/win64
+    - rm -rf win64
+    - rm win64.zip
+    - strip -g  assets/bin/win64/komodod.exe && strip -g  assets/bin/win64/komodo-cli.exe && strip -g  assets/bin/win64/komodo-tx.exe
+    - strip -g  assets/bin/win64/verusd/verusd.exe && strip -g  assets/bin/win64/verusd/verus.exe
+    - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
+    - yarn install
   script:
-  - npm run package-win
-  - cd build
-  - zip -r ${AGAMA_WINDOWS} $ELECTRON_BUILD_WINDOWS
-  - sha256sum ${AGAMA_WINDOWS} > ${AGAMA_WINDOWS}.sha256
-  - mv $AGAMA_WINDOWS ${AGAMA_WINDOWS}.sha256 ..
+    - yarn run dist-win
+    - cd dist
+    - sha256sum ${AGAMA_WINDOWS_ZIP} > ${AGAMA_WINDOWS_ZIP}.sha256
+    - mv ${AGAMA_WINDOWS_ZIP} ${AGAMA_WINDOWS_ZIP}.sha256 ..
   after_script:
-  - curl -F file=@"$AGAMA_WINDOWS"
+    - curl -F file=@"$AGAMA_WINDOWS_ZIP"
       -F channels="$AGAMA_POST_CHANNEL"
       -F initial_comment="${POST_COMMENT}"
       -H "${SLACK_BOT_AUTH}"
       "https://slack.com/api/files.upload"
   artifacts:
     paths:
-    - ${AGAMA_WINDOWS}
-    - ${AGAMA_WINDOWS}.sha256
+      - ${AGAMA_WINDOWS_ZIP}
+      - ${AGAMA_WINDOWS_ZIP}.sha256
+      - dist
     expire_in: 1 week
 ########################################################################################################################
 ####END####                                             WINDOWS                                              ####END####
@@ -143,44 +136,42 @@ build:windows:
 ########################################################################################################################
 build:mac:
   stage: build
-  tags: ["High Sierra"]
+  tags: ["Mojave"]
   before_script:
-  - if [ ${CI_COMMIT_REF_NAME} = "MichaelF-Dev" ]; then export BINARY_SOURCE="Komodo"; fi
-  - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-    VERUS_CLI_MACOS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/MacOS/Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz";
-    POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
-    else
-    export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
-  - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-  - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
-    rm $EASYDEX_GUI_BUILD
-  - gsutil cp $STAGING/$VERUS_CLI_MACOS .
-  - gsutil cp $STAGING/macos.tar.gz .
-  - mkdir -p assets/bin/osx/verusd
-  - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
-  - mv assets/bin/osx/verusd/komodod assets/bin/osx/verusd/verusd
-  # - wget https://github.com/KomodoPlatform/komodo/releases/download/master-multios-${KOMODO_VERSION}/komodo_osx_${KOMODO_VERSION}.tar.gz
-  - wget https://github.com/KomodoPlatform/komodo/releases/download/beta-multios-0.3.3b-beta/komodo_osx_beta_0.3.3b.tar.gz
- # - tar -xzvf komodo_osx_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/osx
-  - tar -xzvf macos.tar.gz  --strip=1 --directory assets/bin/osx
-  - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
- # - rm komodo_osx_${KOMODO_VERSION}.tar.gz
-  - rm macos.tar.gz
-  - npm install
+    - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
+      VERUS_CLI_MACOS="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/MacOS/Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz";
+      POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+      else
+      export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
+    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
+    - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
+      rm $EASYDEX_GUI_BUILD
+    - gsutil cp $STAGING/$VERUS_CLI_MACOS .
+    - gsutil cp $STAGING/macos.tar.gz .
+    - mkdir -p assets/bin/osx/verusd
+    - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
+    - gsutil cp $STAGING/macos.tar.gz .
+    - tar -xzvf macos.tar.gz  --strip=1 --directory assets/bin/osx
+    - rm macos.tar.gz
+    - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
+    - yarn install
   script:
-  - npm run package-mac
-  - npm run create-installer-mac
-  - shasum -a 256 ${AGAMA_MACOS}.dmg > ${AGAMA_MACOS}.dmg.sha256
+    - export USE_HARD_LINKS=false
+    - yarn run dist
+    - cd dist
+    - shasum -a 256 ${AGAMA_MACOS} > ${AGAMA_MACOS}.sha256
+    - mv ${AGAMA_MACOS} ${AGAMA_MACOS}.sha256 ..
   after_script:
-  - curl -F file=@"${AGAMA_MACOS}.dmg"
+    - curl -F file=@"${AGAMA_MACOS}.dmg"
       -F channels="${AGAMA_POST_CHANNEL}"
       -F initial_comment="${POST_COMMENT}"
       -H "${SLACK_BOT_AUTH}"
       "https://slack.com/api/files.upload"
   artifacts:
     paths:
-    - ${AGAMA_MACOS}.dmg
-    - ${AGAMA_MACOS}.dmg.sha256
+      - ${AGAMA_MACOS}
+      - ${AGAMA_MACOS}.sha256
+      - dist
     expire_in: 1 week
 
 
@@ -188,27 +179,25 @@ deploy:
   stage: deploy
   image: google/cloud-sdk:alpine
   dependencies:
-  - build:linux
-  - build:windows
-  - build:mac
+    - build:linux
+    - build:windows
+    - build:mac
   script:
-  - mkdir -p $CI_COMMIT_REF_NAME/Windows
-  - mkdir -p $CI_COMMIT_REF_NAME/Linux
-  - mkdir -p $CI_COMMIT_REF_NAME/MacOS
-  - cp $AGAMA_LINUX $CI_COMMIT_REF_NAME/Linux
-  - cp $AGAMA_WINDOWS $CI_COMMIT_REF_NAME/Windows
-  - cp $AGAMA_MACOS.dmg $CI_COMMIT_REF_NAME/MacOS
-  - echo $AUTH_KEY > AUTH_KEY.json
-  - gcloud auth activate-service-account --key-file AUTH_KEY.json
-  - gsutil rsync -r $CI_COMMIT_REF_NAME $STAGING/Agama/$CI_COMMIT_REF_NAME/
+    - mkdir -p $CI_COMMIT_REF_NAME/Windows
+    - mkdir -p $CI_COMMIT_REF_NAME/Linux
+    - mkdir -p $CI_COMMIT_REF_NAME/MacOS
+    - cp ${AGAMA_LINUX_TAR} ${CI_COMMIT_REF_NAME}/Linux
+    - cp ${AGAMA_WINDOWS_ZIP} ${CI_COMMIT_REF_NAME}/Windows
+    - cp ${AGAMA_MACOS} ${CI_COMMIT_REF_NAME}/MacOS
+    - echo ${AUTH_KEY} > AUTH_KEY.json
+    - gcloud auth activate-service-account --key-file AUTH_KEY.json
+    - gsutil rsync -r $CI_COMMIT_REF_NAME $STAGING/Agama/$CI_COMMIT_REF_NAME/
   artifacts:
     paths:
-    - ${AGAMA_LINUX}
-    - ${AGAMA_LINUX}.sha256
-    - ${AGAMA_WINDOWS}
-    - ${AGAMA_WINDOWS}.sha256
-    - ${AGAMA_MACOS}.dmg
-    - ${AGAMA_MACOS}.dmg.sha256
+      - ${AGAMA_LINUX_TAR}
+      - ${AGAMA_LINUX_TAR}.sha256
+      - ${AGAMA_WINDOWS_ZIP}
+      - ${AGAMA_WINDOWS_ZIP}.sha256
+      - ${AGAMA_MACOS}
+      - ${AGAMA_MACOS}.sha256
     expire_in: 1 week
-
-
