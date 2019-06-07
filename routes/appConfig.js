@@ -49,6 +49,7 @@ const appConfig = {
       autoStakeVRSC: false,
       pbaasTestmode: false,
     },
+    enableVrsctest: false,
     pbaasChains: [],
     reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
     pubkey: '',
@@ -292,6 +293,9 @@ const appConfig = {
         displayName: 'PBaaS Test Mode',
         type: 'boolean',
       },
+    },
+    enableVrsctest: {
+      display: false,
     },
     pbaasChains: {
       display: false,
