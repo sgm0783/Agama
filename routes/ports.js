@@ -2,14 +2,14 @@
 
 const assetChainPorts = {
   komodod: 7771,
-  markermaker: 7783,
+  marketmaker: 7783,
   OOT: 12467,
+  K64: 12245,
   PIZZA: 11608,
   BEER: 8923,
   CHIPS: 57776,
   SUPERNET: 11341,
   REVS: 10196,
-  MNZ: 14337,
   WLC: 12167,
   PANGEA: 14068,
   DEX: 11890,
@@ -17,6 +17,7 @@ const assetChainPorts = {
   BET: 14250,
   CRYPTO: 8516,
   HODL: 14431,
+  ILN: 12986,
   MSHARK: 8846,
   BOTS: 11964,
   MGW: 12386,
@@ -30,7 +31,6 @@ const assetChainPorts = {
   MESH: 9455,
   AXO: 12927,
   ETOMIC: 10271,
-  VOTE2018: 15488,
   NINJA: 8427,
   BTCH: 8800,
   BNTN: 14358,
@@ -47,9 +47,17 @@ const assetChainPorts = {
   PTX: 61939,
   ZEX: 26476,
   LUMBER: 26301,
+  KSB: 21066,
+  OUR: 45672,
+  RICK: 28223,
+  MORTY: 63812,
+  VOTE2019: 45888,
+  MTST3: 56141,
+  RFOX: 32269,
+  ZEXO: 33970,
+  LABS: 40265,
   VRSCTEST: 18361,
   VRSC: 27486,
-  K64: 12245
 };
 
 module.exports = assetChainPorts;
