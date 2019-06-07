@@ -569,7 +569,6 @@ bitcoinjs-message@^2.0.0:
 
 "bitcore-lib-zcash@git+https://github.com/zcash-hackworks/bitcore-lib-zcash":
   version "0.13.19"
-  uid e97ae1dd2e9f14d6076d5e5429c75d8965afa4ab
   resolved "git+https://github.com/zcash-hackworks/bitcore-lib-zcash#e97ae1dd2e9f14d6076d5e5429c75d8965afa4ab"
   dependencies:
     bn.js "=2.0.4"
@@ -1053,10 +1052,6 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
-
-"coins@https://github.com/jl777/coins.git":
-  version "0.0.0"
-  resolved "https://github.com/jl777/coins.git#3694bff905902b945c906322051be04cfb1d44e4"
 
 "coinselect@github:bitcoinjs/coinselect":
   version "3.1.11"
