@@ -202,14 +202,6 @@ const chainParams = {
 		addnode: '142.11.199.63',
 		genproclimit: true,
 	},
-	ZEX: {
-		ac_reward: 13000000000,
-		ac_halving: 525600,
-		ac_pubkey: '039d4a50cc70d1184e462a22edb3b66385da97cc8059196f8305c184a3e21440af',
-		ac_cc: 2,
-		ac_founders: 1,
-		addnode: '5.9.102.210',
-	},
 	SPLTEST: {
 		ac_supply: 5555555,
 		ac_reward: 10000000000000,
