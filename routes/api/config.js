@@ -83,13 +83,15 @@ module.exports = (api) => {
           api.saveLocalAppConf(_localAppConfig);
         }
 
-        if (_localAppConfig.hasOwnProperty('enableVrsctest') && 
-          _localAppConfig.enableVrsctest !== defaultConf.enableVrsctest) {
-          _localAppConfig.enableVrsctest = defaultConf.enableVrsctest
-          api.log('Changed PBaaS enableVrsctest to ' + defaultConf.enableVrsctest, 'settings');
+        //This block of code forces the enabling or disabling of verustest.
+        //Use for releases that do not support either normal verus or verustest
+        /*if (_localAppConfig.verus.hasOwnProperty('enableVrsctest') && 
+          _localAppConfig.verus.enableVrsctest !== defaultConf.verus.enableVrsctest) {
+          _localAppConfig.verus.enableVrsctest = defaultConf.verus.enableVrsctest
+          api.log('Changed PBaaS enableVrsctest to ' + defaultConf.verus.enableVrsctest, 'settings');
           localAppConfig = JSON.stringify(_localAppConfig);
           api.saveLocalAppConf(_localAppConfig);
-        }
+        }*/
 
         const compareConfigs = compareJSON(defaultConf, JSON.parse(localAppConfig));
 

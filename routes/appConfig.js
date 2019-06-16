@@ -48,8 +48,8 @@ const appConfig = {
       stakeGuard: '',
       autoStakeVRSC: false,
       pbaasTestmode: false,
+      enableVrsctest: false,
     },
-    enableVrsctest: false,
     pbaasChains: [],
     reservedChains: Object.keys(coins.CRYPTO).concat(Object.keys(coins.ASSETCHAINS)).concat(["KOMODO", "zcashd", "komodod", "chipsd"]),
     pubkey: '',
@@ -293,9 +293,12 @@ const appConfig = {
         displayName: 'PBaaS Test Mode',
         type: 'boolean',
       },
-    },
-    enableVrsctest: {
-      display: false,
+      enableVrsctest: {
+        display: true,
+        info: 'Enables VRSCTEST as an option in the Add Coin menu (includes PBaaS testnet features)',
+        displayName: 'Enable Verus Testnet',
+        type: 'boolean',
+      },
     },
     pbaasChains: {
       display: false,
