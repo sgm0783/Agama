@@ -1,5 +1,5 @@
 const fiatList = require('./fiatList');
-const chainParams = require('./chainParams')
+const coins = require('../gui/EasyDEX-GUI/react/src/translate/coins.js')
 
 const appConfig = {
   config: { // default config
@@ -51,7 +51,7 @@ const appConfig = {
     },
     enableVrsctest: false,
     pbaasChains: [],
-    reservedChains: Object.keys(chainParams).concat(["KMD", "KOMODO", "zcashd", "komodod", "chipsd", "CHIPS"]),
+    reservedChains: Object.keys(coins.CRYPTO).concat(Object.keys(coins.ASSETCHAINS)).concat(["KOMODO", "zcashd", "komodod", "chipsd"]),
     pubkey: '',
     exchanges: {
       coinswitchKey: '',
