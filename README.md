@@ -34,8 +34,8 @@ From within `agama/` the structure will be `assets/bin/linux64` (for example on 
 #### Start Agama App (electron)
 
 ```shell
-cd agama
-yarn update && yarn install
+cd Agama
+yarn install
 yarn start
 ```
 To use debug/dev mode please stop Agama App (electron) and either set `dev: true` and `debug: true` in `~/.agama/config.json` and then restart the app or replace step 4) from above with the start command below:

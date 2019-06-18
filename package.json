@@ -1,7 +1,7 @@
 {
   "name": "Agama",
   "productName": "Agama",
-  "version": "0.5.7",
+  "version": "0.5.7-1",
   "description": "Agama Wallet Desktop App",
   "main": "main.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "dist": "electron-builder --publish=never --x64 ",
     "dist-win": "electron-builder --publish=never  --win --x64",
     "test": "mocha",
-    "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && npm install",
+    "update-agamalib": "rm -rf node_modules/agama-wallet-lib/ && yarn install",
     "postinstall": "rm -rf node_modules/bitcoinforksjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-pos/node_modules/create-hash && rm -rf node_modules/bitcoinjs-lib-zcash/node_modules/create-hash && rm -rf node_modules/bitgo-utxo-lib/node_modules/create-hash"
   },
   "repository": "https://github.com/VerusCoin/Agama/",
