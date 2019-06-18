@@ -9,9 +9,9 @@ variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
   DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.5.7
-  VERUSCOIN_VERSION: 0.5.7
-  KOMODO_VERSION: 0.3.3b-beta
+  AGAMA_VERSION: 0.5.7-1
+  VERUSCOIN_VERSION: 0.5.7-1
+  KOMODO_VERSION: 0.3.3b-2-beta
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
   AGAMA_APPIMAGE: Agama-Linux-v${AGAMA_VERSION}.AppImage
@@ -56,7 +56,6 @@ build:linux:
     - tar -xzvf linux64.tar.gz --strip=1 --directory assets/bin/linux64
     - rm linux64.tar.gz
     - strip -g  assets/bin/linux64/komodod && strip -g  assets/bin/linux64/komodo-cli
-    - strip -g  assets/bin/linux64/verusd/verusd && strip -g  assets/bin/linux64/verusd/verus
     - yarn install
   script:
     - yarn run dist
@@ -109,7 +108,6 @@ build:windows:
     - rm -rf win64
     - rm win64.zip
     - strip -g  assets/bin/win64/komodod.exe && strip -g  assets/bin/win64/komodo-cli.exe && strip -g  assets/bin/win64/komodo-tx.exe
-    - strip -g  assets/bin/win64/verusd/verusd.exe && strip -g  assets/bin/win64/verusd/verus.exe
     - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
     - yarn install
   script:
