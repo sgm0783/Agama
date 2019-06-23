@@ -207,329 +207,338 @@ module.exports = (api) => {
               api.log(fee, 'spv.createrawtx');
             }
 
-            let _change = 0;
-
-            if (outputs &&
-                outputs.length === 2) {
-              _change = outputs[1].value - fee;
-            }
-
-            if (!btcFee &&
-                _change === 0) {
-              outputs[0].value = outputs[0].value - fee;
-            }
-
-            if (btcFee) {
-              value = outputs[0].value;
-            } else {
-              if (_change > 0) {
-                value = outputs[0].value - fee;
-              }
-            }
-
-            api.log('adjusted outputs, value - default fee =>', 'spv.createrawtx');
-            api.log(outputs, 'spv.createrawtx');
-
-            // check if any outputs are unverified
-            if (inputs &&
-                inputs.length) {
-              for (let i = 0; i < inputs.length; i++) {
-                if (!inputs[i].verified) {
-                  utxoVerified = false;
-                  break;
-                }
-              }
-
-              for (let i = 0; i < inputs.length; i++) {
-                if (inputs[i].hasOwnProperty('dpowSecured') &&
-                    !inputs[i].dpowSecured) {
-                  dpowSecured = false;
-                  break;
-                }
-              }
-
-              for (let i = 0; i < inputs.length; i++) {
-                if (Number(inputs[i].interestSats) > interestClaimThreshold) {
-                  totalInterest += Number(inputs[i].interestSats);
-                  totalInterestUTXOCount++;
-                }
-              }
-            }
-
-            const _maxSpend = api.maxSpendBalance(utxoListFormatted);
-
-            if (value > _maxSpend) {
-              const retsObj = {
+            if (!outputs) {
+              const retObj = {
                 msg: 'error',
-                result: `Spend value is too large. Max available amount is ${Number((_maxSpend * 0.00000001.toFixed(8)))}`,
+                result: 'Insufficient funds. Failed to calculate acceptable transaction amount with current fee.'
               };
 
               res.end(JSON.stringify(retObj));
             } else {
-              api.log(`maxspend ${_maxSpend} (${_maxSpend * 0.00000001})`, 'spv.createrawtx');
-              api.log(`value ${value}`, 'spv.createrawtx');
-              api.log(`sendto ${outputAddress} amount ${value} (${value * 0.00000001})`, 'spv.createrawtx');
-              api.log(`changeto ${changeAddress} amount ${_change} (${_change * 0.00000001})`, 'spv.createrawtx');
+              let _change = 0;
 
-              // account for KMD interest
-              if ((network === 'komodo' || network.toLowerCase() === 'kmd') &&
-                  totalInterest > 0) {
-                // account for extra vout
-                // const _feeOverhead = outputs.length === 1 ? estimateTxSize(0, 1) * feeRate : 0;
-                const _feeOverhead = 0;
-
-                api.log(`max interest to claim ${totalInterest} (${totalInterest * 0.00000001})`, 'spv.createrawtx');
-                api.log(`estimated fee overhead ${_feeOverhead}`, 'spv.createrawtx');
-                api.log(`current change amount ${_change} (${_change * 0.00000001}), boosted change amount ${_change + (totalInterest - _feeOverhead)} (${(_change + (totalInterest - _feeOverhead)) * 0.00000001})`, 'spv.createrawtx');
-
-                if (_maxSpend - fee === value) {
-                  _change = totalInterest - _change - _feeOverhead;
-
-                  if (outputAddress === changeAddress) {
-                    value += _change;
-                    _change = 0;
-                    api.log(`send to self ${outputAddress} = ${changeAddress}`, 'spv.createrawtx');
-                    api.log(`send to self old val ${value}, new val ${value + _change}`, 'spv.createrawtx');
-                  }
-                } else {
-                  _change = _change + (totalInterest - _feeOverhead);
+              if (outputs &&
+                  outputs.length === 2) {
+                _change = outputs[1].value - fee;
+              }
+  
+              if (!btcFee &&
+                  _change === 0) {
+                outputs[0].value = outputs[0].value - fee;
+              }
+  
+              if (btcFee) {
+                value = outputs[0].value;
+              } else {
+                if (_change > 0) {
+                  value = outputs[0].value - fee;
                 }
               }
-
-              if (!inputs &&
-                  !outputs) {
+  
+              api.log('adjusted outputs, value - default fee =>', 'spv.createrawtx');
+              api.log(outputs, 'spv.createrawtx');
+  
+              // check if any outputs are unverified
+              if (inputs &&
+                  inputs.length) {
+                for (let i = 0; i < inputs.length; i++) {
+                  if (!inputs[i].verified) {
+                    utxoVerified = false;
+                    break;
+                  }
+                }
+  
+                for (let i = 0; i < inputs.length; i++) {
+                  if (inputs[i].hasOwnProperty('dpowSecured') &&
+                      !inputs[i].dpowSecured) {
+                    dpowSecured = false;
+                    break;
+                  }
+                }
+  
+                for (let i = 0; i < inputs.length; i++) {
+                  if (Number(inputs[i].interestSats) > interestClaimThreshold) {
+                    totalInterest += Number(inputs[i].interestSats);
+                    totalInterestUTXOCount++;
+                  }
+                }
+              }
+  
+              const _maxSpend = api.maxSpendBalance(utxoListFormatted);
+  
+              if (value > _maxSpend) {
                 const retObj = {
                   msg: 'error',
-                  result: 'Can\'t find best fit utxo. Try lower amount.',
+                  result: `Spend value is too large. Max available amount is ${Number((_maxSpend * 0.00000001.toFixed(8)))}`,
                 };
-
+  
                 res.end(JSON.stringify(retObj));
               } else {
-                let vinSum = 0;
-
-                for (let i = 0; i < inputs.length; i++) {
-                  vinSum += inputs[i].value;
-                }
-
-                let voutSum = 0;
-                
-                for (let i = 0; i < outputs.length; i++) {
-                  voutSum += outputs[i].value;
-                }
-
-                const _estimatedFee = vinSum - outputs[0].value - _change;
-
-                api.log(`vin sum ${vinSum} (${vinSum * 0.00000001})`, 'spv.createrawtx');
-                api.log(`vout sum ${voutSum} (${voutSum * 0.00000001})`, 'spv.createrawtx');
-                api.log(`estimatedFee ${_estimatedFee} (${_estimatedFee * 0.00000001})`, 'spv.createrawtx');
-                // double check no extra fee is applied
-                api.log(`vin - vout ${vinSum - value - _change}`, 'spv.createrawtx');
-
-                if ((vinSum - value - _change) > fee) {
-                  _change += fee;
-                  api.log(`double fee, increase change by ${fee}`, 'spv.createrawtx');
-                } else if ((vinSum - value - _change) === 0) { // max amount spend edge case
-                  api.log(`zero fee, reduce output size by ${fee}`, 'spv.createrawtx');
-                  value = value - fee;
-                }
-
-                api.log(`change ${_change}`, 'spv.createrawtx');
-                api.log(`network ${network.toLowerCase()}`, 'spv.createrawtx');
-                api.log(`estimated fee ${_estimatedFee}`, 'spv.createrawtx');
-                
-                // 1h kmd interest lee way to mitigate client-server time diff
-                if (_estimatedFee < 0 &&
-                    network.toLowerCase() === 'kmd' &&
-                    _change > 0) {
-                  api.log('estimated fee < 0, subtract 20k sats fee', 'spv.createrawtx');
-                  const _changeOld = _change;
-                  _change -= fee * 2;
-
-                  if (Math.abs(Math.abs(_changeOld) - Math.abs(_change)) >= fee &&
-                      Math.abs(Math.abs(_changeOld) - Math.abs(_change)) < fee * 2) {
-                    api.log('subtracted fee is less than 20k sats, subtract 10k sats', 'spv.createrawtx');
-                    _change -= fee;
+                api.log(`maxspend ${_maxSpend} (${_maxSpend * 0.00000001})`, 'spv.createrawtx');
+                api.log(`value ${value}`, 'spv.createrawtx');
+                api.log(`sendto ${outputAddress} amount ${value} (${value * 0.00000001})`, 'spv.createrawtx');
+                api.log(`changeto ${changeAddress} amount ${_change} (${_change * 0.00000001})`, 'spv.createrawtx');
+  
+                // account for KMD interest
+                if ((network === 'komodo' || network.toLowerCase() === 'kmd') &&
+                    totalInterest > 0) {
+                  // account for extra vout
+                  // const _feeOverhead = outputs.length === 1 ? estimateTxSize(0, 1) * feeRate : 0;
+                  const _feeOverhead = 0;
+  
+                  api.log(`max interest to claim ${totalInterest} (${totalInterest * 0.00000001})`, 'spv.createrawtx');
+                  api.log(`estimated fee overhead ${_feeOverhead}`, 'spv.createrawtx');
+                  api.log(`current change amount ${_change} (${_change * 0.00000001}), boosted change amount ${_change + (totalInterest - _feeOverhead)} (${(_change + (totalInterest - _feeOverhead)) * 0.00000001})`, 'spv.createrawtx');
+  
+                  if (_maxSpend - fee === value) {
+                    _change = totalInterest - _change - _feeOverhead;
+  
+                    if (outputAddress === changeAddress) {
+                      value += _change;
+                      _change = 0;
+                      api.log(`send to self ${outputAddress} = ${changeAddress}`, 'spv.createrawtx');
+                      api.log(`send to self old val ${value}, new val ${value + _change}`, 'spv.createrawtx');
+                    }
+                  } else {
+                    _change = _change + (totalInterest - _feeOverhead);
                   }
-                  _change = _change < 0 ? 0 : _change;
-                  api.log(`change adjusted ${_change}`, 'spv.createrawtx');
                 }
-
-                // TODO: use individual dust thresholds
-                if (_change > 0 &&
-                    _change <= 1000) {
-                  api.log(`change is < 1000 sats, donate ${_change} sats to miners`, 'spv.createrawtx');
-                  _change = 0;
-                }
-
-                let _rawtx;
-
-                if (req[reqType].nosig) {
-                  const _rawObj = {
-                    utxoSet: inputs,
-                    change: _change,
-                    changeAdjusted: _change,
-                    totalInterest,
-                    fee,
-                    value,
-                    outputAddress,
-                    changeAddress,
-                    network,
-                    utxoVerified,
-                    dpowSecured,
-                  };
-
+  
+                if (!inputs &&
+                    !outputs) {
                   const retObj = {
-                    msg: 'success',
-                    result: _rawObj,
+                    msg: 'error',
+                    result: 'Can\'t find best fit utxo. Try lower amount.',
                   };
-
+  
                   res.end(JSON.stringify(retObj));
                 } else {
-                  if (req[reqType].unsigned) {
-                    _rawtx = transaction(
+                  let vinSum = 0;
+  
+                  for (let i = 0; i < inputs.length; i++) {
+                    vinSum += inputs[i].value;
+                  }
+  
+                  let voutSum = 0;
+                  
+                  for (let i = 0; i < outputs.length; i++) {
+                    voutSum += outputs[i].value;
+                  }
+  
+                  const _estimatedFee = vinSum - outputs[0].value - _change;
+  
+                  api.log(`vin sum ${vinSum} (${vinSum * 0.00000001})`, 'spv.createrawtx');
+                  api.log(`vout sum ${voutSum} (${voutSum * 0.00000001})`, 'spv.createrawtx');
+                  api.log(`estimatedFee ${_estimatedFee} (${_estimatedFee * 0.00000001})`, 'spv.createrawtx');
+                  // double check no extra fee is applied
+                  api.log(`vin - vout ${vinSum - value - _change}`, 'spv.createrawtx');
+  
+                  if ((vinSum - value - _change) > fee) {
+                    _change += fee;
+                    api.log(`double fee, increase change by ${fee}`, 'spv.createrawtx');
+                  } else if ((vinSum - value - _change) === 0) { // max amount spend edge case
+                    api.log(`zero fee, reduce output size by ${fee}`, 'spv.createrawtx');
+                    value = value - fee;
+                  }
+  
+                  api.log(`change ${_change}`, 'spv.createrawtx');
+                  api.log(`network ${network.toLowerCase()}`, 'spv.createrawtx');
+                  api.log(`estimated fee ${_estimatedFee}`, 'spv.createrawtx');
+                  
+                  // 1h kmd interest lee way to mitigate client-server time diff
+                  if (_estimatedFee < 0 &&
+                      network.toLowerCase() === 'kmd' &&
+                      _change > 0) {
+                    api.log('estimated fee < 0, subtract 20k sats fee', 'spv.createrawtx');
+                    const _changeOld = _change;
+                    _change -= fee * 2;
+  
+                    if (Math.abs(Math.abs(_changeOld) - Math.abs(_change)) >= fee &&
+                        Math.abs(Math.abs(_changeOld) - Math.abs(_change)) < fee * 2) {
+                      api.log('subtracted fee is less than 20k sats, subtract 10k sats', 'spv.createrawtx');
+                      _change -= fee;
+                    }
+                    _change = _change < 0 ? 0 : _change;
+                    api.log(`change adjusted ${_change}`, 'spv.createrawtx');
+                  }
+  
+                  // TODO: use individual dust thresholds
+                  if (_change > 0 &&
+                      _change <= 1000) {
+                    api.log(`change is < 1000 sats, donate ${_change} sats to miners`, 'spv.createrawtx');
+                    _change = 0;
+                  }
+  
+                  let _rawtx;
+  
+                  if (req[reqType].nosig) {
+                    const _rawObj = {
+                      utxoSet: inputs,
+                      change: _change,
+                      changeAdjusted: _change,
+                      totalInterest,
+                      fee,
+                      value,
                       outputAddress,
                       changeAddress,
-                      api.getNetworkData(network),
-                      inputs,
-                      _change,
-                      value,
-                      { unsigned: true }
-                    );
+                      network,
+                      utxoVerified,
+                      dpowSecured,
+                    };
+  
+                    const retObj = {
+                      msg: 'success',
+                      result: _rawObj,
+                    };
+  
+                    res.end(JSON.stringify(retObj));
                   } else {
-                    if (!req[reqType].offline) {
+                    if (req[reqType].unsigned) {
                       _rawtx = transaction(
                         outputAddress,
                         changeAddress,
-                        wif,
-                        api.electrumJSNetworks[network] || api.getNetworkData(network),
+                        api.getNetworkData(network),
                         inputs,
                         _change,
                         value,
-                        opreturn ? { opreturn } : null,
+                        { unsigned: true }
                       );
+                    } else {
+                      if (!req[reqType].offline) {
+                        _rawtx = transaction(
+                          outputAddress,
+                          changeAddress,
+                          wif,
+                          api.electrumJSNetworks[network] || api.getNetworkData(network),
+                          inputs,
+                          _change,
+                          value,
+                          opreturn ? { opreturn } : null,
+                        );
+                      }
                     }
-                  }
-
-                  if (!push ||
-                      push === 'false') {
-                    const retObj = {
-                      msg: 'success',
-                      result: {
-                        utxoSet: inputs,
-                        change: _change,
-                        changeAdjusted: _change,
-                        totalInterest,
-                        // wif,
-                        fee,
-                        value,
-                        outputAddress,
-                        changeAddress,
-                        network,
-                        rawtx: _rawtx,
-                        utxoVerified,
-                        dpowSecured,
-                      },
-                    };
-
-                    res.end(JSON.stringify(retObj));
-                  } else {
-                    async function _pushtx() {
-                      ecl = await api.ecl(network);
-                      ecl.connect();
-                      ecl.blockchainTransactionBroadcast(_rawtx)
-                      .then((txid) => {
-                        ecl.close();
-
-                        let _rawObj = {
+  
+                    if (!push ||
+                        push === 'false') {
+                      const retObj = {
+                        msg: 'success',
+                        result: {
                           utxoSet: inputs,
                           change: _change,
                           changeAdjusted: _change,
                           totalInterest,
+                          // wif,
                           fee,
                           value,
                           outputAddress,
                           changeAddress,
                           network,
                           rawtx: _rawtx,
-                          txid,
                           utxoVerified,
                           dpowSecured,
-                        };
-
-                        if (txid &&
-                            JSON.stringify(txid).indexOf('fee not met') > -1) {
-                          _rawObj.txid = JSON.stringify(_rawObj.txid);
-
-                          const retObj = {
-                            msg: 'error',
-                            result: 'Missing fee',
-                            raw: _rawObj,
+                        },
+                      };
+  
+                      res.end(JSON.stringify(retObj));
+                    } else {
+                      async function _pushtx() {
+                        ecl = await api.ecl(network);
+                        ecl.connect();
+                        ecl.blockchainTransactionBroadcast(_rawtx)
+                        .then((txid) => {
+                          ecl.close();
+  
+                          let _rawObj = {
+                            utxoSet: inputs,
+                            change: _change,
+                            changeAdjusted: _change,
+                            totalInterest,
+                            fee,
+                            value,
+                            outputAddress,
+                            changeAddress,
+                            network,
+                            rawtx: _rawtx,
+                            txid,
+                            utxoVerified,
+                            dpowSecured,
                           };
-
-                          res.end(JSON.stringify(retObj));
-                        } else if (
-                          txid &&
-                          JSON.stringify(txid).indexOf('bad-txns-inputs-spent') > -1
-                        ) {
-                          const retObj = {
-                            msg: 'error',
-                            result: 'Bad transaction inputs spent',
-                            raw: _rawObj,
-                          };
-
-                          res.end(JSON.stringify(retObj));
-                        } else if (
-                          txid &&
-                          txid.length === 64
-                        ) {
-                          if (JSON.stringify(txid).indexOf('bad-txns-in-belowout') > -1) {
+  
+                          if (txid &&
+                              JSON.stringify(txid).indexOf('fee not met') > -1) {
+                            _rawObj.txid = JSON.stringify(_rawObj.txid);
+  
+                            const retObj = {
+                              msg: 'error',
+                              result: 'Missing fee',
+                              raw: _rawObj,
+                            };
+  
+                            res.end(JSON.stringify(retObj));
+                          } else if (
+                            txid &&
+                            JSON.stringify(txid).indexOf('bad-txns-inputs-spent') > -1
+                          ) {
                             const retObj = {
                               msg: 'error',
                               result: 'Bad transaction inputs spent',
                               raw: _rawObj,
                             };
-
+  
+                            res.end(JSON.stringify(retObj));
+                          } else if (
+                            txid &&
+                            txid.length === 64
+                          ) {
+                            if (JSON.stringify(txid).indexOf('bad-txns-in-belowout') > -1) {
+                              const retObj = {
+                                msg: 'error',
+                                result: 'Bad transaction inputs spent',
+                                raw: _rawObj,
+                              };
+  
+                              res.end(JSON.stringify(retObj));
+                            } else {
+                              api.updatePendingTxCache(
+                                network,
+                                txid,
+                                {
+                                  pub: changeAddress,
+                                  rawtx: _rawtx,
+                                },
+                              );
+  
+                              const retObj = {
+                                msg: 'success',
+                                result: _rawObj,
+                              };
+  
+                              res.end(JSON.stringify(retObj));
+                            }
+                          } else if (
+                            txid &&
+                            JSON.stringify(txid).indexOf('bad-txns-in-belowout') > -1
+                          ) {
+                            const retObj = {
+                              msg: 'error',
+                              result: 'Bad transaction inputs spent',
+                              raw: _rawObj,
+                            };
+  
                             res.end(JSON.stringify(retObj));
                           } else {
-                            api.updatePendingTxCache(
-                              network,
-                              txid,
-                              {
-                                pub: changeAddress,
-                                rawtx: _rawtx,
-                              },
-                            );
-
                             const retObj = {
-                              msg: 'success',
-                              result: _rawObj,
+                              msg: 'error',
+                              result: 'Can\'t broadcast transaction',
+                              raw: _rawObj,
                             };
-
+  
                             res.end(JSON.stringify(retObj));
                           }
-                        } else if (
-                          txid &&
-                          JSON.stringify(txid).indexOf('bad-txns-in-belowout') > -1
-                        ) {
-                          const retObj = {
-                            msg: 'error',
-                            result: 'Bad transaction inputs spent',
-                            raw: _rawObj,
-                          };
-
-                          res.end(JSON.stringify(retObj));
-                        } else {
-                          const retObj = {
-                            msg: 'error',
-                            result: 'Can\'t broadcast transaction',
-                            raw: _rawObj,
-                          };
-
-                          res.end(JSON.stringify(retObj));
-                        }
-                      });
+                        });
+                      }
+                      _pushtx();
                     }
-                    _pushtx();
                   }
                 }
               }
