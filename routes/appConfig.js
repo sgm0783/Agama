@@ -47,7 +47,7 @@ const appConfig = {
     verus: {
       stakeGuard: '',
       autoStakeVRSC: false,
-      pbaasTestmode: false,
+      pbaasTestmode: true,
       enableVrsctest: false,
     },
     pbaasChains: [],
@@ -288,14 +288,14 @@ const appConfig = {
         type: 'string',
       },
       pbaasTestmode: {
-        display: false,
-        info: 'Choose whether to run PBaaS in testmode, or on the Verus network. Will not work on mainnet while PBaaS is only on testnet.',
+        display: true,
+        info: 'Select this and the option below if you would like to test PBaaS features on VRSCTEST',
         displayName: 'PBaaS Test Mode',
         type: 'boolean',
       },
       enableVrsctest: {
         display: true,
-        info: 'Enables VRSCTEST as an option in the Add Coin menu (includes PBaaS testnet features)',
+        info: 'Enables VRSCTEST as an option in the Add Coin menu',
         displayName: 'Enable Verus Testnet',
         type: 'boolean',
       },
