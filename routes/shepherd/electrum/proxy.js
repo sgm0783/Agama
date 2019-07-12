@@ -1,3 +1,7 @@
+//DEPRECATED TODO: DELETE
+
+
+/*
 const request = require('request');
 const Promise = require('bluebird');
 
@@ -28,9 +32,9 @@ const proxyServer = {
 console.log(`proxy server ${proxyServer.ip}:${proxyServer.port}`);
 
 module.exports = (shepherd) => {
-  /*shepherd.httpReq = (url, type) => {
-
-  };*/
+  //shepherd.httpReq = (url, type) => {
+  //
+  //};
   shepherd.proxyActiveCoin = {};
 
   shepherd.proxy = (network) => {
@@ -392,3 +396,4 @@ module.exports = (shepherd) => {
 
   return shepherd;
 }
+*/
