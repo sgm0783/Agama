@@ -11,7 +11,7 @@ module.exports = (api) => {
     for (let key in api.coindInstanceRegistry) {
       if (api.appConfig.native.stopNativeDaemonsOnQuit) {
         const chain = key !== 'komodod' ? key : null;
-        let _coindQuitCmd = api.appConfig.reservedChains.indexOf(chain) === -1 ? api.veruscliBin : api.komodocliBin;
+        let _coindQuitCmd = api.appConfig.reservedChains.indexOf(key) === -1 ? api.veruscliBin : api.komodocliBin;
 
          // any coind
         if (api.nativeCoindList[key.toLowerCase()]) {
@@ -85,7 +85,7 @@ module.exports = (api) => {
   api.post('/coind/stop', (req, res) => {
     if (api.checkToken(req.body.token)) {
       const _chain = req.body.chain;
-      let _coindQuitCmd = api.appConfig.reservedChains.indexOf(_chain) === -1 ? api.veruscliBin : api.komodocliBin;
+      let _coindQuitCmd = _chain && api.appConfig.reservedChains.indexOf(_chain) === -1 ? api.veruscliBin : api.komodocliBin;
       let _arg = [];
 
 
