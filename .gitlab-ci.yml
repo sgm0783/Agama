@@ -8,7 +8,6 @@ stages:
 variables:
   DOCKER_DRIVER: overlay2
   DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
-  DEFAULT_EASYDEXGUI_BRANCH: ${CI_COMMIT_REF_NAME}
   AGAMA_VERSION: 0.5.7-4
   VERUSCOIN_VERSION: 0.5.7-2
   KOMODO_VERSION: 0.4.0a
@@ -46,8 +45,10 @@ build:linux:
       POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
       else
       export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
-    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-    - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm ${EASYDEX_GUI_BUILD}
+    - cd gui/EasyDEX-GUI/react
+    - yarn install
+    - yarn run build
+    - cd ../../..
     - mkdir -p assets/bin/linux64/verusd
     - gsutil cp $STAGING/$VERUS_CLI_LINUX .
     - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
@@ -96,8 +97,10 @@ build:windows:
       POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
       else
       export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
-    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-    - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react && rm $EASYDEX_GUI_BUILD
+    - cd gui/EasyDEX-GUI/react
+    - yarn install
+    - yarn run build
+    - cd ../../..
     - mkdir -p assets/bin/
     - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
     - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
@@ -139,9 +142,10 @@ build:mac:
       POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
       else
       export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
-    - gsutil cp $STAGING/EasyDEX-GUI/$CI_COMMIT_REF_NAME/$EASYDEX_GUI_BUILD .
-    - tar -xzf $EASYDEX_GUI_BUILD --directory gui/EasyDEX-GUI/react &&
-      rm $EASYDEX_GUI_BUILD
+    - cd gui/EasyDEX-GUI/react
+    - yarn install
+    - yarn run build
+    - cd ../../..
     - gsutil cp $STAGING/$VERUS_CLI_MACOS .
     - wget https://github.com/KomodoPlatform/komodo/releases/download/dev-multios-0.4.0a-alpha/macOS_0.4.0a.tar.gz
     - mkdir -p assets/bin/osx/verusd
