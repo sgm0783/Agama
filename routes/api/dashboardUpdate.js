@@ -136,17 +136,26 @@ module.exports = (api) => {
                 if (result[a]) {
                   for (let b = 0; b < result[a].length; b++) {
                     const filteredArraySpends = json.filter(res => res.address === result[a][b]);
-                    const filteredArray = json.filter(res => res.address === result[a][b]).map(res => res.amount);
+                    const filteredArray = json.filter(res => res.address === result[a][b]).map(res => {
+                      return {
+                        amount: res.amount,
+                        reserveAmount: res.reserveAmount
+                      }
+                    });
 
-                    let sum = 0;
-                    let spendableSum = 0;
+                    let nativeSum = 0;
+                    let reserveSum = 0
+                    let spendableNativeSum = 0;
+                    let spendableReserveSum = 0;
                     let canspend = true;
 
                     for (let i = 0; i < filteredArray.length; i++) {
-                      sum += filteredArray[i];
+                      nativeSum += filteredArray[i].amount;
+                      reserveSum += filteredArray[i].reserveAmount ? filteredArray[i].reserveAmount : 0;
 
                       if (filteredArraySpends[i].spendable) {
-                        spendableSum += filteredArray[i];
+                        spendableNativeSum += filteredArray[i].amount;
+                        spendableReserveSum += filteredArray[i].reserveAmount ? filteredArray[i].reserveAmount : 0;
                       } else {
                         canspend = false;
                       }
@@ -154,8 +163,10 @@ module.exports = (api) => {
 
                     newAddressArray[a][b] = {
                       address: result[a][b],
-                      amount: sum,
-                      spendable: spendableSum,
+                      amount: nativeSum,
+                      reserveAmount: reserveSum,
+                      spendable: spendableNativeSum,
+                      spendableReserve: spendableReserveSum,
                       canspend,
                       type: a === 0 ? 'public' : 'private',
                     };
