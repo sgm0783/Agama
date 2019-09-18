@@ -308,6 +308,21 @@ const chainParams = {
 			'195.201.20.230',
 		],
 	},
+	DP: {
+		ac_supply: 55500000,
+		ac_sapling: 1, 
+		ac_public: 1,
+		ac_staked: 50,
+		ac_reward: 646400000,
+		ac_end: 6884282,
+		ac_blocktime: 120,
+		ac_cc: 2,
+		ac_ccenable: 229,
+		addnode: [
+			'54.37.205.212',
+			'51.89.22.139',
+		],
+	},
 };
 
 module.exports = chainParams;
