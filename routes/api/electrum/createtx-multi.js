@@ -1,7 +1,4 @@
-const bitcoinJS = require('bitcoinjs-lib');
-const bitcoinJSForks = require('bitcoinforksjs-lib');
-const bitcoinZcash = require('bitcoinjs-lib-zcash');
-const bitcoinPos = require('bitcoinjs-lib-pos');
+const bitcoin = require('bitgo-utxo-lib');
 const coinSelect = require('coinselect');
 const { estimateTxSize } = require('agama-wallet-lib/src/utils');
 
@@ -402,7 +399,7 @@ module.exports = (api) => {
                                 rawtx: _rawtx,
                               },
                             );
-                            
+
                             const retObj = {
                               msg: 'success',
                               result: _rawObj,
@@ -459,16 +456,8 @@ module.exports = (api) => {
 
   // single sig
   api.buildSignedTxMulti = (sendTo, changeAddress, wif, network, utxo, changeValue, spendValue, opreturn) => {
-    let key = api.isZcash(network) ? bitcoinZcash.ECPair.fromWIF(wif, api.getNetworkData(network)) : bitcoinJS.ECPair.fromWIF(wif, api.getNetworkData(network));
-    let tx;
-
-    if (api.isZcash(network)) {
-      tx = new bitcoinZcash.TransactionBuilder(api.getNetworkData(network));
-    } else if (api.isPos(network)) {
-      tx = new bitcoinPos.TransactionBuilder(api.getNetworkData(network));
-    } else {
-      tx = new bitcoinJS.TransactionBuilder(api.getNetworkData(network));
-    }
+    let key = bitcoin.ECPair.fromWIF(wif, api.getNetworkData(network));
+    let tx = new bitcoin.TransactionBuilder(api.getNetworkData(network));
 
     api.log('buildSignedTx', 'spv.createrawtx');
     // console.log(`buildSignedTx priv key ${wif}`);
@@ -507,7 +496,7 @@ module.exports = (api) => {
         opreturn.length) {
       for (let i = 0; i < opreturn.length; i++) {
         const data = Buffer.from(opreturn[i], 'utf8');
-        const dataScript = bitcoinJS.script.nullData.output.encode(data);
+        const dataScript = bitcoin.script.nullData.output.encode(data);
         tx.addOutput(dataScript, 1000);
 
         api.log(`opreturn ${i} ${opreturn[i]}`, 'spv.createrawtx');

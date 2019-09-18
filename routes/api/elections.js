@@ -1,5 +1,5 @@
 const bs58check = require('bs58check');
-const bitcoin = require('bitcoinjs-lib');
+const bitcoin = require('bitgo-utxo-lib');
 const Promise = require('bluebird');
 const { hex2str } = require('agama-wallet-lib/src/crypto/utils');
 
@@ -177,7 +177,7 @@ module.exports = (api) => {
         const type = req.query.type;
         const _address = req.query.address;
         const __address = ecl.protocolVersion && ecl.protocolVersion === '1.4' ? pubToElectrumScriptHashHex(_address, btcnetworks[network.toLowerCase()] || btcnetworks.kmd) : _address;
-        
+
         api.log('electrum elections listtransactions ==>', 'elections.listtransactions');
 
         const MAX_TX = req.query.maxlength || 10;
