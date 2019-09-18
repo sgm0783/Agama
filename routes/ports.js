@@ -56,7 +56,7 @@ const assetChainPorts = {
   ZEXO: 33970,
   LABS: 40265,
   DP: 28388,
-  VRSCTEST: 19358,
+  VRSCTEST: 17136,
   VRSC: 27486,
 };
 
