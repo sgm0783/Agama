@@ -255,7 +255,7 @@ const appConfig = {
       },
       zlistreceivedbyaddress: {
         display: true,
-        displayName: 'Fetch received z transactions (z_listreceivedbyaddress)',
+        displayName: 'Fetch received Z transactions (z_listreceivedbyaddress)',
         info: 'Warning: turning on this option may have an impact on weak systems.<br>If you don\'t use private addresses or don\'t need to see all private transactions to your addresses keep this option disabled.',
         type: 'boolean',
       },
