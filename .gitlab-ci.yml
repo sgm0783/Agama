@@ -7,15 +7,16 @@ stages:
 ########################################################################################################################
 variables:
   DOCKER_DRIVER: overlay2
-  DEFAULT_VERUSCOIN_BRANCH: ${CI_COMMIT_REF_NAME}
-  AGAMA_VERSION: 0.5.9-2
-  VERUSCOIN_VERSION: 0.5.9-2
-  KOMODO_VERSION: 0.4.0a
+  DEFAULT_VERUSCOIN_BRANCH: master
+  AGAMA_VERSION: 0.6.0
+  VERUSCOIN_VERSION: 0.6.0
+  KOMODO_VERSION: 0.5.0
   BINARY_SOURCE: VerusCoin
   EASYDEX_GUI_BUILD: build.tar.gz
   AGAMA_APPIMAGE: Agama-Linux-v${AGAMA_VERSION}.AppImage
   AGAMA_LINUX_TAR: Agama-Linux-v${AGAMA_VERSION}.tar.gz
   AGAMA_WINDOWS_ZIP: Agama-Windows-v${AGAMA_VERSION}.zip
+  AGAMA_WINDOWS_NSIS: Agama-Windows-v${AGAMA_VERSION}.exe
   AGAMA_MACOS: Agama-MacOS-v${AGAMA_VERSION}.dmg
   GIT_SUBMODULE_STRATEGY: recursive
   POST_COMMENT: "Pipeline Trigger: ${CI_PIPELINE_SOURCE}\n
@@ -41,8 +42,8 @@ build:linux:
       --key-file AUTH_KEY.json &&
       rm AUTH_KEY.json
     - if [ -z "${UPSTREAM_CLI_BRANCH}" ]; then export
-        VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz"
-        POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
+      VERUS_CLI_LINUX="${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH}/Linux/Verus-CLI-Linux-v${VERUSCOIN_VERSION}-amd64.tar.gz"
+      POST_COMMENT="${POST_COMMENT}Using ${BINARY_SOURCE}/${DEFAULT_VERUSCOIN_BRANCH} binaries.";
       else
       export POST_COMMENT="${POST_COMMENT}Using ${UPSTREAM_TRIGGER}/${UPSTREAM_CLI_BRANCH} binaries."; fi
     - cd gui/EasyDEX-GUI/react
@@ -51,11 +52,11 @@ build:linux:
     - cd ../../..
     - mkdir -p assets/bin/linux64/verusd
     - gsutil cp $STAGING/$VERUS_CLI_LINUX .
-    - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64/verusd
-    - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}.tar.gz
-    - wget https://github.com/KomodoPlatform/komodo/releases/download/dev-multios-0.4.0a-alpha/linux_0.4.0a.tar.gz
-    - tar -xzvf linux_${KOMODO_VERSION}.tar.gz --strip=1 --directory assets/bin/linux64
-    - rm linux_${KOMODO_VERSION}.tar.gz
+    - tar -xzvf Verus-CLI-Linux-v${VERUSCOIN_VERSION}-amd64.tar.gz --strip=1 --directory assets/bin/linux64/verusd
+    - rm Verus-CLI-Linux-v${VERUSCOIN_VERSION}-amd64.tar.gz
+    - wget https://github.com/KomodoPlatform/komodo/releases/download/0.5.0/komodo_0.5.0_linux.tar.gz
+    - tar -xzvf komodo_${KOMODO_VERSION}_linux.tar.gz --strip=1 --directory assets/bin/linux64
+    - rm komodo_${KOMODO_VERSION}_linux.tar.gz
     - strip --strip-unneeded  assets/bin/linux64/komodod && strip --strip-unneeded  assets/bin/linux64/komodo-cli
     - yarn install
   script:
@@ -105,9 +106,9 @@ build:windows:
     - gsutil cp $STAGING/$VERUS_CLI_WINDOWS .
     - unzip -qq Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip -d assets/bin/win64
     - mv assets/bin/win64/verus-cli assets/bin/win64/verusd
-    - wget https://github.com/KomodoPlatform/komodo/releases/download/dev-multios-0.4.0a-alpha/windows_0.4.0a.zip
-    - unzip windows_${KOMODO_VERSION}.zip -d assets/bin
-    - rm windows_${KOMODO_VERSION}.zip
+    - wget https://github.com/KomodoPlatform/komodo/releases/download/0.5.0/komodo_0.5.0_windows.zip
+    - unzip komodo_${KOMODO_VERSION}_windows.zip -d assets/bin
+    - rm komodo_${KOMODO_VERSION}_windows.zip
     - strip --strip-unneeded  assets/bin/win64/komodod.exe && strip --strip-unneeded  assets/bin/win64/komodo-cli.exe && strip --strip-unneeded  assets/bin/win64/komodo-tx.exe
     - rm Verus-CLI-Windows-v${VERUSCOIN_VERSION}.zip
     - yarn install
@@ -115,7 +116,8 @@ build:windows:
     - yarn run dist-win
     - cd dist
     - sha256sum ${AGAMA_WINDOWS_ZIP} > ${AGAMA_WINDOWS_ZIP}.sha256
-    - mv ${AGAMA_WINDOWS_ZIP} ${AGAMA_WINDOWS_ZIP}.sha256 ..
+    - sha256sum ${AGAMA_WINDOWS_NSIS} > ${AGAMA_WINDOWS_NSIS}.sha256
+    - mv ${AGAMA_WINDOWS_ZIP} ${AGAMA_WINDOWS_ZIP}.sha256 ${AGAMA_WINDOWS_NSIS} ${AGAMA_WINDOWS_NSIS}.sha256 ..
   after_script:
     - curl -F file=@"$AGAMA_WINDOWS_ZIP"
       -F channels="$AGAMA_POST_CHANNEL"
@@ -126,6 +128,8 @@ build:windows:
     paths:
       - ${AGAMA_WINDOWS_ZIP}
       - ${AGAMA_WINDOWS_ZIP}.sha256
+      - ${AGAMA_WINDOWS_NSIS}
+      - ${AGAMA_WINDOWS_NSIS}.sha256
       - dist
     expire_in: 1 week
 ########################################################################################################################
@@ -147,11 +151,11 @@ build:mac:
     - yarn run build
     - cd ../../..
     - gsutil cp $STAGING/$VERUS_CLI_MACOS .
-    - wget https://github.com/KomodoPlatform/komodo/releases/download/dev-multios-0.4.0a-alpha/macOS_0.4.0a.tar.gz
+    - wget https://github.com/KomodoPlatform/komodo/releases/download/0.5.0/komodo_0.5.0_macOS.gz
     - mkdir -p assets/bin/osx/verusd
     - tar -xzf Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz --strip=1 --directory assets/bin/osx/verusd
-    - tar -xzvf macOS_${KOMODO_VERSION}.tar.gz  --strip=1 --directory assets/bin/osx
-    - rm macOS_${KOMODO_VERSION}.tar.gz
+    - tar -xzvf komodo_${KOMODO_VERSION}_macOS.gz  --strip=1 --directory assets/bin/osx
+    - rm komodo_${KOMODO_VERSION}_macOS.gz
     - rm Verus-CLI-MacOS-v${VERUSCOIN_VERSION}.tar.gz
     - yarn install
   script:
@@ -161,7 +165,7 @@ build:mac:
     - shasum -a 256 ${AGAMA_MACOS} > ${AGAMA_MACOS}.sha256
     - mv ${AGAMA_MACOS} ${AGAMA_MACOS}.sha256 ..
   after_script:
-    - curl -F file=@"${AGAMA_MACOS}.dmg"
+    - curl -F file=@"${AGAMA_MACOS}"
       -F channels="${AGAMA_POST_CHANNEL}"
       -F initial_comment="${POST_COMMENT}"
       -H "${SLACK_BOT_AUTH}"
@@ -199,4 +203,6 @@ deploy:
       - ${AGAMA_WINDOWS_ZIP}.sha256
       - ${AGAMA_MACOS}
       - ${AGAMA_MACOS}.sha256
+      - ${AGAMA_WINDOWS_NSIS}
+      - ${AGAMA_WINDOWS_NSIS}.sha256
     expire_in: 1 week
