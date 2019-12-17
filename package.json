@@ -128,7 +128,6 @@
     "win": {
       "artifactName": "${productName}-Windows-v${version}.${ext}",
       "target": [
-        "nsis",
         "zip"
       ],
       "icon": "assets/icons/agama_app_icon.ico"
