@@ -116,7 +116,7 @@ build:windows:
     - cd dist
     - unzip ${AGAMA_WINDOWS_ZIP} -d Agama-Windows-v${AGAMA_VERSION}
     - rm ${AGAMA_WINDOWS_ZIP}
-    - zip -r ${AGAMA_WINDOWS_ZIP} Agama-Windows-v${AGAMA}
+    - zip -r ${AGAMA_WINDOWS_ZIP} Agama-Windows-v${AGAMA_VERSION}
     - sha256sum ${AGAMA_WINDOWS_ZIP} > ${AGAMA_WINDOWS_ZIP}.sha256
     - mv ${AGAMA_WINDOWS_ZIP} ${AGAMA_WINDOWS_ZIP}.sha256 ..
   after_script:
